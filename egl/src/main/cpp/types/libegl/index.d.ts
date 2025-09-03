@@ -1,0 +1,1 @@
+export const setParams: (params: number) => void;

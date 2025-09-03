@@ -1,0 +1,2 @@
+# OpenglLiveView
+这是使用Empty Ability框架搭建的实况窗项目，拟使用OpenGLES渲染天气背景到实况窗卡片上
