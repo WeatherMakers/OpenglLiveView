@@ -41,6 +41,18 @@
     {
       "name": "egl",
       "srcPath": "./egl",
+    },
+    {
+      "name": "liveViewSim",
+      "srcPath": "./liveViewSim",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
     }
   ]
 }
