@@ -68,7 +68,6 @@ bool CImageExample::init()
     }
 
     // 3. 纹理初始化：尝试直接从 rawfile 加载（无需ArkTS传递）
-    LOGD("ImageExample init: 创建纹理并尝试从rawfile加载");
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_2D, textureID);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -194,18 +193,6 @@ bool CImageExample::loadFromRawfile(const char *filename, const NativeResourceMa
 bool CImageExample::loadFromNativeFile(const char *filepath)
 {
     LOGD("loadFromNativeFile: 尝试读取文件 %{public}s", filepath);
-
-    // 尝试多个可能的路径
-    std::string rawfilePath = "resources/rawfile/" + std::string(filepath);
-    std::string assetsPath = "assets/images/" + std::string(filepath);
-    std::string sandboxPath = "/data/storage/el2/base/haps/entry/files/" + std::string(filepath);
-
-    const char *possiblePaths[] = {
-        filepath,            // 直接路径
-        rawfilePath.c_str(), // rawfile路径
-        assetsPath.c_str(),  // assets路径
-        sandboxPath.c_str()  // 应用沙箱路径
-    };
 
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_2D, textureID);
