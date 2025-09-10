@@ -53,7 +53,7 @@ bool LoadPngFromAssetManager(const std::string &path)
         int channels;
         int align;
         unsigned char *img = stbi_load_from_memory(buffer, fileSize, &w, &h, &channels, 4);
-        LOGE("LoadPngFromAssetManager wh = %{public}d %{public}d.", w, h);
+        LOGI("LoadPngFromAssetManager wh = %{public}dx%{public}d.", w, h);
         glGetIntegerv(GL_UNPACK_ALIGNMENT, &align);
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, w, h);
@@ -63,9 +63,7 @@ bool LoadPngFromAssetManager(const std::string &path)
         glPixelStorei(GL_UNPACK_ALIGNMENT, align);
         stbi_image_free(img);
     } while (false);
-
     delete[] buffer;
     OH_ResourceManager_CloseRawFile(file);
-
     return true;
 }

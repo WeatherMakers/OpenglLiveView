@@ -1,9 +1,3 @@
-//
-// Created on 2024/8/25.
-//
-// Node APIs are not fully supported. To solve the compilation error of the interface cannot be found,
-// please include "napi/native_api.h".
-
 #include "EglRender.h"
 #include "example/BaseExample.h"
 #include "example/TriangleExample.h"
@@ -98,23 +92,6 @@ void EglRender::Export(napi_env env, napi_value exports)
     }
     // 注册回调
     OH_NativeXComponent_RegisterCallback(nativeXComponent, &callback);
-}
-napi_value EglRender::setContext(napi_env env, napi_callback_info info)
-{
-    size_t argc = 1;
-    napi_value args[1] = {nullptr};
-    napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
-    if (argc < 1) {
-        return nullptr;
-    }
-    // 初始化原生资源管理器
-    NativeResourceManager* rm = OH_ResourceManager_InitNativeResourceManager(env, args[0]);
-    if (rm == nullptr) {
-        LOGE("InitNativeResourceManager 失败");
-        return nullptr;
-    }
-    EglRender::getInstance()->resourceManager = rm;
-    return nullptr;
 }
 
 napi_value EglRender::setParams(napi_env env, napi_callback_info info)
