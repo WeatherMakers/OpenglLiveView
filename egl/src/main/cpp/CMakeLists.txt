@@ -9,7 +9,10 @@ if(DEFINED PACKAGE_FIND_FILE)
 endif()
 
 include_directories(${NATIVERENDER_ROOT_PATH}
-                    ${NATIVERENDER_ROOT_PATH}/include)
+                    ${NATIVERENDER_ROOT_PATH}/thirdparty/glm
+                    ${NATIVERENDER_ROOT_PATH}/thirdparty/stb
+                    ${NATIVERENDER_ROOT_PATH}/util
+                    )
 
 # 查找相关库 (包括OpenGL ES相关库和XComponent提供的ndk接口)
 find_library(EGL-lib EGL)

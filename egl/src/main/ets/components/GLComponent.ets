@@ -11,7 +11,8 @@ interface XComponentAttrs {
 
 @Component
 export struct GLComponent {
-  @State message: string = 'Hello World';
+  @State context: Context = this.getUIContext().getHostContext() as Context;
+  private resMgr: resourceManager.ResourceManager = this.context.resourceManager;
   xComponentContext: object | undefined = undefined;
   xComponentAttrs: XComponentAttrs = {
     id: 'xcomponentId', // 与XComponent组件为一一对应关系，不建议重复。可以在native侧通过OH_NativeXComponent_GetXComponentId接口来获取对应的id从而绑定对应的XComponent。
@@ -47,8 +48,7 @@ export struct GLComponent {
               action: () => {
                 egl.setParams(Params.TYPE_VAO_TRIANGLE)
               }
-            }
-            ,
+            },
             {
               value: '显示PNG纹理',
               action: async () => {

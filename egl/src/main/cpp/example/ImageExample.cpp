@@ -1,15 +1,14 @@
 #include "ImageExample.h"
 #include <GLES3/gl3.h>
 #include <string>
-#include "napi/native_api.h"
 #include <rawfile/raw_file.h>
 #include <rawfile/raw_file_manager.h>
 #include <vector>
 #include "log.h"
 #include "util/GLUtil.h"
-#include "EglRender.h"
+#include "render/EglRender.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include "thirdparty/stb/stb_image.h"
+#include "stb_image.h"
 
 CImageExample::CImageExample() : VBO(0), VAO(0), EBO(0), textureID(0) {}
 CImageExample::~CImageExample() {}
