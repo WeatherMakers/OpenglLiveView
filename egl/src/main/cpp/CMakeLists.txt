@@ -26,10 +26,12 @@ file(GLOB src-files
 
 add_library(egl SHARED
     ${src-files})
+
 target_link_libraries(egl PUBLIC
     ${hilog-lib}
     ${EGL-lib}
     ${GLES-lib}
     ${libace-lib}
+    librawfile.z.so
     libace_napi.z.so
     libc++.a)

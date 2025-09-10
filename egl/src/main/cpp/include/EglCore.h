@@ -30,6 +30,7 @@ public:
     BaseExample* example;
     bool EglContextInit(void *window, int width, int height);
     void setParams(int params);
+    void present();
 };
 
 #endif //OPENGL_EGLCORE_H

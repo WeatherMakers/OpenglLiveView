@@ -11,6 +11,7 @@
 #include <ace/xcomponent/native_interface_xcomponent.h>
 #include "napi/native_api.h"
 #include <string>
+#include <rawfile/raw_file_manager.h>
 using namespace std;
 class EglRender {
 private:
@@ -22,8 +23,13 @@ public:
     EglRender();
     ~EglRender();
     OH_NativeXComponent_Callback callback;
+    napi_env env;
+    NativeResourceManager* resourceManager;
+    int currentImageMode;
     static EglRender* getInstance();
     static napi_value setParams(napi_env env, napi_callback_info info);
+    static napi_value setImage(napi_env env, napi_callback_info info);
+    static napi_value setContext(napi_env env, napi_callback_info info);
 };
 
 #endif //OPENGL_EGLRENDER_H

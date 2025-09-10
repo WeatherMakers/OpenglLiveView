@@ -1,6 +1,7 @@
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import egl from "libegl.so"
 import { Params } from './Contants';
+import resourceManager from '@ohos.resourceManager';
 
 interface XComponentAttrs {
   id: string;
@@ -47,6 +48,40 @@ export struct GLComponent {
                 egl.setParams(Params.TYPE_VAO_TRIANGLE)
               }
             }
+            ,
+            {
+              value: '显示PNG纹理',
+              action: async () => {
+                try {
+                  // 先切换到图像示例
+                  egl.setParams(Params.TYPE_IMAGE)
+                  hilog.info(0x0000, 'GL', '已切换到图像示例')
+                  
+                  // 从 rawfile 读取 PNG 字节并传给原生
+                  const rm = getContext(this).resourceManager as resourceManager.ResourceManager
+                  const data = await rm.getRawFileContent('watercolor.png')
+                  hilog.info(0x0000, 'GL', `读取到PNG数据，大小: ${data.byteLength} 字节`)
+                  
+                  // 传给原生进行解码和显示
+                  egl.setImage(data.buffer)
+                  hilog.info(0x0000, 'GL', '已调用setImage')
+                } catch (e) {
+                  hilog.error(0x0000, 'GL', `显示PNG纹理失败: ${JSON.stringify(e)}`)
+                }
+              }
+            },
+            {
+              value: '原生读取PNG',
+              action: () => {
+                try {
+                  // 直接切换到原生文件读取模式
+                  egl.setParams(Params.TYPE_IMAGE_FROM_NATIVE)
+                  hilog.info(0x0000, 'GL', '已切换到原生文件读取模式')
+                } catch (e) {
+                  hilog.error(0x0000, 'GL', `原生读取PNG失败: ${JSON.stringify(e)}`)
+                }
+              }
+            }
           ])
           .height(48)
           .width('90%')
@@ -54,6 +89,12 @@ export struct GLComponent {
         XComponent(this.xComponentAttrs)
           .onLoad((xComponentContext) => {
             this.xComponentContext = xComponentContext
+            // 将UI上下文传给Native，初始化原生资源管理器
+            try {
+              egl.setContext(getContext(this))
+            } catch (e) {
+              hilog.error(0x0000, 'GL', `setContext失败: ${JSON.stringify(e)}`)
+            }
           })
       }
       .width('100%')
