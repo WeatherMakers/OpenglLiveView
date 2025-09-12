@@ -6,6 +6,8 @@
 #include "example/VBOTriangleExample.h"
 #include "log.h"
 
+using namespace hiveVG;
+
 EglCore::~EglCore()
 {
     LOGD("执行EglCore析构函数");
@@ -16,33 +18,33 @@ void EglCore::release()
 {
     LOGD("执行EglCore释放函数");
 
-    if (!eglDestroySurface(eglDisplay, eglSurface))
+    if (!eglDestroySurface(EglDisplay, EglSurface))
     {
         LOGE("销毁eglSurface失败");
     }
-    if (!eglDestroyContext(eglDisplay, eglContext))
+    if (!eglDestroyContext(EglDisplay, EglContext))
     {
         LOGE("销毁eglContext失败");
     }
-    if (!eglTerminate(eglDisplay))
+    if (!eglTerminate(EglDisplay))
     {
         LOGE("销毁eglDisplay失败");
     }
-    if (example)
+    if (m_pExample)
     {
-        glDeleteProgram(example->program);
-        delete example;
-        example = nullptr;
+        glDeleteProgram(m_pExample->program);
+        delete m_pExample;
+        m_pExample = nullptr;
     }
 }
 
-bool EglCore::EglContextInit(void *window, int width, int height)
+bool EglCore::initEglContext(void *window, int width, int height)
 {
-    this->width = width;
-    this->height = height;
+    this->Width = width;
+    this->Height = height;
     // 获取EGLDisplay对象：调用eglGetDisplay函数得到EGLDisplay，并加载OpenGL ES库。
-    eglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-    if (eglDisplay == EGL_NO_DISPLAY)
+    EglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+    if (EglDisplay == EGL_NO_DISPLAY)
     {
         LOGE("eGLDisplay获取失败");
         return false;
@@ -50,7 +52,7 @@ bool EglCore::EglContextInit(void *window, int width, int height)
     EGLint major;
     EGLint minor;
     // 初始化EGL连接：调用eglInitialize函数初始化，获取库的版本号。
-    if (!eglInitialize(eglDisplay, &major, &minor))
+    if (!eglInitialize(EglDisplay, &major, &minor))
     {
         LOGE("eGLDisplay初始化失败");
         return false;
@@ -58,28 +60,28 @@ bool EglCore::EglContextInit(void *window, int width, int height)
     const EGLint maxConfigSize = 1;
     EGLint numConfigs;
     // 确定渲染表面的配置信息：调用eglChooseConfig函数得到EGLConfig。
-    if (!eglChooseConfig(eglDisplay, ATTRIB_LIST, &eglConfig, maxConfigSize, &numConfigs))
+    if (!eglChooseConfig(EglDisplay, ATTRIB_LIST, &EglConfig, maxConfigSize, &numConfigs))
     {
         LOGE("eglConfig初始化失败");
         return false;
     }
-    eglWindow = reinterpret_cast<EGLNativeWindowType>(window);
+    EglWindow = reinterpret_cast<EGLNativeWindowType>(window);
     // 创建渲染表面：通过EGLDisplay和EGLConfig，调用eglCreateWindowSurface函数创建渲染表面，得到EGLSurface。
-    eglSurface = eglCreateWindowSurface(eglDisplay, eglConfig, eglWindow, nullptr);
-    if (nullptr == eglSurface)
+    EglSurface = eglCreateWindowSurface(EglDisplay, EglConfig, EglWindow, nullptr);
+    if (nullptr == EglSurface)
     {
         LOGE("创建eGLSurface失败");
         return false;
     }
     // 创建渲染上下文：通过EGLDisplay和EGLConfig，调用eglCreateContext函数创建渲染上下文，得到EGLContext。
-    eglContext = eglCreateContext(eglDisplay, eglConfig, EGL_NO_CONTEXT, CONTEXT_ATTRIBS);
-    if (nullptr == eglContext)
+    EglContext = eglCreateContext(EglDisplay, EglConfig, EGL_NO_CONTEXT, CONTEXT_ATTRIBS);
+    if (nullptr == EglContext)
     {
         LOGE("创建eglContext失败");
         return false;
     }
     // 绑定上下文：通过eglMakeCurrent函数将EGLSurface、EGLContext、EGLDisplay三者绑定，接下来就可以使用OpenGL进行绘制了。
-    if (!eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext))
+    if (!eglMakeCurrent(EglDisplay, EglSurface, EglSurface, EglContext))
     {
         LOGE("eglMakeCurrent失败");
         return false;
@@ -90,11 +92,8 @@ bool EglCore::EglContextInit(void *window, int width, int height)
 
 void EglCore::prepareDraw()
 {
-    // 设置窗口大小
-    glViewport(DEFAULT_X_POSITION, DEFAULT_X_POSITION, width, height);
-    // 清屏，将屏幕颜色设置为黑色
+    glViewport(DEFAULT_X_POSITION, DEFAULT_X_POSITION, Width, Height);
     glClearColor(GL_RED_DEFAULT, GL_GREEN_DEFAULT, GL_BLUE_DEFAULT, GL_ALPHA_DEFAULT);
-    // 清除颜色缓冲
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
@@ -102,8 +101,7 @@ bool EglCore::finishDraw()
 {
     glFlush();
     glFinish();
-    // 交换前后缓冲，将绘制内容显示到屏幕上
-    return eglSwapBuffers(eglDisplay, eglSurface);
+    return eglSwapBuffers(EglDisplay, EglSurface);
 }
 
 void EglCore::present()
@@ -111,41 +109,40 @@ void EglCore::present()
     finishDraw();
 }
 
-void EglCore::setParams(int params)
+void EglCore::setParams(int vParams)
 {
-    if (example)
+    if (m_pExample)
     {
-        // 先释放之前的资源
-        delete example;
-        example = nullptr;
+        delete m_pExample;
+        m_pExample = nullptr;
     }
-    switch (params)
+    switch (vParams)
     {
     case TRIANGLE_TYPE:
-        example = new TriangleExample();
+        m_pExample = new TriangleExample();
         break;
     case VBO_TRIANGLE_TYPE:
-        example = new VBOTriangleExample();
+        m_pExample = new VBOTriangleExample();
         break;
     case EBO_TRIANGLE_TYPE:
-        example = new EBORectangleExample();
+        m_pExample = new EBORectangleExample();
         break;
     case VAO_TRIANGLE_TYPE:
-        example = new VAOTriangleExample();
+        m_pExample = new VAOTriangleExample();
         break;
     case IMAGE_TYPE:
-        example = new CImageExample();
+        m_pExample = new CImageExample();
         break;
     case IMAGE_FROM_NATIVE_TYPE:
-        example = new CImageExample();
+        m_pExample = new CImageExample();
         break;
     default:
-        example = new TriangleExample();
+        m_pExample = new TriangleExample();
         break;
     }
-    if (example->init())
+    if (m_pExample->init())
     {
-        example->draw();
+        m_pExample->draw();
         finishDraw();
     }
 }

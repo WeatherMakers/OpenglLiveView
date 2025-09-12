@@ -39,11 +39,8 @@ GLuint GLUtil::createProgram(const char* vertexShader, const char* fragmentShade
 }
 
 GLuint GLUtil::loadShader(GLenum shaderType, const char *shaderSrc) {
-    // 创建着色器
     GLuint shader = glCreateShader(shaderType);
-    // 绑定做得起源码
     glShaderSource(shader, 1, &shaderSrc, nullptr);
-    // 编译着色器
     glCompileShader(shader);
     GLint compiled;
     glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);

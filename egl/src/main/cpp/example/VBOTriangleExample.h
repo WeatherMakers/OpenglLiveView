@@ -10,6 +10,8 @@
 #include "example/TriangleExample.h"
 #define VBO_COUNT 1
 
+namespace hiveVG {
+
 /**
  * 使用VBO绘制三角形
  */
@@ -28,5 +30,7 @@ public:
 
     virtual void destroy();
 };
+
+} // namespace hiveVG
 
 #endif // OPENGL_VBOTRIANGLEEXAMPLE_H

@@ -1,5 +1,7 @@
 #include "TriangleExample.h"
 
+namespace hiveVG {
+
 TriangleExample::TriangleExample() {}
 
 TriangleExample::~TriangleExample()
@@ -65,3 +67,5 @@ void TriangleExample::destroy()
     LOGD("释放三角形资源");
     // 暂时没有需要释放的资源
 }
+
+} // namespace hiveVG

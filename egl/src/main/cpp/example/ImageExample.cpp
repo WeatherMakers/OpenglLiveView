@@ -3,7 +3,6 @@
 #include "app_util.h"
 #include "log.h"
 #include "render/EglRender.h"
-#include "global.h"
 #include <GLES3/gl3.h>
 #include <rawfile/raw_file.h>
 #include <rawfile/raw_file_manager.h>
@@ -12,62 +11,115 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+using namespace hiveVG;
+
 CImageExample::CImageExample() : VBO(0), VAO(0), EBO(0), textureID(0) {}
-CImageExample::~CImageExample() {}
+
+CImageExample::~CImageExample()
+{
+    if (m_pShaderProgram != nullptr)
+    {
+        delete m_pShaderProgram;
+    }
+}
+
+// bool CImageExample::init()
+//{
+//     glGenVertexArrays(1, &VAO);
+//     glGenBuffers(1, &VBO);
+//     glGenBuffers(1, &EBO);
+//     glBindVertexArray(VAO);
+//     glBindBuffer(GL_ARRAY_BUFFER, VBO);
+//     glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
+//     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+//     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(quadIndices), quadIndices, GL_STATIC_DRAW);
+//
+//     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
+//     glEnableVertexAttribArray(0);
+//     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)(3 * sizeof(float)));
+//     glEnableVertexAttribArray(1);
+//     glBindVertexArray(0);
+//    
+//     const char *vertexSrc = "#version 300 es\n"
+//                             "layout(location = 0) in vec3 aPos;\n"
+//                             "layout(location = 1) in vec2 aTexCoord;\n"
+//                             "out vec2 TexCoord;\n"
+//                             "void main()\n"
+//                             "{\n"
+//                             "    gl_Position = vec4(aPos, 1.0);\n"
+//                             "    TexCoord = aTexCoord;\n"
+//                             "}\n";
+//
+//     const char *fragmentSrc = "#version 300 es\n"
+//                               "precision mediump float;\n"
+//                               "in vec2 TexCoord;\n"
+//                               "out vec4 FragColor;\n"
+//                               "uniform sampler2D uTexture;\n"
+//                               "void main()\n"
+//                               "{\n"
+//                               "    FragColor = texture(uTexture, TexCoord);\n"
+//                               "}\n";
+//
+//     program = GLUtil::createProgram(vertexSrc, fragmentSrc);
+//     if (program == 0)
+//     {
+//         LOGI("Failed to create program");
+//         return false;
+//     }
+//    
+//     glGenTextures(1, &textureID);
+//     glBindTexture(GL_TEXTURE_2D, textureID);
+//     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+//     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+//     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//    
+//     LOGD("ImageExample init: 尝试从原生文件加载 watercolor.png");
+//     if (!loadFromNativeFile("watercolor.png"))
+//     {
+//         return false;
+//     }
+//
+//     glUseProgram(program);
+//     GLint texLoc = glGetUniformLocation(program, "uTexture");
+//     if (texLoc >= 0)
+//     {
+//         glUniform1i(texLoc, 0);
+//     }
+//     LOGD("ImageExample init: 完成，program=%d, textureID=%u", program, textureID);
+//     return true;
+// }
 
 bool CImageExample::init()
 {
-    // 1. 创建 VAO / VBO / EBO
+
+    // 初始化VAO, VBO, EBO
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
-
     glBindVertexArray(VAO);
-
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
-
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(quadIndices), quadIndices, GL_STATIC_DRAW);
 
-    // 顶点属性
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
-
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-
     glBindVertexArray(0);
 
-    // 2. 创建 shader program（内联着色器，匹配现有quadvert/quadfrag）
-    const char *vertexSrc = "#version 300 es\n"
-                            "layout(location = 0) in vec3 aPos;\n"
-                            "layout(location = 1) in vec2 aTexCoord;\n"
-                            "out vec2 TexCoord;\n"
-                            "void main()\n"
-                            "{\n"
-                            "    gl_Position = vec4(aPos, 1.0);\n"
-                            "    TexCoord = aTexCoord;\n"
-                            "}\n";
-
-    const char *fragmentSrc = "#version 300 es\n"
-                              "precision mediump float;\n"
-                              "in vec2 TexCoord;\n"
-                              "out vec4 FragColor;\n"
-                              "uniform sampler2D uTexture;\n"
-                              "void main()\n"
-                              "{\n"
-                              "    FragColor = texture(uTexture, TexCoord);\n"
-                              "}\n";
-
-    program = GLUtil::createProgram(vertexSrc, fragmentSrc);
-    if (program == 0)
+    m_pShaderProgram = CShaderProgram::createProgram("vertex.glsl", "fragment.glsl");
+    if (!m_pShaderProgram)
     {
-        LOGI("Failed to create program");
+        LOGE("Failed to create shader program from files: vertex.glsl, fragment.glsl");
         return false;
     }
 
-    // 3. 纹理初始化：尝试直接从 rawfile 加载（无需ArkTS传递）
+    program = m_pShaderProgram->getProgramID();
+//    delete shaderProgram; // ShaderProgram会管理shader的清理
+
+    // 设置纹理
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_2D, textureID);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -75,35 +127,20 @@ bool CImageExample::init()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    // 检查是否为原生文件加载模式
-    if (EglRender::getInstance()->currentImageMode == IMAGE_FROM_NATIVE_TYPE)
+    // 加载默认纹理
+    LOGD("initWithShaderFile: 尝试从原生文件加载 watercolor.png");
+    if (!loadFromNativeFile("watercolor.png"))
     {
-        LOGD("ImageExample init: 尝试从原生文件加载 watercolor.png");
-        if (!loadFromNativeFile("watercolor.png"))
-        {
-            LOGW("从原生文件加载失败，尝试rawfile方式");
-            const NativeResourceManager *rm = EglRender::getInstance()->resourceManager;
-            if (rm != nullptr)
-            {
-                loadFromRawfile("watercolor.png", rm);
-            }
-        }
-    } else
-    {
-        // 暂时跳过rawfile加载，避免闪退
-        LOGD("ImageExample init: 跳过rawfile加载，等待setImage传入数据");
+        return false;
     }
 
-    // 设置纹理采样器到纹理单元0
     glUseProgram(program);
     GLint texLoc = glGetUniformLocation(program, "uTexture");
     if (texLoc >= 0)
     {
         glUniform1i(texLoc, 0);
     }
-    LOGD("ImageExample init: 完成，program=%d, textureID=%u", program, textureID);
-    LOGD("ImageExample init: 纹理已创建但未加载图片，请通过setImage传入数据");
-
+    LOGD("initWithShaderFile: 完成，program=%d, textureID=%u", program, textureID);
     return true;
 }
 

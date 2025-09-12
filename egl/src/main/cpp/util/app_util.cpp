@@ -14,7 +14,7 @@
  */
 
 #include "app_util.h"
-#include "global.h"
+#include "render/EglRender.h"
 #include "log.h"
 #include <GLES3/gl3.h>
 #include <string>
@@ -24,7 +24,7 @@
 
 bool LoadPngFromAssetManager(const std::string &path)
 {
-    auto resMgr = Global::mNativeResMgr;
+    auto resMgr = hiveVG::EglRender::m_pNativeResManager;
     auto file = OH_ResourceManager_OpenRawFile(resMgr, path.c_str());
     if (file == nullptr) {
         LOGE("Failed to run OH_ResourceManager_OpenRawFile(%{public}s).", path.c_str());

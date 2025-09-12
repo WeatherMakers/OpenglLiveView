@@ -1,6 +1,7 @@
 #include "ShaderProgram.h"
 #include "Common.h"
 #include "log.h"
+#include "render/EglRender.h"
 //#include "FileUtils.h"
 
 using namespace hiveVG;
@@ -79,19 +80,59 @@ void CShaderProgram::setUniform(const std::string& vName, const glm::mat4& vMat)
 
 bool CShaderProgram::__dumpShaderCodeFromFile(const std::string& vShaderPath, std::string& voShaderCode)
 {
-//    auto pAsset = CFileUtils::openFile(vShaderPath.c_str());
-//    assert(pAsset);
-//    if (!pAsset)
-//        return false;
-//    size_t AssetSize = CFileUtils::getFileBytes(pAsset);
-//    std::unique_ptr<char[]> pBuffer(new char[AssetSize + 1]);
-//    int Flag = CFileUtils::readFile<char>(pAsset, pBuffer.get(), AssetSize);
-//    if(Flag < 0)
-//        return false;
-//    CFileUtils::closeFile(pAsset);
-//
-//    pBuffer[AssetSize] = '\0';
-//    voShaderCode = std::string(pBuffer.get());
+    // 检查ResourceManager是否可用
+    if (!EglRender::m_pNativeResManager)
+    {
+        LOGE("NativeResourceManager is not initialized");
+        return false;
+    }
+
+    // 打开rawfile
+    RawFile* rawFile = OH_ResourceManager_OpenRawFile(EglRender::m_pNativeResManager, vShaderPath.c_str());
+    if (!rawFile)
+    {
+        LOGE("Failed to open shader file: %s", vShaderPath.c_str());
+        return false;
+    }
+
+    // 获取文件大小
+    long fileSize = OH_ResourceManager_GetRawFileSize(rawFile);
+    if (fileSize <= 0)
+    {
+        LOGE("Invalid file size for shader file: %s", vShaderPath.c_str());
+        OH_ResourceManager_CloseRawFile(rawFile);
+        return false;
+    }
+
+    // 分配缓冲区
+    std::unique_ptr<char[]> buffer(new char[fileSize + 1]);
+    if (!buffer)
+    {
+        LOGE("Failed to allocate memory for shader file: %s", vShaderPath.c_str());
+        OH_ResourceManager_CloseRawFile(rawFile);
+        return false;
+    }
+
+    // 读取文件内容
+    long bytesRead = OH_ResourceManager_ReadRawFile(rawFile, buffer.get(), fileSize);
+    if (bytesRead != fileSize)
+    {
+        LOGE("Failed to read complete shader file: %s, expected: %ld, actual: %ld", 
+            vShaderPath.c_str(), fileSize, bytesRead);
+        OH_ResourceManager_CloseRawFile(rawFile);
+        return false;
+    }
+
+    // 关闭文件
+    OH_ResourceManager_CloseRawFile(rawFile);
+
+    // 确保字符串以null结尾
+    buffer[fileSize] = '\0';
+
+    // 将内容复制到输出字符串
+    voShaderCode = std::string(buffer.get());
+
+    LOGD("Successfully loaded shader file: %{public}s, size: %{public}ld bytes, %{public}s", vShaderPath.c_str(), fileSize, voShaderCode.c_str());
     return true;
 }
 

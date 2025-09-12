@@ -1,21 +1,28 @@
 #pragma once
 
+#include "ShaderProgram.h"
 #include "example/BaseExample.h"
 
-class TriangleExample : public BaseExample
+namespace hiveVG
 {
-protected:
-    // 顶点
-    GLfloat triangleVertices[9] = {
-        0.0f, 0.5f, 0.0f, 
-        -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f
+    class TriangleExample : public BaseExample
+    {
+    protected:
+        // 顶点
+        GLfloat triangleVertices[9] = {
+            0.0f, 0.5f, 0.0f, 
+            -0.5f, -0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f
+        };
+    
+    public:
+        TriangleExample();
+        virtual ~TriangleExample();
+        virtual bool init();
+        virtual void draw();
+        virtual void destroy();
+        
+    private:
+        CShaderProgram* shaderProgram;
     };
-
-public:
-    TriangleExample();
-    virtual ~TriangleExample();
-    virtual bool init();
-    virtual void draw();
-    virtual void destroy();
-};
+}

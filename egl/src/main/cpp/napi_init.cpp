@@ -1,13 +1,14 @@
 #include "render/EglRender.h"
-#include "global.h"
 #include "napi/native_api.h"
+
+using namespace hiveVG;
 
 EXTERN_C_START
 static napi_value Init(napi_env env, napi_value exports)
 {
     napi_property_descriptor desc[] = {
         { "setParams", nullptr, EglRender::getInstance()->setParams, nullptr, nullptr, nullptr, napi_default, nullptr },
-        { "init", nullptr, Global::Init, nullptr, nullptr, nullptr, napi_default, nullptr },
+        { "init", nullptr, EglRender::init, nullptr, nullptr, nullptr, napi_default, nullptr },
         { "setImage", nullptr,  EglRender::getInstance()->setImage, nullptr, nullptr, nullptr, napi_default, nullptr },
     };
     napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc);

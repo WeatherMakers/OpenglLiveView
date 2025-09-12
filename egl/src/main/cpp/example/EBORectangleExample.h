@@ -9,6 +9,9 @@
 #include "example/BaseExample.h"
 #define VBO_COUNT 1
 #define EBO_COUNT 1
+
+namespace hiveVG {
+
 /**
  * 使用EBO绘制矩形
  */
@@ -40,5 +43,7 @@ public:
     virtual void draw();
     virtual void destroy();
 };
+
+} // namespace hiveVG
 
 #endif // OPENGL_EBORECTANGLE_H

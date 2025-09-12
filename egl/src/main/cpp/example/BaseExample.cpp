@@ -8,6 +8,10 @@
 
 #define SAMPLE_TYPE_KEY_TRIANGLE 1
 
+namespace hiveVG {
+
 BaseExample::BaseExample() {}
 
 BaseExample::~BaseExample() {}
+
+} // namespace hiveVG

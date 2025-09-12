@@ -6,6 +6,8 @@
 
 #include "EBORectangleExample.h"
 
+using namespace hiveVG;
+
 EBORectangleExample::EBORectangleExample() {}
 
 EBORectangleExample::~EBORectangleExample() { destroy(); }
