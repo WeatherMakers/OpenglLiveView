@@ -1,7 +1,6 @@
-#ifndef OPENGL_GLUTIL_H
-#define OPENGL_GLUTIL_H
+#pragma once
 
-#include <GLES3/gl3.h>
+#include "OpenGLCommon.h"
 
 class GLUtil 
 {
@@ -10,4 +9,3 @@ public:
     static GLuint loadShader(GLenum shaderType, const char *shaderSrc);
 };
 
-#endif //OPENGL_GLUTIL_H

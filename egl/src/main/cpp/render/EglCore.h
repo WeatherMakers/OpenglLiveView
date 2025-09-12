@@ -1,18 +1,16 @@
-#ifndef OPENGL_EGLCORE_H
-#define OPENGL_EGLCORE_H
-#include <EGL/egl.h>
-#include <EGL/eglext.h>
-#include <GLES3/gl3.h>
-#include "example/BaseExample.h"
-class EglCore {
+#pragma once
 
+#include "OpenGLCommon.h"
+#include "example/BaseExample.h"
+
+class EglCore {
 private:
     int width;
     int height;
     EGLNativeWindowType eglWindow;
     EGLDisplay eglDisplay = EGL_NO_DISPLAY;
     EGLContext eglContext = EGL_NO_CONTEXT;
-    EGLConfig  eglConfig = EGL_NO_CONFIG_KHR;
+    EGLConfig  eglConfig  = EGL_NO_CONFIG_KHR;
     EGLSurface eglSurface = EGL_NO_SURFACE;
     GLuint program;
     void prepareDraw();
@@ -26,5 +24,3 @@ public:
     void setParams(int params);
     void present();
 };
-
-#endif //OPENGL_EGLCORE_H

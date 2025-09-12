@@ -1,13 +1,12 @@
-#ifndef OPENGL_EGLRENDER_H
-#define OPENGL_EGLRENDER_H
+#pragma once
 
 #include "EglCore.h"
 #include <ace/xcomponent/native_interface_xcomponent.h>
 #include "napi/native_api.h"
-#include <string>
 #include <rawfile/raw_file_manager.h>
-using namespace std;
-class EglRender {
+
+class EglRender 
+{
 private:
     static EglRender* instance;
     
@@ -24,5 +23,3 @@ public:
     static napi_value setParams(napi_env env, napi_callback_info info);
     static napi_value setImage(napi_env env, napi_callback_info info);
 };
-
-#endif //OPENGL_EGLRENDER_H

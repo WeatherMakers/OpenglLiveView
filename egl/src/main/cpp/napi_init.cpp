@@ -1,6 +1,5 @@
 #include "render/EglRender.h"
 #include "global.h"
-#include "log.h"
 #include "napi/native_api.h"
 
 EXTERN_C_START
