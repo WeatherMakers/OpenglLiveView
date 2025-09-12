@@ -6,12 +6,8 @@
 
 #include "BaseExample.h"
 
-#define SAMPLE_TYPE_KEY_TRIANGLE  1
+#define SAMPLE_TYPE_KEY_TRIANGLE 1
 
-BaseExample::BaseExample() {
-    
-}
+BaseExample::BaseExample() {}
 
-BaseExample::~BaseExample() {
-    
-}
+BaseExample::~BaseExample() {}

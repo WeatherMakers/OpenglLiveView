@@ -1,28 +1,25 @@
-//
-// Created on 2024/8/31.
-//
-// Node APIs are not fully supported. To solve the compilation error of the interface cannot be found,
-// please include "napi/native_api.h".
-
 #include "TriangleExample.h"
-TriangleExample::TriangleExample() {
-    
+
+TriangleExample::TriangleExample() {}
+
+TriangleExample::~TriangleExample()
+{ 
+    destroy(); 
 }
 
-TriangleExample::~TriangleExample() {
-    destroy();
-}
-
-bool TriangleExample::init() {
+bool TriangleExample::init()
+{
     program = GLUtil::createProgram(vertexShader, fragmentShader);
-    if (program == PROGRAM_ERROR) {
+    if (program == PROGRAM_ERROR)
+    {
         LOGE("链接程序失败");
         return false;
     }
     return true;
 }
 
-void TriangleExample::draw() {
+void TriangleExample::draw()
+{
     // 使用程序
     glUseProgram(program);
     // 获取顶点着色器中定义的属性
@@ -48,7 +45,7 @@ void TriangleExample::draw() {
      * 第三个参数是颜色
      */
     // 颜色值#7E8FFB
-    const GLfloat DRAW_COLOR[] = { 126.0f / 255, 143.0f / 255, 251.0f / 255, 1.0f };
+    const GLfloat DRAW_COLOR[] = {126.0f / 255, 143.0f / 255, 251.0f / 255, 1.0f};
     glUniform4fv(colorHandler, 1, DRAW_COLOR);
     // 绘制三角形
     GLsizei count = sizeof(triangleVertices) / sizeof(triangleVertices[0]) / 3;
@@ -63,7 +60,8 @@ void TriangleExample::draw() {
     glDisableVertexAttribArray(positionHandler);
 }
 
-void TriangleExample::destroy() {
+void TriangleExample::destroy()
+{
     LOGD("释放三角形资源");
     // 暂时没有需要释放的资源
 }
