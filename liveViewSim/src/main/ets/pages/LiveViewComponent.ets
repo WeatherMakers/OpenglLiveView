@@ -55,7 +55,7 @@ export struct LiveViewComponent {
           this.m_IsPlaying = false;
         }
       }
-    }, 100);
+    }, 50);
     console.log("赋值后:", this.m_Timer)
   }
 
@@ -93,6 +93,7 @@ export struct LiveViewComponent {
         .height('100%')
         .objectFit(ImageFit.Fill)
         .position({ y: 10 })
+        .opacity(0.4)
 
       Column() {
         this.buildHeader()
