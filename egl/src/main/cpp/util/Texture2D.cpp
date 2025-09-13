@@ -1,4 +1,5 @@
 #include "Texture2D.h"
+#include <GLES2/gl2ext.h>
 #include <omp.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -7,7 +8,7 @@
 #include "FileUtils.h"
 #include "TimeUtils.h"
 //#include "ktx.h"
-
+#define ASTCHeaderMinSize 16
 using namespace hiveVG;
 
 CTexture2D *CTexture2D::loadTexture(const std::string &vTexturePath, int &voWidth, int &voHeight, EPictureType::EPictureType &vPictureType)
@@ -32,69 +33,76 @@ CTexture2D *CTexture2D::loadTexture(const std::string &vTexturePath, int &voWidt
     double StartTime = CTimeUtils::getCurrentTime();
     int Channels;
     unsigned char *pImageData = nullptr;
-
     if (vPictureType == EPictureType::PNG || vPictureType == EPictureType::JPG)
     {
         pImageData = stbi_load_from_memory(pBuffer.get(), static_cast<int>(AssetSize), &voWidth, &voHeight, &Channels, 0);
     }
-    else if (vPictureType == EPictureType::KTX2)
+    else if(EPictureType::EPictureType::ASTC)
     {
-//        ktxTexture2 *pTexture = nullptr;
-//        KTX_error_code Result = ktxTexture2_CreateFromMemory(
-//            pBuffer.get(),
-//            AssetSize,
-//            KTX_TEXTURE_CREATE_NO_FLAGS,
-//            &pTexture);
-//
-//        if (Result != KTX_SUCCESS)
-//        {
-//            LOGE(
-//                      "Failed to load KTX2 pTexture from memory. Error code: %{public}d", Result);
-//            return nullptr;
-//        }
-//        if (ktxTexture_NeedsTranscoding(ktxTexture(pTexture)))
-//        {
-//            Result = ktxTexture2_TranscodeBasis(pTexture, KTX_TTF_ETC2_RGBA, 0);
-//            if (Result != KTX_SUCCESS)
-//            {
-//                LOGE(
-//                          "Failed to transcode KTX2 pTexture. Error code: %{public}d", Result);
-//                ktxTexture_Destroy(ktxTexture(pTexture));
-//                return nullptr;
-//            }
-//        }
-//
-//        GLuint TextureHandle = 0;
-//        GLenum Target = 0;
-//        GLenum GlError = GL_NO_ERROR;
-//
-//        KTX_error_code GlUploadResult = ktxTexture_GLUpload(
-//            reinterpret_cast<ktxTexture *>(pTexture),
-//            &TextureHandle,
-//            &Target,
-//            &GlError);
-//
-//        glBindTexture(GL_TEXTURE_2D, TextureHandle);
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//
-//        if (GlUploadResult != KTX_SUCCESS || GlError != GL_NO_ERROR)
-//        {
-//            LOGE("ktxTexture_GLUpload failed. Error: %{public}d, GL Error: 0x%{public}x", GlUploadResult, GlError);
-//            ktxTexture_Destroy(reinterpret_cast<ktxTexture *>(pTexture));
-//            return nullptr;
-//        }
-//
-//        voWidth = pTexture->baseWidth;
-//        voHeight = pTexture->baseHeight;
-//
-//        LOGI("Successfully loaded [%{public}s] KTX pTexture. Width: %{public}d, Height: %{public}d, Target: 0x%{public}x",
-//                 vTexturePath.c_str(), voWidth, voHeight, Target);
-//
-//        ktxTexture_Destroy(reinterpret_cast<ktxTexture *>(pTexture));
-//        return new CTexture2D(TextureHandle);
+        if (AssetSize <= ASTCHeaderMinSize) 
+        {
+            LOGE("Invalid ASTC file size: %{public}zu", AssetSize);
+            return nullptr;
+        }
+        const unsigned char* pHeader = pBuffer.get();
+        if (pHeader[0] != 0x13 || pHeader[1] != 0xAB || pHeader[2] != 0xA1 || pHeader[3] != 0x5C) {
+            LOGE("Invalid ASTC file magic number");
+            return nullptr;
+        }
+        
+        unsigned int blockX = pHeader[4];
+        unsigned int blockY = pHeader[5];
+        unsigned int dimX = pHeader[7] | (pHeader[8] << 8) | (pHeader[9] << 16) ;
+        unsigned int dimY = pHeader[10] | (pHeader[11] << 8) | (pHeader[12] << 16);
+        LOGI("ASTC texture info - Block: %{public}dx%{public}d, Dimensions: %{public}dx%{public}d", blockX, blockY, dimX,dimY);
+        
+        GLuint TextureHandle;
+        glGenTextures(1, &TextureHandle);
+        glBindTexture(GL_TEXTURE_2D, TextureHandle);
+        
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        
+        GLenum InternalFormat = 0;
+        if (blockX == 4 && blockY == 4) {
+            InternalFormat = GL_COMPRESSED_RGBA_ASTC_4x4_KHR;
+        } else if (blockX == 5 && blockY == 4) {
+            InternalFormat = GL_COMPRESSED_RGBA_ASTC_5x4_KHR;
+        } else if (blockX == 5 && blockY == 5) {
+            InternalFormat = GL_COMPRESSED_RGBA_ASTC_5x5_KHR;
+        } else if (blockX == 6 && blockY == 6) {
+            InternalFormat = GL_COMPRESSED_RGBA_ASTC_6x6_KHR;
+        } else if (blockX == 8 && blockY == 8) {
+            InternalFormat = GL_COMPRESSED_RGBA_ASTC_8x8_KHR;
+        } else if (blockX == 10 && blockY == 10) {
+            InternalFormat = GL_COMPRESSED_RGBA_ASTC_10x10_KHR;
+        } else if (blockX == 12 && blockY == 12) {
+            InternalFormat = GL_COMPRESSED_RGBA_ASTC_12x12_KHR;
+        } else {
+            LOGE("Unsupported ASTC block size: %{public}dx%{public}d", blockX, blockY);
+            glDeleteTextures(1, &TextureHandle);
+            return nullptr;
+        }
+        
+        glCompressedTexImage2D(GL_TEXTURE_2D, 0, InternalFormat, 
+                             dimX, dimY, 0, 
+                             AssetSize - 16, 
+                             pBuffer.get() + 16);
+        
+        GLenum error = glGetError();
+        if (error != GL_NO_ERROR) {
+            LOGE("Failed to upload ASTC texture, GL error: 0x%{public}x", error);
+            glDeleteTextures(1, &TextureHandle);
+            return nullptr;
+        }
+        
+        voWidth = dimX;
+        voHeight = dimY;
+        double EndTime = CTimeUtils::getCurrentTime();
+        LOGI("Successfully loaded ASTC texture. Dimensions: %{public}dx%{public}d, Time: %{public}f", dimX, dimY, EndTime - StartTime);
+        return new CTexture2D(TextureHandle);
     }
 
     if (!pImageData)

@@ -54,8 +54,8 @@ bool CImageExample::init()
     }
     
     int Width, Height;
-    EPictureType::EPictureType PicType = EPictureType::PNG;
-    m_pTexture = CTexture2D::loadTexture("watercolor.png", Width, Height, PicType);
+    EPictureType::EPictureType PicType = EPictureType::ASTC;
+    m_pTexture = CTexture2D::loadTexture("output.astc", Width, Height, PicType);
     if (!m_pTexture)
     {
         LOGE("Failed to load texture: watercolor.png");
