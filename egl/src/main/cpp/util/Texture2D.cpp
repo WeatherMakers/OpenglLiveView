@@ -39,62 +39,6 @@ CTexture2D *CTexture2D::loadTexture(const std::string &vTexturePath, int &voWidt
     }
     else if (vPictureType == EPictureType::KTX2)
     {
-//        ktxTexture2 *pTexture = nullptr;
-//        KTX_error_code Result = ktxTexture2_CreateFromMemory(
-//            pBuffer.get(),
-//            AssetSize,
-//            KTX_TEXTURE_CREATE_NO_FLAGS,
-//            &pTexture);
-//
-//        if (Result != KTX_SUCCESS)
-//        {
-//            LOGE(
-//                      "Failed to load KTX2 pTexture from memory. Error code: %{public}d", Result);
-//            return nullptr;
-//        }
-//        if (ktxTexture_NeedsTranscoding(ktxTexture(pTexture)))
-//        {
-//            Result = ktxTexture2_TranscodeBasis(pTexture, KTX_TTF_ETC2_RGBA, 0);
-//            if (Result != KTX_SUCCESS)
-//            {
-//                LOGE(
-//                          "Failed to transcode KTX2 pTexture. Error code: %{public}d", Result);
-//                ktxTexture_Destroy(ktxTexture(pTexture));
-//                return nullptr;
-//            }
-//        }
-//
-//        GLuint TextureHandle = 0;
-//        GLenum Target = 0;
-//        GLenum GlError = GL_NO_ERROR;
-//
-//        KTX_error_code GlUploadResult = ktxTexture_GLUpload(
-//            reinterpret_cast<ktxTexture *>(pTexture),
-//            &TextureHandle,
-//            &Target,
-//            &GlError);
-//
-//        glBindTexture(GL_TEXTURE_2D, TextureHandle);
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//
-//        if (GlUploadResult != KTX_SUCCESS || GlError != GL_NO_ERROR)
-//        {
-//            LOGE("ktxTexture_GLUpload failed. Error: %{public}d, GL Error: 0x%{public}x", GlUploadResult, GlError);
-//            ktxTexture_Destroy(reinterpret_cast<ktxTexture *>(pTexture));
-//            return nullptr;
-//        }
-//
-//        voWidth = pTexture->baseWidth;
-//        voHeight = pTexture->baseHeight;
-//
-//        LOGI("Successfully loaded [%{public}s] KTX pTexture. Width: %{public}d, Height: %{public}d, Target: 0x%{public}x",
-//                 vTexturePath.c_str(), voWidth, voHeight, Target);
-//
-//        ktxTexture_Destroy(reinterpret_cast<ktxTexture *>(pTexture));
-//        return new CTexture2D(TextureHandle);
     }
 
     if (!pImageData)
