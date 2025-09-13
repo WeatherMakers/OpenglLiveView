@@ -7,7 +7,6 @@
 using namespace hiveVG;
 
 EglRender* EglRender::m_pInstance;
-NativeResourceManager* EglRender::m_pNativeResManager = nullptr;
 
 EglRender::~EglRender()
 {
@@ -95,15 +94,6 @@ void EglRender::Export(napi_env env, napi_value exports)
     OH_NativeXComponent_RegisterCallback(nativeXComponent, &Callback);
 }
 
-napi_value EglRender::init(napi_env env, napi_callback_info info)
-{
-    size_t argc = 1;
-    napi_value args[1];
-    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, args, nullptr, nullptr));
-    m_pNativeResManager = OH_ResourceManager_InitNativeResourceManager(env, args[0]);
-    return 0;
-}
-
 napi_value EglRender::setParams(napi_env env, napi_callback_info info)
 {
     size_t argc = 1;
@@ -113,57 +103,5 @@ napi_value EglRender::setParams(napi_env env, napi_callback_info info)
     napi_get_value_int32(env, args[0], &params);
     EglCore *m_pEglCore = EglRender::getInstance()->m_pEglCore;
     m_pEglCore->setParams(params);
-    return nullptr;
-}
-
-napi_value EglRender::setImage(napi_env env, napi_callback_info info)
-{
-    LOGD("EglRender::setImage 开始");
-    size_t argc = 1;
-    napi_value args[1] = {nullptr};
-    napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
-    if (argc < 1)
-    {
-        LOGE("setImage: 参数不足");
-        return nullptr;
-    }
-    // 获取ArrayBuffer数据
-    void *data = nullptr;
-    size_t byteLength = 0;
-    napi_get_arraybuffer_info(env, args[0], &data, &byteLength);
-    LOGD("setImage: 获取到数据 data=%p, byteLength=%zu", data, byteLength);
-    if (data == nullptr || byteLength == 0)
-    {
-        LOGE("setImage: 数据为空");
-        return nullptr;
-    }
-    // 交给EglCore的示例去处理（若不是图像示例，则临时创建）
-    EglCore *core = EglRender::getInstance()->m_pEglCore;
-    if (core == nullptr)
-    {
-        LOGE("setImage: eglCore为空");
-        return nullptr;
-    }
-    if (core->m_pExample == nullptr)
-    {
-        LOGD("setImage: 创建图像示例");
-        core->setParams(IMAGE_TYPE);
-    }
-    // 这里不直接暴露example类型，使用虚方法扩展较合适。
-    // 为简化，动态转换并调用（确保已是CImageExample）。
-    CImageExample *img = dynamic_cast<CImageExample *>(core->m_pExample);
-    if (img)
-    {
-        LOGD("setImage: 调用setImageFromMemory");
-        img->setImageFromMemory(reinterpret_cast<unsigned char *>(data), static_cast<int>(byteLength));
-        LOGD("setImage: 调用draw");
-        img->draw();
-        LOGD("setImage: 调用present");
-        core->present();
-        LOGD("setImage: 完成");
-    } else
-    {
-        LOGE("setImage: 动态转换失败，不是CImageExample");
-    }
     return nullptr;
 }

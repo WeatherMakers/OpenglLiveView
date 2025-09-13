@@ -1,23 +1,27 @@
 #include "AppContext.h"
 #include "log.h"
+#include "native_common.h"
 
 namespace hiveVG
 {
-    std::mutex CAppContext::m_AppMutex;
-    AAssetManager* CAppContext::m_pAssetManager = nullptr;
-    std::string CAppContext::m_StoragePath = "";
+    std::mutex             CAppContext::m_AppMutex;
+    NativeResourceManager* CAppContext::m_pNativeResManager = nullptr;
+    std::string            CAppContext::m_StoragePath = "";
 
-    void CAppContext::setAssetManager(void *vAssetManager)
+    napi_value CAppContext::setResourceManager(napi_env env, napi_callback_info info)
     {
-//        std::lock_guard<std::mutex> Lock(m_AppMutex);
-//        m_pAssetManager = static_cast<AAssetManager*>(vAssetManager);
+        size_t argc = 1;
+        napi_value args[1];
+        NAPI_CALL(env, napi_get_cb_info(env, info, &argc, args, nullptr, nullptr));
+        m_pNativeResManager = OH_ResourceManager_InitNativeResourceManager(env, args[0]);
+        return 0;
     }
 
-    void* CAppContext::getAssetManager()
+    NativeResourceManager* CAppContext::getResourceManager()
     {
-        if (!m_pAssetManager)
+        if (!m_pNativeResManager)
             LOGE("Asset manager does not exist.");
-        return m_pAssetManager;
+        return m_pNativeResManager;
     }
 
     void CAppContext::setStoragePath(const std::string &vPath)

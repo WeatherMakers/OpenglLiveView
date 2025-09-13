@@ -9,11 +9,9 @@ namespace hiveVG
     {
     public:
         static CScreenQuad* getOrCreate();
-
         static void destroy();
 
         ~CScreenQuad();
-
         void bindAndDraw() const;
 
     private:
@@ -21,7 +19,6 @@ namespace hiveVG
 
         static CScreenQuad* m_pQuad;
         static std::mutex m_Mutex;
-
         GLuint m_VAOHandle;
         GLuint m_VertexBufferHandle;
         GLuint m_IndexBufferHandle;

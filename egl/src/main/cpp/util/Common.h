@@ -83,8 +83,8 @@ namespace hiveVG
     const static std::string SingleTexPlayFragPNG  = "shaders/singleTexturePlayerPNG.frag";
     const static std::string SingleTexPlayFragJPG  = "shaders/singleTexturePlayerJPG.frag";
     const static std::string SeqTexPlayFragJPG     = "shaders/sequenceTexturePlayerJPG.frag";
-    const static std::string SeqTexPlayLerp = "shaders/sequenceTextureIerpPlayer.frag";
-    const static std::string SeqTexPlayLerpQuan = "shaders/sequenceTextureIerpQuanPlayer.frag";
+    const static std::string SeqTexPlayLerp        = "shaders/sequenceTextureIerpPlayer.frag";
+    const static std::string SeqTexPlayLerpQuan    = "shaders/sequenceTextureIerpQuanPlayer.frag";
     const static std::string SlideWindowVert       = "shaders/slideWindow.vert";
     const static std::string SlideWindowHFrag      = "shaders/slideWindowH.frag";
     const static std::string SlideWindowHCFrag     = "shaders/slideWindowHCompressed.frag";

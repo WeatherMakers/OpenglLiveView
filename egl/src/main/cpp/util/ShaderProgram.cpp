@@ -1,7 +1,7 @@
 #include "ShaderProgram.h"
 #include "Common.h"
 #include "log.h"
-#include "render/EglRender.h"
+#include "AppContext.h"
 //#include "FileUtils.h"
 
 using namespace hiveVG;
@@ -80,22 +80,19 @@ void CShaderProgram::setUniform(const std::string& vName, const glm::mat4& vMat)
 
 bool CShaderProgram::__dumpShaderCodeFromFile(const std::string& vShaderPath, std::string& voShaderCode)
 {
-    // 检查ResourceManager是否可用
-    if (!EglRender::m_pNativeResManager)
+    if (!CAppContext::getResourceManager())
     {
         LOGE("NativeResourceManager is not initialized");
         return false;
     }
-
-    // 打开rawfile
-    RawFile* rawFile = OH_ResourceManager_OpenRawFile(EglRender::m_pNativeResManager, vShaderPath.c_str());
+    
+    RawFile* rawFile = OH_ResourceManager_OpenRawFile(CAppContext::getResourceManager(), vShaderPath.c_str());
     if (!rawFile)
     {
         LOGE("Failed to open shader file: %s", vShaderPath.c_str());
         return false;
     }
-
-    // 获取文件大小
+    
     long fileSize = OH_ResourceManager_GetRawFileSize(rawFile);
     if (fileSize <= 0)
     {
@@ -103,8 +100,7 @@ bool CShaderProgram::__dumpShaderCodeFromFile(const std::string& vShaderPath, st
         OH_ResourceManager_CloseRawFile(rawFile);
         return false;
     }
-
-    // 分配缓冲区
+    
     std::unique_ptr<char[]> buffer(new char[fileSize + 1]);
     if (!buffer)
     {
@@ -112,8 +108,7 @@ bool CShaderProgram::__dumpShaderCodeFromFile(const std::string& vShaderPath, st
         OH_ResourceManager_CloseRawFile(rawFile);
         return false;
     }
-
-    // 读取文件内容
+    
     long bytesRead = OH_ResourceManager_ReadRawFile(rawFile, buffer.get(), fileSize);
     if (bytesRead != fileSize)
     {
@@ -122,16 +117,11 @@ bool CShaderProgram::__dumpShaderCodeFromFile(const std::string& vShaderPath, st
         OH_ResourceManager_CloseRawFile(rawFile);
         return false;
     }
-
-    // 关闭文件
+    
     OH_ResourceManager_CloseRawFile(rawFile);
-
-    // 确保字符串以null结尾
+    
     buffer[fileSize] = '\0';
-
-    // 将内容复制到输出字符串
     voShaderCode = std::string(buffer.get());
-
     LOGD("Successfully loaded shader file: %{public}s, size: %{public}ld bytes, %{public}s", vShaderPath.c_str(), fileSize, voShaderCode.c_str());
     return true;
 }
