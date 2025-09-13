@@ -50,11 +50,11 @@ CTexture2D *CTexture2D::loadTexture(const std::string &vTexturePath, int &voWidt
             return nullptr;
         }
         
-        unsigned int blockX = pHeader[4];
-        unsigned int blockY = pHeader[5];
-        unsigned int dimX = pHeader[7] | (pHeader[8] << 8) | (pHeader[9] << 16) ;
-        unsigned int dimY = pHeader[10] | (pHeader[11] << 8) | (pHeader[12] << 16);
-        LOGI("ASTC texture info - Block: %{public}dx%{public}d, Dimensions: %{public}dx%{public}d", blockX, blockY, dimX,dimY);
+        unsigned int BlockX = pHeader[4];
+        unsigned int BlockY = pHeader[5];
+        unsigned int DimX = pHeader[7] | (pHeader[8] << 8) | (pHeader[9] << 16) ;
+        unsigned int DimY = pHeader[10] | (pHeader[11] << 8) | (pHeader[12] << 16);
+        LOGI("ASTC texture info - Block: %{public}dx%{public}d, Dimensions: %{public}dx%{public}d", BlockX, BlockY, DimX,DimY);
         
         GLuint TextureHandle;
         glGenTextures(1, &TextureHandle);
@@ -66,42 +66,36 @@ CTexture2D *CTexture2D::loadTexture(const std::string &vTexturePath, int &voWidt
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         
         GLenum InternalFormat = 0;
-        if (blockX == 4 && blockY == 4) {
-            InternalFormat = GL_COMPRESSED_RGBA_ASTC_4x4_KHR;
-        } else if (blockX == 5 && blockY == 4) {
-            InternalFormat = GL_COMPRESSED_RGBA_ASTC_5x4_KHR;
-        } else if (blockX == 5 && blockY == 5) {
-            InternalFormat = GL_COMPRESSED_RGBA_ASTC_5x5_KHR;
-        } else if (blockX == 6 && blockY == 6) {
-            InternalFormat = GL_COMPRESSED_RGBA_ASTC_6x6_KHR;
-        } else if (blockX == 8 && blockY == 8) {
-            InternalFormat = GL_COMPRESSED_RGBA_ASTC_8x8_KHR;
-        } else if (blockX == 10 && blockY == 10) {
-            InternalFormat = GL_COMPRESSED_RGBA_ASTC_10x10_KHR;
-        } else if (blockX == 12 && blockY == 12) {
-            InternalFormat = GL_COMPRESSED_RGBA_ASTC_12x12_KHR;
-        } else {
-            LOGE("Unsupported ASTC block size: %{public}dx%{public}d", blockX, blockY);
+        if (BlockX == 4 && BlockY == 4)        InternalFormat = GL_COMPRESSED_RGBA_ASTC_4x4_KHR;
+        else if (BlockX == 5 && BlockY == 4)   InternalFormat = GL_COMPRESSED_RGBA_ASTC_5x4_KHR;
+        else if (BlockX == 5 && BlockY == 5)   InternalFormat = GL_COMPRESSED_RGBA_ASTC_5x5_KHR;
+        else if (BlockX == 6 && BlockY == 6)   InternalFormat = GL_COMPRESSED_RGBA_ASTC_6x6_KHR;
+        else if (BlockX == 8 && BlockY == 8)   InternalFormat = GL_COMPRESSED_RGBA_ASTC_8x8_KHR;
+        else if (BlockX == 10 && BlockY == 10) InternalFormat = GL_COMPRESSED_RGBA_ASTC_10x10_KHR;
+        else if (BlockX == 12 && BlockY == 12) InternalFormat = GL_COMPRESSED_RGBA_ASTC_12x12_KHR;
+        else 
+        {
+            LOGE("Unsupported ASTC block size: %{public}dx%{public}d", BlockX, BlockY);
             glDeleteTextures(1, &TextureHandle);
             return nullptr;
         }
         
         glCompressedTexImage2D(GL_TEXTURE_2D, 0, InternalFormat, 
-                             dimX, dimY, 0, 
+                             DimX, DimY, 0, 
                              AssetSize - 16, 
                              pBuffer.get() + 16);
         
-        GLenum error = glGetError();
-        if (error != GL_NO_ERROR) {
-            LOGE("Failed to upload ASTC texture, GL error: 0x%{public}x", error);
+        GLenum Error = glGetError();
+        if (Error != GL_NO_ERROR) {
+            LOGE("Failed to upload ASTC texture, GL error: 0x%{public}x", Error);
             glDeleteTextures(1, &TextureHandle);
             return nullptr;
         }
         
-        voWidth = dimX;
-        voHeight = dimY;
+        voWidth = DimX;
+        voHeight = DimY;
         double EndTime = CTimeUtils::getCurrentTime();
-        LOGI("Successfully loaded ASTC texture. Dimensions: %{public}dx%{public}d, Time: %{public}f", dimX, dimY, EndTime - StartTime);
+        LOGI("Successfully loaded ASTC texture. Dimensions: %{public}dx%{public}d, Time: %{public}f", DimX, DimY, EndTime - StartTime);
         return new CTexture2D(TextureHandle);
     }
 
