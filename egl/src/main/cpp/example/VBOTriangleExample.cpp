@@ -1,23 +1,19 @@
-//
-// Created on 2024/9/1.
-//
-// Node APIs are not fully supported. To solve the compilation error of the interface cannot be found,
-// please include "napi/native_api.h".
-
 #include "VBOTriangleExample.h"
 
 using namespace hiveVG;
 
-VBOTriangleExample::VBOTriangleExample() {
-    
+VBOTriangleExample::VBOTriangleExample() {}
+
+VBOTriangleExample::~VBOTriangleExample()
+{
+    LOGD("释放VBO");
+    glDeleteBuffers(VBO_COUNT, vboIds);
 }
 
-VBOTriangleExample::~VBOTriangleExample() {
-    destroy();
-}
-
-bool VBOTriangleExample::init() {
-    if (TriangleExample::init()) {
+bool VBOTriangleExample::init()
+{
+    if (TriangleExample::init())
+    {
         // 生成vbo对象
         glGenBuffers(VBO_COUNT, vboIds);
         // 绑定vbo
@@ -31,7 +27,8 @@ bool VBOTriangleExample::init() {
     return false;
 }
 
-void VBOTriangleExample::draw() {
+void VBOTriangleExample::draw()
+{
     glUseProgram(program);
     // 告知着色器从哪个vbo中读取数据
     glBindBuffer(GL_ARRAY_BUFFER, vboIds[0]);
@@ -58,7 +55,7 @@ void VBOTriangleExample::draw() {
      * 第三个参数是颜色
      */
     // 红色
-    const GLfloat DRAW_COLOR[] = { 255, 0, 0, 1.0f };
+    const GLfloat DRAW_COLOR[] = {255, 0, 0, 1.0f};
     glUniform4fv(colorHandler, 1, DRAW_COLOR);
     // 绘制三角形
     GLsizei count = sizeof(triangleVertices) / sizeof(triangleVertices[0]) / 3;
@@ -73,10 +70,4 @@ void VBOTriangleExample::draw() {
     glDisableVertexAttribArray(positionHandler);
     // 解绑vbo
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-void VBOTriangleExample::destroy() {
-    LOGD("释放VBO");
-    // 生成了多少个vbo就释放多少个vbo
-    glDeleteBuffers(VBO_COUNT, vboIds);
 }

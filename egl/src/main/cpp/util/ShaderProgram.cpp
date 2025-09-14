@@ -122,7 +122,7 @@ bool CShaderProgram::__dumpShaderCodeFromFile(const std::string& vShaderPath, st
     
     buffer[fileSize] = '\0';
     voShaderCode = std::string(buffer.get());
-    LOGD("Successfully loaded shader file: %{public}s, size: %{public}ld bytes, %{public}s", vShaderPath.c_str(), fileSize, voShaderCode.c_str());
+    LOGD("Successfully loaded shader file: %{public}s, size: %{public}ld bytes", vShaderPath.c_str(), fileSize);
     return true;
 }
 
@@ -140,7 +140,7 @@ bool CShaderProgram::__compileShader(GLenum vType, const std::string& vShaderPat
     {
         GLchar InfoLog[1024];
         glGetShaderInfoLog(voShaderHandle, 1024, nullptr, InfoLog);
-        LOGE("Failed to compile shader: %s; Reason: %s", vShaderPath.c_str(), InfoLog);
+        LOGE("Failed to compile shader: %{public}s; Reason: %{public}s", vShaderPath.c_str(), InfoLog);
         glDeleteShader(voShaderHandle);
         voShaderHandle = 0;
         return false;

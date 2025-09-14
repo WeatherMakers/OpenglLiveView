@@ -4,6 +4,7 @@
 #include "example/VAOTriangleExample.h"
 #include "example/ImageExample.h"
 #include "example/VBOTriangleExample.h"
+#include "example/SinglePlayerExample.h"
 #include "log.h"
 
 using namespace hiveVG;
@@ -74,15 +75,7 @@ bool EglCore::initEglContext(void *vWindow, int vWidth, int vHeight)
     return true;
 }
 
-void EglCore::renderScene()
-{
-    __updateRenderArea();
-    
-    auto SwapResult = eglSwapBuffers(m_EglDisplay, m_EglSurface);
-    assert(SwapResult == EGL_TRUE);
-}
-
-void EglCore::setParams(int vParams)
+void EglCore::renderScene(int vParams)
 {
     __updateRenderArea();
     if (m_pExample)
@@ -109,6 +102,11 @@ void EglCore::setParams(int vParams)
         break;
     case IMAGE_FROM_NATIVE_TYPE:
         m_pExample = new CImageExample();
+        break;
+    case SINGLE_PLAYER_TYPE:
+        m_pExample = new CSinglePlayerExample();
+        break;
+    case SEQ_PLAYER_TYPE:
         break;
     default:
         m_pExample = new TriangleExample();

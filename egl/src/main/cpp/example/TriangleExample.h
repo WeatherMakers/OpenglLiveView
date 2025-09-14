@@ -20,7 +20,6 @@ namespace hiveVG
         virtual ~TriangleExample();
         virtual bool init();
         virtual void draw();
-        virtual void destroy();
         
     private:
         CShaderProgram* shaderProgram;

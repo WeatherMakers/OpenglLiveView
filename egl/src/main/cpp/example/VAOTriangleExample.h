@@ -17,6 +17,5 @@ namespace hiveVG
         ~VAOTriangleExample();
         virtual bool init();
         virtual void draw();
-        virtual void destroy();
     };
 }

@@ -94,30 +94,3 @@ void CImageExample::draw()
     m_pTexture->bindTexture();
     m_pScreenQuad->bindAndDraw();
 }
-
-void CImageExample::destroy()
-{
-    if (m_pShaderProgram)
-    {
-        delete m_pShaderProgram;
-        m_pShaderProgram = nullptr;
-    }
-    if (m_pTexture)
-    {
-        delete m_pTexture;
-        m_pTexture = nullptr;
-    }
-    if (m_pScreenQuad)
-    {
-        CScreenQuad::destroy();
-        m_pScreenQuad = nullptr;
-    }
-    m_bInitialized = false;
-}
-
-void CImageExample::reset()
-{
-    LOGD("CImageExample reset: 重新初始化...");
-    destroy();
-    init();
-}

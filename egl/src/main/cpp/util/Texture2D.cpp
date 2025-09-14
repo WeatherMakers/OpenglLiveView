@@ -11,11 +11,10 @@
 #define ASTCHeaderMinSize 16
 using namespace hiveVG;
 
-CTexture2D *CTexture2D::loadTexture(const std::string &vTexturePath)
+CTexture2D *CTexture2D::loadTexture(const std::string &vTexturePath, EPictureType::EPictureType vPicType)
 {
     int Width, Height;
-    EPictureType::EPictureType Type = EPictureType::EPictureType::PNG;
-    auto pTexture = loadTexture(vTexturePath, Width, Height, Type);
+    auto pTexture = loadTexture(vTexturePath, Width, Height, vPicType);
     return pTexture;
 }
 

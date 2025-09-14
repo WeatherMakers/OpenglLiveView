@@ -12,6 +12,8 @@
 #define VAO_TRIANGLE_TYPE EBO_TRIANGLE_TYPE + 1
 #define IMAGE_TYPE VAO_TRIANGLE_TYPE + 1
 #define IMAGE_FROM_NATIVE_TYPE IMAGE_TYPE + 1
+#define SINGLE_PLAYER_TYPE IMAGE_FROM_NATIVE_TYPE + 1
+#define SEQ_PLAYER_TYPE SINGLE_PLAYER_TYPE + 1
 
 namespace hiveVG
 {
@@ -38,7 +40,6 @@ namespace hiveVG
         virtual ~BaseExample();
         virtual bool init() = 0;
         virtual void draw() = 0;
-        virtual void destroy() = 0;
     };
 }
 
