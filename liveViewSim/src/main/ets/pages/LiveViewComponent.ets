@@ -1,5 +1,5 @@
 import {CRiderStatus} from './LiveViewModel';
-import { GLComponent } from 'egl'
+import { WeatherComponent } from 'egl'
 
 @Component
 export struct LiveViewComponent {
@@ -96,20 +96,26 @@ export struct LiveViewComponent {
       //   .position({ y: 10 })
       //   .opacity(0.4)
       // TODO: 天气界面
-
-      Column() {
-        this.buildHeader()
-        Blank().height(40)
-        this.buildProgressBar()
+      WeatherComponent()
+        .width('100%')
+        .height('100%')
+        .opacity(0.4)
+      Stack() {
+        Column() {
+          this.buildHeader()
+          Blank().height(40)
+          this.buildProgressBar()
+        }
+        .width('100%')
+        .height('100%')
       }
-      .width('100%')
-      .height('100%')
+      .padding(16)
     }
     .width(320)
     .height(160)
-    .padding(16)
     .backgroundColor('#FFFFFF')
     .borderRadius(20)
+    .clip(true)
     .shadow({radius: 10, color: '#10000000', offsetX: 0, offsetY: 4})
   }
   @Builder
