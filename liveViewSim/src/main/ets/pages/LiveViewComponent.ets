@@ -1,4 +1,5 @@
 import {CRiderStatus} from './LiveViewModel';
+import { WeatherComponent } from 'egl'
 
 @Component
 export struct LiveViewComponent {
@@ -88,26 +89,33 @@ export struct LiveViewComponent {
 
   build() {
     Stack() {
-      Image($r('app.media.background1200_670'))
+      // Image($r('app.media.background1200_670'))
+      //   .width('100%')
+      //   .height('100%')
+      //   .objectFit(ImageFit.Fill)
+      //   .position({ y: 10 })
+      //   .opacity(0.4)
+      // TODO: 天气界面
+      WeatherComponent()
         .width('100%')
         .height('100%')
-        .objectFit(ImageFit.Fill)
-        .position({ y: 10 })
         .opacity(0.4)
-
-      Column() {
-        this.buildHeader()
-        Blank().height(40)
-        this.buildProgressBar()
+      Stack() {
+        Column() {
+          this.buildHeader()
+          Blank().height(40)
+          this.buildProgressBar()
+        }
+        .width('100%')
+        .height('100%')
       }
-      .width('100%')
-      .height('100%')
+      .padding(16)
     }
     .width(320)
     .height(160)
-    .padding(16)
     .backgroundColor('#FFFFFF')
     .borderRadius(20)
+    .clip(true)
     .shadow({radius: 10, color: '#10000000', offsetX: 0, offsetY: 4})
   }
   @Builder
