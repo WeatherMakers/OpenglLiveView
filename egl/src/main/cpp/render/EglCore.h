@@ -11,8 +11,7 @@ namespace hiveVG
     public:
         ~EglCore();
         bool initEglContext(void *vWindow, int vWidth, int vHeight);
-        void setParams(int vParams);
-        void renderScene();
+        void renderScene(int vParams);
     
     private:
         void __updateRenderArea();

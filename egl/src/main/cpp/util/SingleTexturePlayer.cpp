@@ -38,7 +38,7 @@ CSingleTexturePlayer::~CSingleTexturePlayer()
 
 bool CSingleTexturePlayer::initTextureAndShaderProgram()
 {
-    CTexture2D* pSingleTexture = CTexture2D::loadTexture(m_TexturePath);
+    CTexture2D* pSingleTexture = CTexture2D::loadTexture(m_TexturePath, m_TextureType);
     if (!pSingleTexture)
     {
         LOGE( "Error loading texture from path [%{public}s].", m_TexturePath.c_str());

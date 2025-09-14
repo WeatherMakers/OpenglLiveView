@@ -41,7 +41,6 @@ public:
     ~EBORectangleExample();
     virtual bool init();
     virtual void draw();
-    virtual void destroy();
 };
 
 } // namespace hiveVG

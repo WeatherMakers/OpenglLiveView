@@ -1,24 +1,21 @@
-//
-// Created on 2024/9/1.
-//
-// Node APIs are not fully supported. To solve the compilation error of the interface cannot be found,
-// please include "napi/native_api.h".
-
 #include "VAOTriangleExample.h"
 
 using namespace hiveVG;
 
-VAOTriangleExample::VAOTriangleExample() {
-    
+VAOTriangleExample::VAOTriangleExample() {}
+
+VAOTriangleExample::~VAOTriangleExample()
+{
+    LOGD("释放VBO和VAO");
+    glDeleteBuffers(VBO_COUNT, vboIds);
+    glDeleteBuffers(VAO_COUNT, vaoIds);
 }
 
-VAOTriangleExample::~VAOTriangleExample() {
-    destroy();
-}
-
-bool VAOTriangleExample::init() {
+bool VAOTriangleExample::init()
+{
     program = GLUtil::createProgram(vertexShader, fragmentShader);
-    if (program == PROGRAM_ERROR) {
+    if (program == PROGRAM_ERROR)
+    {
         LOGE("链接程序失败");
         return false;
     }
@@ -26,7 +23,7 @@ bool VAOTriangleExample::init() {
     glGenVertexArrays(VAO_COUNT, vaoIds);
     // 绑定vao对象
     glBindVertexArray(vaoIds[0]);
-    
+
     // 生成vbo对象
     glGenBuffers(VBO_COUNT, vboIds);
     // 绑定vbo
@@ -50,10 +47,10 @@ bool VAOTriangleExample::init() {
      * 第六个参数为0，表示从GPU读取数据
      */
     glVertexAttribPointer(positionHandler, 3, GL_FLOAT, false, 0, 0);
-    
+
     // 获取片元着色器中定义的变量
     colorHandler = glGetUniformLocation(program, "vColor");
-    
+
     // 解绑vbo
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     // 解绑vao对象
@@ -61,11 +58,12 @@ bool VAOTriangleExample::init() {
     return true;
 }
 
-void VAOTriangleExample::draw() {
+void VAOTriangleExample::draw()
+{
     glUseProgram(program);
     // 绑定vao，减少glBindBuffer、glEnableVertexAttribArray、glVertexAttribPointer这些调用操作
     glBindVertexArray(vaoIds[0]);
-    
+
     /*
      * 向片元着色器传递颜色
      * 第一个参数是变量的下标
@@ -73,9 +71,9 @@ void VAOTriangleExample::draw() {
      * 第三个参数是颜色
      */
     // 蓝色
-    const GLfloat DRAW_COLOR[] = { 0, 0, 255, 1.0f };
+    const GLfloat DRAW_COLOR[] = {0, 0, 255, 1.0f};
     glUniform4fv(colorHandler, 1, DRAW_COLOR);
-    
+
     // 绘制三角形
     GLsizei count = sizeof(triangleVertices) / sizeof(triangleVertices[0]) / 3;
     /*
@@ -87,11 +85,4 @@ void VAOTriangleExample::draw() {
     glDrawArrays(GL_TRIANGLES, 0, count);
     // 解绑vao
     glBindVertexArray(0);
-}
-
-void VAOTriangleExample::destroy() {
-    LOGD("释放VBO和VAO");
-    // 生成了多少个vbo就释放多少个vbo
-    glDeleteBuffers(VBO_COUNT, vboIds);
-    glDeleteBuffers(VAO_COUNT, vaoIds);
 }

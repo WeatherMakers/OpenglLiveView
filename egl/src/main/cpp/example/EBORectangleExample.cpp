@@ -10,7 +10,12 @@ using namespace hiveVG;
 
 EBORectangleExample::EBORectangleExample() {}
 
-EBORectangleExample::~EBORectangleExample() { destroy(); }
+EBORectangleExample::~EBORectangleExample()
+{
+    LOGD("释放EBO资源");
+    glDeleteBuffers(EBO_COUNT, eboIds);
+    glDeleteBuffers(VBO_COUNT, vboIds);
+}
 
 bool EBORectangleExample::init()
 {
@@ -83,11 +88,4 @@ void EBORectangleExample::draw()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     // 解绑ebo
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-}
-
-void EBORectangleExample::destroy()
-{
-    LOGD("释放EBO资源");
-    glDeleteBuffers(EBO_COUNT, eboIds);
-    glDeleteBuffers(VBO_COUNT, vboIds);
 }
