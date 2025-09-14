@@ -9,19 +9,20 @@ namespace hiveVG
 {
     class EglRender
     {
-    private:
-        static EglRender* m_pInstance;
-    
     public:
         EglRender();
         ~EglRender();
     
-        void Export(napi_env env, napi_value exports);
+        void   Export(napi_env env, napi_value exports);
         static EglRender* getInstance();
         static napi_value setParams(napi_env env, napi_callback_info info);
+        static napi_value renderScene(napi_env env, napi_callback_info info);
     
         napi_env env;
         EglCore* m_pEglCore;
         OH_NativeXComponent_Callback Callback;
+    
+    private:
+        static EglRender* m_pInstance;
     };
 }

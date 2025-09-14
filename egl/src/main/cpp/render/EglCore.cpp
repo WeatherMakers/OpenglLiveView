@@ -10,107 +10,81 @@ using namespace hiveVG;
 
 EglCore::~EglCore()
 {
-    LOGD("执行EglCore析构函数");
-    release();
+    if (m_EglDisplay != EGL_NO_DISPLAY)
+    {
+        eglMakeCurrent(m_EglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+        if (m_EglContext != EGL_NO_CONTEXT)
+        {
+            eglDestroyContext(m_EglDisplay, m_EglContext);
+            m_EglContext = EGL_NO_CONTEXT;
+        }
+        if (m_EglSurface != EGL_NO_SURFACE)
+        {
+            eglDestroySurface(m_EglDisplay, m_EglSurface);
+            m_EglSurface = EGL_NO_SURFACE;
+        }
+        eglTerminate(m_EglDisplay);
+        m_EglDisplay = EGL_NO_DISPLAY;
+    }
+    __deleteSafely(m_pExample);
 }
 
-void EglCore::release()
+bool EglCore::initEglContext(void *vWindow, int vWidth, int vHeight)
 {
-    LOGD("执行EglCore释放函数");
-
-    if (!eglDestroySurface(EglDisplay, EglSurface))
-    {
-        LOGE("销毁eglSurface失败");
-    }
-    if (!eglDestroyContext(EglDisplay, EglContext))
-    {
-        LOGE("销毁eglContext失败");
-    }
-    if (!eglTerminate(EglDisplay))
-    {
-        LOGE("销毁eglDisplay失败");
-    }
-    if (m_pExample)
-    {
-        glDeleteProgram(m_pExample->program);
-        delete m_pExample;
-        m_pExample = nullptr;
-    }
-}
-
-bool EglCore::initEglContext(void *window, int width, int height)
-{
-    this->Width = width;
-    this->Height = height;
-    // 获取EGLDisplay对象：调用eglGetDisplay函数得到EGLDisplay，并加载OpenGL ES库。
-    EglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-    if (EglDisplay == EGL_NO_DISPLAY)
+    this->m_WindowWidth = vWidth;
+    this->m_WindowHeight = vHeight;
+    m_EglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+    if (m_EglDisplay == EGL_NO_DISPLAY)
     {
         LOGE("eGLDisplay获取失败");
         return false;
     }
-    EGLint major;
-    EGLint minor;
-    // 初始化EGL连接：调用eglInitialize函数初始化，获取库的版本号。
-    if (!eglInitialize(EglDisplay, &major, &minor))
+    EGLint Major;
+    EGLint Minor;
+    if (!eglInitialize(m_EglDisplay, &Major, &Minor))
     {
         LOGE("eGLDisplay初始化失败");
         return false;
     }
-    const EGLint maxConfigSize = 1;
-    EGLint numConfigs;
-    // 确定渲染表面的配置信息：调用eglChooseConfig函数得到EGLConfig。
-    if (!eglChooseConfig(EglDisplay, ATTRIB_LIST, &EglConfig, maxConfigSize, &numConfigs))
+    const EGLint MaxConfigSize = 1;
+    EGLint NumConfigs;
+    if (!eglChooseConfig(m_EglDisplay, ATTRIB_LIST, &m_EglConfig, MaxConfigSize, &NumConfigs))
     {
         LOGE("eglConfig初始化失败");
         return false;
     }
-    EglWindow = reinterpret_cast<EGLNativeWindowType>(window);
-    // 创建渲染表面：通过EGLDisplay和EGLConfig，调用eglCreateWindowSurface函数创建渲染表面，得到EGLSurface。
-    EglSurface = eglCreateWindowSurface(EglDisplay, EglConfig, EglWindow, nullptr);
-    if (nullptr == EglSurface)
+    m_EglWindow = reinterpret_cast<EGLNativeWindowType>(vWindow);
+    m_EglSurface = eglCreateWindowSurface(m_EglDisplay, m_EglConfig, m_EglWindow, nullptr);
+    if (nullptr == m_EglSurface)
     {
         LOGE("创建eGLSurface失败");
         return false;
     }
-    // 创建渲染上下文：通过EGLDisplay和EGLConfig，调用eglCreateContext函数创建渲染上下文，得到EGLContext。
-    EglContext = eglCreateContext(EglDisplay, EglConfig, EGL_NO_CONTEXT, CONTEXT_ATTRIBS);
-    if (nullptr == EglContext)
+    m_EglContext = eglCreateContext(m_EglDisplay, m_EglConfig, EGL_NO_CONTEXT, CONTEXT_ATTRIBS);
+    if (nullptr == m_EglContext)
     {
         LOGE("创建eglContext失败");
         return false;
     }
-    // 绑定上下文：通过eglMakeCurrent函数将EGLSurface、EGLContext、EGLDisplay三者绑定，接下来就可以使用OpenGL进行绘制了。
-    if (!eglMakeCurrent(EglDisplay, EglSurface, EglSurface, EglContext))
+    if (!eglMakeCurrent(m_EglDisplay, m_EglSurface, m_EglSurface, m_EglContext))
     {
         LOGE("eglMakeCurrent失败");
         return false;
     }
-    prepareDraw();
     return true;
 }
 
-void EglCore::prepareDraw()
+void EglCore::renderScene()
 {
-    glViewport(DEFAULT_X_POSITION, DEFAULT_X_POSITION, Width, Height);
-    glClearColor(GL_RED_DEFAULT, GL_GREEN_DEFAULT, GL_BLUE_DEFAULT, GL_ALPHA_DEFAULT);
-    glClear(GL_COLOR_BUFFER_BIT);
-}
-
-bool EglCore::finishDraw()
-{
-    glFlush();
-    glFinish();
-    return eglSwapBuffers(EglDisplay, EglSurface);
-}
-
-void EglCore::present()
-{
-    finishDraw();
+    __updateRenderArea();
+    
+    auto SwapResult = eglSwapBuffers(m_EglDisplay, m_EglSurface);
+    assert(SwapResult == EGL_TRUE);
 }
 
 void EglCore::setParams(int vParams)
 {
+    __updateRenderArea();
     if (m_pExample)
     {
         delete m_pExample;
@@ -143,6 +117,25 @@ void EglCore::setParams(int vParams)
     if (m_pExample->init())
     {
         m_pExample->draw();
-        finishDraw();
+    }
+    auto SwapResult = eglSwapBuffers(m_EglDisplay, m_EglSurface);
+    assert(SwapResult == EGL_TRUE);
+}
+
+void EglCore::__updateRenderArea()
+{
+    EGLint Width, Height;
+    eglQuerySurface(m_EglDisplay, m_EglSurface, EGL_WIDTH, &Width);
+    eglQuerySurface(m_EglDisplay, m_EglSurface, EGL_HEIGHT, &Height);
+
+//    int ViewportY = Height / 5 * 3;
+//    int ViewportHeight = Height / 5;
+
+    if (Width != m_WindowWidth || Height != m_WindowHeight)
+    {
+        m_WindowWidth  = Width;
+        m_WindowHeight = Height;
+//        glViewport(0, ViewportY, Width, ViewportHeight);
+        glViewport(0, 0, m_WindowWidth, m_WindowHeight);
     }
 }

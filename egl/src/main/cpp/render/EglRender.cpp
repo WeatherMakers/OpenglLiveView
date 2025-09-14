@@ -36,7 +36,23 @@ void OnSurfaceCreated(OH_NativeXComponent *component, void *window)
     EglRender::getInstance()->m_pEglCore->initEglContext(window, width, height);
 }
 
-void OnSurfaceChanged(OH_NativeXComponent *component, void *window) { LOGD("OnSurfaceChanged"); }
+void OnSurfaceChanged(OH_NativeXComponent *component, void *window) 
+{ 
+    LOGD("OnSurfaceChanged - 屏幕尺寸变化");
+    if (nullptr == component || nullptr == window)
+    {
+        LOGE("component or window is null in OnSurfaceChanged");
+        return;
+    }
+    uint64_t Width;
+    uint64_t Height;
+    if (OH_NATIVEXCOMPONENT_RESULT_SUCCESS != OH_NativeXComponent_GetXComponentSize(component, window, &Width, &Height))
+    {
+        LOGE("获取新尺寸失败");
+        return;
+    }
+    LOGD("OnSurfaceChanged - 新尺寸: %llu x %llu", Width, Height);
+}
 
 void OnSurfaceDestroyed(OH_NativeXComponent *component, void *window)
 {
@@ -103,5 +119,17 @@ napi_value EglRender::setParams(napi_env env, napi_callback_info info)
     napi_get_value_int32(env, args[0], &params);
     EglCore *m_pEglCore = EglRender::getInstance()->m_pEglCore;
     m_pEglCore->setParams(params);
+    return nullptr;
+}
+
+napi_value EglRender::renderScene(napi_env env, napi_callback_info info)
+{
+    EglRender* pInstance = EglRender::getInstance();
+    if (!pInstance || !pInstance->m_pEglCore)
+    {
+        LOGE("EglRender instance or EglCore is null");
+        return nullptr;
+    }
+    pInstance->m_pEglCore->renderScene();
     return nullptr;
 }

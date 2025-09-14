@@ -59,6 +59,28 @@ export struct GLComponent {
                   hilog.error(0x0000, 'GL', `原生读取PNG失败: ${JSON.stringify(e)}`)
                 }
               }
+            },
+            {
+              value: '原生SinglePlayer显示',
+              action: () => {
+                try {
+                  egl.setResourceManager(this.resMgr);
+                  egl.renderScene()
+                } catch (e) {
+                  hilog.error(0x0000, 'GL', `原生SinglePlayer显示失败: ${JSON.stringify(e)}`)
+                }
+              }
+            },
+            {
+              value: '原生SeqPlayer显示',
+              action: () => {
+                try {
+                  egl.setResourceManager(this.resMgr);
+                  egl.setParams(Params.TYPE_SEQ_PLAYER)
+                } catch (e) {
+                  hilog.error(0x0000, 'GL', `原生SeqPlayer显示失败: ${JSON.stringify(e)}`)
+                }
+              }
             }
           ])
           .height(48)

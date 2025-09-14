@@ -9,6 +9,7 @@ static napi_value Init(napi_env env, napi_value exports)
 {
     napi_property_descriptor desc[] = {
         { "setParams", nullptr, EglRender::getInstance()->setParams, nullptr, nullptr, nullptr, napi_default, nullptr },
+        { "renderScene", nullptr, EglRender::getInstance()->renderScene, nullptr, nullptr, nullptr, napi_default, nullptr },
         { "setResourceManager", nullptr, CAppContext::setResourceManager, nullptr, nullptr, nullptr, napi_default, nullptr },
     };
     napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc);

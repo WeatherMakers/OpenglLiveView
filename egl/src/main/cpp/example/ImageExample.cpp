@@ -1,9 +1,9 @@
 #include "ImageExample.h"
+#include <GLES3/gl3.h>
+#include <string>
 #include "GLUtil.h"
 #include "log.h"
 #include "render/EglRender.h"
-#include <GLES3/gl3.h>
-#include <string>
 
 using namespace hiveVG;
 
@@ -86,33 +86,13 @@ void CImageExample::draw()
     }
 
     glClear(GL_COLOR_BUFFER_BIT);
-
-    if (m_pShaderProgram)
-    {
-        m_pShaderProgram->useProgram();
-    } else
-    {
-        LOGE("Shader program is null, cannot draw");
-        return;
-    }
-
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDisable(GL_DEPTH_TEST);
+    m_pShaderProgram->useProgram();
     glActiveTexture(GL_TEXTURE0);
-    if (m_pTexture)
-    {
-        m_pTexture->bindTexture();
-    } else
-    {
-        LOGE("Texture is null, cannot draw");
-        return;
-    }
-    
-    if (m_pScreenQuad)
-    {
-        m_pScreenQuad->bindAndDraw();
-    } else
-    {
-        LOGE("ScreenQuad is null, cannot draw");
-    }
+    m_pTexture->bindTexture();
+    m_pScreenQuad->bindAndDraw();
 }
 
 void CImageExample::destroy()
