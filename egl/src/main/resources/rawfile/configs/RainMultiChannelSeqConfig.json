@@ -1,0 +1,68 @@
+{
+    "Background":{
+        "frames_path": "textures/Background/BackgroundASTC12x12_Linear/frame_001.ktx2",
+        "frames_type": "ktx2"
+    },
+    "Rain": {
+        "frames_path": "textures/HeavyRain_small_splash_cmASTC12x12",
+        "frames_type" : "ktx2",
+        "frames_count": 128,
+        "one_texture_frames": 4,
+        "fps": 80,
+        "vertex_shader" : "shaders/multiChannelRianSeq.vert",
+        "fragment_shader" : "shaders/multiChannelRianSeq8bitRainWithBackground.frag"
+    },
+    "Cloud": {
+        "frames_path": "textures/CloudSmall_newE_ASTC12x12",
+        "frames_type" : "ktx2",
+        "frames_count": 34,
+        "one_texture_frames": 4,
+        "fps": 7.3,
+        "vertex_shader" : "shaders/multiChannelRianSeq.vert",
+        "fragment_shader" : "shaders/multiChannelRianSeqLerp8bitFilteringLightCloud.frag"
+    },
+    "Lighting": {
+        "frames_path": "textures/LightingCloud_newE_ASTC12x12",
+        "frames_type" : "ktx2",
+        "frames_count": 91,
+        "one_texture_frames": 4,
+        "fps": 20,
+        "vertex_shader" : "shaders/multiChannelRianSeq.vert",
+        "fragment_shader" : "shaders/multiChannelRianSeqLerp8bitFilteringLightCloud.frag"
+    },
+    "LightningWithMask": {
+        "frames_path": "textures/lightningKTX/lightningAndMask3",
+        "frames_type" : "ktx2",
+        "frames_count": 16,
+        "one_texture_frames": 4,
+        "play_mode": "partial",
+        "fps": 30,
+        "lightning_front" : false,
+        "loop": true,
+        "scale": 0.5,
+        "position": {
+            "x": 0.0,
+            "y": 1.0
+        },
+        "vertex_shader" : "shaders/lightning.vert",
+        "fragment_shader" : "shaders/lightning.frag"
+    },
+    "SmallRaindrop": {
+        "frames_path": "textures/SmallRaindrop_ASTC12x12",
+        "frames_type" : "ktx2",
+        "frames_count": 24,
+        "one_texture_frames": 4,
+        "fps": 30,
+        "vertex_shader" : "shaders/multiChannelRianSeq.vert",
+        "fragment_shader" : "shaders/multiChannelRianSeq8bitRaindrop.frag"
+    },
+    "BigRaindrop": {
+        "frames_path": "textures/BigRaindrop_ASTC12x12",
+        "frames_type" : "ktx2",
+        "frames_count": 31,
+        "one_texture_frames": 4,
+        "fps": 10,
+        "vertex_shader" : "shaders/multiChannelRianSeq.vert",
+        "fragment_shader" : "shaders/multiChannelRianSeq8bitRaindrop.frag"
+    }
+}

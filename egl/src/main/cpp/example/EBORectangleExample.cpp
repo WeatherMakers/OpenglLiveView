@@ -6,17 +6,17 @@
 
 #include "EBORectangleExample.h"
 
-EBORectangleExample::EBORectangleExample() {
-    
-}
+using namespace hiveVG;
 
-EBORectangleExample::~EBORectangleExample() {
-    destroy();
-}
+EBORectangleExample::EBORectangleExample() {}
 
-bool EBORectangleExample::init() {
+EBORectangleExample::~EBORectangleExample() { destroy(); }
+
+bool EBORectangleExample::init()
+{
     program = GLUtil::createProgram(vertexShader, fragmentShader);
-    if (program == PROGRAM_ERROR) {
+    if (program == PROGRAM_ERROR)
+    {
         LOGE("链接程序失败");
         return false;
     }
@@ -27,7 +27,7 @@ bool EBORectangleExample::init() {
     glBufferData(GL_ARRAY_BUFFER, sizeof(rectangleVertices), rectangleVertices, GL_STATIC_DRAW);
     // 解绑vbo
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    
+
     glGenBuffers(EBO_COUNT, eboIds);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboIds[0]);
     // 将索引数据复制到EBO对象，也就是将数据从CPU拷贝到GPU
@@ -37,7 +37,8 @@ bool EBORectangleExample::init() {
     return true;
 }
 
-void EBORectangleExample::draw() {
+void EBORectangleExample::draw()
+{
     glUseProgram(program);
     // 告知着色器从哪个vbo中读取数据
     glBindBuffer(GL_ARRAY_BUFFER, vboIds[0]);
@@ -66,7 +67,7 @@ void EBORectangleExample::draw() {
      * 第三个参数是颜色
      */
     // 绿色
-    const GLfloat DRAW_COLOR[] = { 0, 255, 0, 1.0f };
+    const GLfloat DRAW_COLOR[] = {0, 255, 0, 1.0f};
     glUniform4fv(colorHandler, 1, DRAW_COLOR);
     // 绘制三角形
     GLsizei count = sizeof(indices) / sizeof(indices[0]);
@@ -84,7 +85,8 @@ void EBORectangleExample::draw() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void EBORectangleExample::destroy() {
+void EBORectangleExample::destroy()
+{
     LOGD("释放EBO资源");
     glDeleteBuffers(EBO_COUNT, eboIds);
     glDeleteBuffers(VBO_COUNT, vboIds);

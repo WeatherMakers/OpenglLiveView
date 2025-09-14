@@ -10,21 +10,27 @@
 #include "example/TriangleExample.h"
 #define VBO_COUNT 1
 
+namespace hiveVG {
+
 /**
  * 使用VBO绘制三角形
  */
-class VBOTriangleExample: public TriangleExample {
+class VBOTriangleExample : public TriangleExample
+{
 
 private:
-    GLuint vboIds[1] = {} ;
+    GLuint vboIds[1] = {};
+
 public:
     VBOTriangleExample();
     virtual ~VBOTriangleExample();
     virtual bool init();
-    
+
     virtual void draw();
-    
+
     virtual void destroy();
 };
 
-#endif //OPENGL_VBOTRIANGLEEXAMPLE_H
+} // namespace hiveVG
+
+#endif // OPENGL_VBOTRIANGLEEXAMPLE_H

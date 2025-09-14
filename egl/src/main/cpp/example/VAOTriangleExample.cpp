@@ -5,6 +5,9 @@
 // please include "napi/native_api.h".
 
 #include "VAOTriangleExample.h"
+
+using namespace hiveVG;
+
 VAOTriangleExample::VAOTriangleExample() {
     
 }

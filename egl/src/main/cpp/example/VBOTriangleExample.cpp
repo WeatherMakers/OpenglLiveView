@@ -5,6 +5,9 @@
 // please include "napi/native_api.h".
 
 #include "VBOTriangleExample.h"
+
+using namespace hiveVG;
+
 VBOTriangleExample::VBOTriangleExample() {
     
 }

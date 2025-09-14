@@ -1,20 +1,7 @@
-//
-// Created on 2024/8/31.
-//
-// Node APIs are not fully supported. To solve the compilation error of the interface cannot be found,
-// please include "napi/native_api.h".
-
 #include "GLUtil.h"
 #include "log.h"
 #include "native_common.h"
 
-/**
- * 创建程序
- * 
- * @param vertexShader 顶点着色器源码
- * @param fragmentShader 片元着色器源码
- * @return
- */
 GLuint GLUtil::createProgram(const char* vertexShader, const char* fragmentShader) {
     GLuint vertex = loadShader(GL_VERTEX_SHADER, vertexShader);
     if (vertex == PROGRAM_ERROR) {
@@ -52,11 +39,8 @@ GLuint GLUtil::createProgram(const char* vertexShader, const char* fragmentShade
 }
 
 GLuint GLUtil::loadShader(GLenum shaderType, const char *shaderSrc) {
-    // 创建着色器
     GLuint shader = glCreateShader(shaderType);
-    // 绑定做得起源码
     glShaderSource(shader, 1, &shaderSrc, nullptr);
-    // 编译着色器
     glCompileShader(shader);
     GLint compiled;
     glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
