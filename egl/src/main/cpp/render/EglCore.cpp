@@ -107,6 +107,7 @@ void EglCore::renderScene(int vParams)
         m_pExample = new CSinglePlayerExample();
         break;
     case SEQ_PLAYER_TYPE:
+        m_pExample = new TriangleExample();
         break;
     default:
         m_pExample = new TriangleExample();

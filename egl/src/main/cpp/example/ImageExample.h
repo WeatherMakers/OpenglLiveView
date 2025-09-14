@@ -16,9 +16,8 @@ namespace hiveVG
         virtual void draw();
         
     private:
-        CShaderProgram* m_pShaderProgram;
-        CTexture2D*     m_pTexture;
-        CScreenQuad*    m_pScreenQuad;
-        bool            m_bInitialized; // 初始化状态标志
+        CShaderProgram* m_pShaderProgram = nullptr;
+        CTexture2D*     m_pTexture       = nullptr;
+        CScreenQuad*    m_pScreenQuad    = nullptr;
     };
 }
