@@ -1,4 +1,5 @@
 import {CRiderStatus} from './LiveViewModel';
+import { GLComponent } from 'egl'
 
 @Component
 export struct LiveViewComponent {
@@ -88,12 +89,13 @@ export struct LiveViewComponent {
 
   build() {
     Stack() {
-      Image($r('app.media.background1200_670'))
-        .width('100%')
-        .height('100%')
-        .objectFit(ImageFit.Fill)
-        .position({ y: 10 })
-        .opacity(0.4)
+      // Image($r('app.media.background1200_670'))
+      //   .width('100%')
+      //   .height('100%')
+      //   .objectFit(ImageFit.Fill)
+      //   .position({ y: 10 })
+      //   .opacity(0.4)
+      // TODO: 天气界面
 
       Column() {
         this.buildHeader()
