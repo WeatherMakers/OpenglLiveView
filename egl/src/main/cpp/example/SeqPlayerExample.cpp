@@ -30,6 +30,12 @@ bool CSeqPlayerExample::init()
         LOGE("Failed to get CScreenQuad instance");
         return false;
     }
+    m_pBackGroundPlayer = new CSingleTexturePlayer(m_BackGroundRootPath,m_PictureType);
+    if(!m_pBackGroundPlayer->initTextureAndShaderProgram())
+    {
+        LOGE("Failed to initialize single texture and shader program");
+        return false;
+    }
     
     m_pTexturePlayer = new CSequenceFramePlayer(m_TextureRootPath, m_TextureCount, m_OneTextureFrames, m_FrameSeconds, m_PictureType);
     if (!m_pTexturePlayer->initTextureAndShaderProgram())
@@ -37,12 +43,7 @@ bool CSeqPlayerExample::init()
         LOGE("Failed to initialize sequence texture and shader program");
         return false;
     }
-    m_pBackGroundPlayer = new CSingleTexturePlayer(m_BackGroundRootPath,m_PictureType);
-    if(!m_pBackGroundPlayer->initTextureAndShaderProgram())
-    {
-        LOGE("Failed to initialize single texture and shader program");
-        return false;
-    }
+    
     LOGI("SeqPlayerExample initialized successfully");
     return true;
 }
