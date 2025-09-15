@@ -40,6 +40,13 @@ CSequenceFramePlayer::~CSequenceFramePlayer()
 
 bool CSequenceFramePlayer::initTextureAndShaderProgram()
 {
+      if (m_TextureType == EPictureType::PNG)
+        m_pSequenceShaderProgram = CShaderProgram::createProgram(SeqTexPlayVertPNG, SeqTexPlayFragPNG);
+    else if (m_TextureType == EPictureType::JPG)
+        m_pSequenceShaderProgram = CShaderProgram::createProgram(SeqTexPlayVertPNG, SeqTexPlayFragJPG);
+    else if (m_TextureType == EPictureType::ASTC)
+        m_pSequenceShaderProgram = CShaderProgram::createProgram(SeqTexPlayVertKTX, SeqTexPlayFragKTX);
+    
     if (!m_TextureRootPath.empty() && m_TextureRootPath.back() != '/')
         m_TextureRootPath += '/';
     std::string PictureSuffix;
@@ -60,13 +67,6 @@ bool CSequenceFramePlayer::initTextureAndShaderProgram()
     }
     m_SeqSingleTexWidth  = m_SequenceWidth / m_SequenceCols;
     m_SeqSingleTexHeight = m_SequenceHeight / m_SequenceRows;
-
-    if (m_TextureType == EPictureType::PNG)
-        m_pSequenceShaderProgram = CShaderProgram::createProgram(SeqTexPlayVertPNG, SeqTexPlayFragPNG);
-    else if (m_TextureType == EPictureType::JPG)
-        m_pSequenceShaderProgram = CShaderProgram::createProgram(SeqTexPlayVertPNG, SeqTexPlayFragJPG);
-    else if (m_TextureType == EPictureType::ASTC)
-        m_pSequenceShaderProgram = CShaderProgram::createProgram(SeqTexPlayVertKTX, SeqTexPlayFragKTX);
 
     if (!m_pSequenceShaderProgram)
     {

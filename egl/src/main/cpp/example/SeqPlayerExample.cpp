@@ -32,13 +32,17 @@ bool CSeqPlayerExample::init()
     }
     
     m_pTexturePlayer = new CSequenceFramePlayer(m_TextureRootPath, m_TextureCount, m_OneTextureFrames, m_FrameSeconds, m_PictureType);
-    
     if (!m_pTexturePlayer->initTextureAndShaderProgram())
     {
         LOGE("Failed to initialize sequence texture and shader program");
         return false;
     }
-    
+    m_pBackGroundPlayer = new CSingleTexturePlayer(m_BackGroundRootPath,m_PictureType);
+    if(!m_pBackGroundPlayer->initTextureAndShaderProgram())
+    {
+        LOGE("Failed to initialize single texture and shader program");
+        return false;
+    }
     LOGI("SeqPlayerExample initialized successfully");
     return true;
 }
@@ -49,6 +53,9 @@ void CSeqPlayerExample::draw()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
+    m_pBackGroundPlayer->updateFrame();
+    m_pScreenQuad->bindAndDraw();
     m_pTexturePlayer->updateSeqKTXFrame(0.016f);
     m_pTexturePlayer->drawSeqKTX(m_pScreenQuad);
+  
 }
