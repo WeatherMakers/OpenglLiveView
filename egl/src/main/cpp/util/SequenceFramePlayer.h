@@ -16,7 +16,6 @@ namespace hiveVG
     {
     public:
         CSequenceFramePlayer(const std::string &vTextureRootPath, int vSequenceRows, int vSequenceCols, int vTextureCount, EPictureType::EPictureType vPictureType = EPictureType::PNG);
-        CSequenceFramePlayer(const std::string &vTextureRootPath, int vSequenceRows, int vSequenceCols, int vTextureCount, bool vUseCompressedPNG = false);
         CSequenceFramePlayer(const std::string &vTextureRootPath, int vTextureCount, int vOneTextureFrames, float vFrameSeconds, EPictureType::EPictureType vPictureType);
         [[nodiscard]] CSequenceFramePlayer *clone() const { return new CSequenceFramePlayer(*this); }
         ~CSequenceFramePlayer();

@@ -45,7 +45,6 @@ bool CSequenceFramePlayer::initTextureAndShaderProgram()
     std::string PictureSuffix;
     if (m_TextureType == EPictureType::PNG)        PictureSuffix = ".png";
     else if (m_TextureType == EPictureType::JPG)   PictureSuffix = ".jpg";
-    else if (m_TextureType == EPictureType::WEBP)  PictureSuffix = ".webp";
     else if (m_TextureType == EPictureType::ASTC)  PictureSuffix = ".astc";
 
     for (int i = 0; i < m_TextureCount; i++)
@@ -58,7 +57,6 @@ bool CSequenceFramePlayer::initTextureAndShaderProgram()
             return false;
         }
         m_SeqTextures.push_back(pSequenceTexture);
-
     }
     m_SeqSingleTexWidth  = m_SequenceWidth / m_SequenceCols;
     m_SeqSingleTexHeight = m_SequenceHeight / m_SequenceRows;
@@ -88,7 +86,6 @@ bool CSequenceFramePlayer::initTextureAndShaderProgram(const std::string& vVerte
     std::string PictureSuffix;
     if (m_TextureType == EPictureType::PNG)       PictureSuffix = ".png";
     else if (m_TextureType == EPictureType::JPG)  PictureSuffix = ".jpg";
-    else if (m_TextureType == EPictureType::WEBP) PictureSuffix = ".webp";
     else if (m_TextureType == EPictureType::ASTC) PictureSuffix = ".astc";
 
     for (int i = 0; i < m_TextureCount; i++)

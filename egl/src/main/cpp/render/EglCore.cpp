@@ -5,6 +5,7 @@
 #include "example/ImageExample.h"
 #include "example/VBOTriangleExample.h"
 #include "example/SinglePlayerExample.h"
+#include "example/SeqPlayerExample.h"
 #include "log.h"
 
 using namespace hiveVG;
@@ -107,7 +108,7 @@ void EglCore::setRenderType(int vParams)
         m_pExample = new CSinglePlayerExample();
         break;
     case SEQ_PLAYER_TYPE:
-        m_pExample = new TriangleExample();
+        m_pExample = new CSeqPlayerExample();
         break;
     default:
         m_pExample = new TriangleExample();
