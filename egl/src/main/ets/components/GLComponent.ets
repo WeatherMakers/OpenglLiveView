@@ -28,25 +28,25 @@ export struct GLComponent {
             {
               value: '绘制三角形',
               action: () => {
-                egl.renderScene(Params.TYPE_TRIANGLE)
+                egl.setRenderType(Params.TYPE_TRIANGLE)
               }
             },
             {
               value: '使用VBO绘制三角形',
               action: () => {
-                egl.renderScene(Params.TYPE_VBO_TRIANGLE)
+                egl.setRenderType(Params.TYPE_VBO_TRIANGLE)
               }
             },
             {
               value: '使用EBO绘制矩形',
               action: () => {
-                egl.renderScene(Params.TYPE_EBO_TRIANGLE)
+                egl.setRenderType(Params.TYPE_EBO_TRIANGLE)
               }
             },
             {
               value: '使用VAO绘制三角形',
               action: () => {
-                egl.renderScene(Params.TYPE_VAO_TRIANGLE)
+                egl.setRenderType(Params.TYPE_VAO_TRIANGLE)
               }
             },
             {
@@ -54,7 +54,7 @@ export struct GLComponent {
               action: () => {
                 try {
                   egl.setResourceManager(this.resMgr);
-                  egl.renderScene(Params.TYPE_IMAGE_FROM_NATIVE)
+                  egl.setRenderType(Params.TYPE_IMAGE_FROM_NATIVE)
                 } catch (e) {
                   hilog.error(0x0000, 'GL', `原生读取PNG失败: ${JSON.stringify(e)}`)
                 }
@@ -65,7 +65,7 @@ export struct GLComponent {
               action: () => {
                 try {
                   egl.setResourceManager(this.resMgr);
-                  egl.renderScene(Params.TYPE_SINGLE_PLAYER)
+                  egl.setRenderType(Params.TYPE_SINGLE_PLAYER)
                 } catch (e) {
                   hilog.error(0x0000, 'GL', `原生SinglePlayer显示失败: ${JSON.stringify(e)}`)
                 }
@@ -76,7 +76,7 @@ export struct GLComponent {
               action: () => {
                 try {
                   egl.setResourceManager(this.resMgr);
-                  egl.renderScene(Params.TYPE_SEQ_PLAYER)
+                  egl.setRenderType(Params.TYPE_SEQ_PLAYER)
                 } catch (e) {
                   hilog.error(0x0000, 'GL', `原生SeqPlayer显示失败: ${JSON.stringify(e)}`)
                 }

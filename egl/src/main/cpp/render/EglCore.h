@@ -1,6 +1,6 @@
 #pragma once
 
-#include "OpenGLCommon.h"
+#include    "OpenGLCommon.h"
 #include "example/BaseExample.h"
 #include "SingleTexturePlayer.h"
 
@@ -11,7 +11,8 @@ namespace hiveVG
     public:
         ~EglCore();
         bool initEglContext(void *vWindow, int vWidth, int vHeight);
-        void renderScene(int vParams);
+        void setRenderType(int vParams);
+        void renderScene();
     
     private:
         void __updateRenderArea();
@@ -19,6 +20,7 @@ namespace hiveVG
         template<typename T>
         void __deleteSafely(T*& vPointer);
     
+        int m_RenderType;
         int m_WindowWidth;
         int m_WindowHeight;
         EGLNativeWindowType m_EglWindow;

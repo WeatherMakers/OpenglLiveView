@@ -75,15 +75,15 @@ bool EglCore::initEglContext(void *vWindow, int vWidth, int vHeight)
     return true;
 }
 
-void EglCore::renderScene(int vParams)
+void EglCore::setRenderType(int vParams)
 {
-    __updateRenderArea();
+    m_RenderType = vParams;
     if (m_pExample)
     {
         delete m_pExample;
         m_pExample = nullptr;
     }
-    switch (vParams)
+    switch (m_RenderType)
     {
     case TRIANGLE_TYPE:
         m_pExample = new TriangleExample();
@@ -113,7 +113,16 @@ void EglCore::renderScene(int vParams)
         m_pExample = new TriangleExample();
         break;
     }
-    if (m_pExample->init())
+    if (!m_pExample->init())
+    {
+        LOGE("init Example Error!");
+    }
+}
+
+void EglCore::renderScene()
+{
+    __updateRenderArea();
+    if (m_pExample != nullptr)
     {
         m_pExample->draw();
     }

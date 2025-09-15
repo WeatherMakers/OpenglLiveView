@@ -15,13 +15,13 @@ namespace hiveVG
     
         void   Export(napi_env env, napi_value exports);
         static EglRender* getInstance();
-        static napi_value renderScene(napi_env env, napi_callback_info info);
+        static napi_value setRenderType(napi_env env, napi_callback_info info);
     
         napi_env env;
         EglCore* m_pEglCore;
         OH_NativeXComponent_Callback Callback;
     
-    private:
+    private:     
         static EglRender* m_pInstance;
     };
 }

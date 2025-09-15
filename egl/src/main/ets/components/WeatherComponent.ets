@@ -26,7 +26,7 @@ export struct WeatherComponent {
         this.xComponentContext = xComponentContext
         try {
           egl.setResourceManager(this.resMgr);
-          egl.setParams(Params.TYPE_IMAGE_FROM_NATIVE)
+          egl.setRenderType(Params.TYPE_IMAGE_FROM_NATIVE)
         } catch (e) {
           hilog.error(0x0000, 'GL', `原生SeqPlayer显示失败: ${JSON.stringify(e)}`)
         }

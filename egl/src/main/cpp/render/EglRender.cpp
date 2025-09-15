@@ -10,12 +10,16 @@ EglRender* EglRender::m_pInstance;
 
 EglRender::~EglRender()
 {
-    LOGD("执行EglRender析构函数");
     if (m_pEglCore)
     {
         delete m_pEglCore;
         m_pEglCore = nullptr;
     }
+}
+
+static void OnFrame(OH_NativeXComponent* component, uint64_t timestamp, uint64_t targetTimestamp)
+{
+    EglRender::getInstance()->m_pEglCore->renderScene();
 }
 
 void OnSurfaceCreated(OH_NativeXComponent *component, void *window)
@@ -34,6 +38,9 @@ void OnSurfaceCreated(OH_NativeXComponent *component, void *window)
         return;
     }
     EglRender::getInstance()->m_pEglCore->initEglContext(window, width, height);
+    
+    // 注册帧回调，每帧都会调用 OnFrame 函数
+    OH_NativeXComponent_RegisterOnFrameCallback(component, OnFrame);
 }
 
 void OnSurfaceChanged(OH_NativeXComponent *component, void *window) 
@@ -110,7 +117,7 @@ void EglRender::Export(napi_env env, napi_value exports)
     OH_NativeXComponent_RegisterCallback(nativeXComponent, &Callback);
 }
 
-napi_value EglRender::renderScene(napi_env env, napi_callback_info info)
+napi_value EglRender::setRenderType(napi_env env, napi_callback_info info)
 {
     size_t argc = 1;
     napi_value args[1] = {nullptr};
@@ -118,6 +125,6 @@ napi_value EglRender::renderScene(napi_env env, napi_callback_info info)
     int params;
     napi_get_value_int32(env, args[0], &params);
     EglCore *m_pEglCore = EglRender::getInstance()->m_pEglCore;
-    m_pEglCore->renderScene(params);
+    m_pEglCore->setRenderType(params);
     return nullptr;
 }

@@ -1,2 +1,2 @@
 export const setResourceManager: (ctx: any) => void;
-export const renderScene: (params: number) => void;
+export const setRenderType: (params: number) => void;
