@@ -40,27 +40,6 @@ CSequenceFramePlayer::~CSequenceFramePlayer()
 
 bool CSequenceFramePlayer::initTextureAndShaderProgram()
 {
-    if (!m_TextureRootPath.empty() && m_TextureRootPath.back() != '/')
-        m_TextureRootPath += '/';
-    std::string PictureSuffix;
-    if (m_TextureType == EPictureType::PNG)        PictureSuffix = ".png";
-    else if (m_TextureType == EPictureType::JPG)   PictureSuffix = ".jpg";
-    else if (m_TextureType == EPictureType::ASTC)  PictureSuffix = ".astc";
-
-    for (int i = 0; i < m_TextureCount; i++)
-    {
-        std::string TexturePath = m_TextureRootPath + "frame_" + std::string(3 - std::to_string(i + 1).length(), '0') + std::to_string(i + 1) + PictureSuffix;
-        CTexture2D* pSequenceTexture = CTexture2D::loadTexture(TexturePath, m_SequenceWidth, m_SequenceHeight, m_TextureType);
-        if (!pSequenceTexture)
-        {
-            LOGE("Error loading texture from path [%{public}s].", TexturePath.c_str());
-            return false;
-        }
-        m_SeqTextures.push_back(pSequenceTexture);
-    }
-    m_SeqSingleTexWidth  = m_SequenceWidth / m_SequenceCols;
-    m_SeqSingleTexHeight = m_SequenceHeight / m_SequenceRows;
-
     if (m_TextureType == EPictureType::PNG)
         m_pSequenceShaderProgram = CShaderProgram::createProgram(SeqTexPlayVertPNG, SeqTexPlayFragPNG);
     else if (m_TextureType == EPictureType::JPG)
@@ -74,6 +53,29 @@ bool CSequenceFramePlayer::initTextureAndShaderProgram()
         return false;
     }
     assert(m_pSequenceShaderProgram != nullptr);
+    
+    if (!m_TextureRootPath.empty() && m_TextureRootPath.back() != '/')
+        m_TextureRootPath += '/';
+    std::string PictureSuffix;
+    if (m_TextureType == EPictureType::PNG)        PictureSuffix = ".png";
+    else if (m_TextureType == EPictureType::JPG)   PictureSuffix = ".jpg";
+    else if (m_TextureType == EPictureType::ASTC)  PictureSuffix = ".astc";
+
+    for (int i = 0; i < m_TextureCount; i++)
+    {
+        std::string TexturePath = m_TextureRootPath + "frame_" + std::string(3 - std::to_string(i + 1).length(), '0') + std::to_string(i + 1) + PictureSuffix;
+        LOGE("loading texture [%{public}d].", i);
+        CTexture2D* pSequenceTexture = CTexture2D::loadTexture(TexturePath, m_SequenceWidth, m_SequenceHeight, m_TextureType);
+        if (!pSequenceTexture)
+        {
+            LOGE("Error loading texture from path [%{public}s].", TexturePath.c_str());
+            return false;
+        }
+        m_SeqTextures.push_back(pSequenceTexture);
+    }
+    m_SeqSingleTexWidth  = m_SequenceWidth / m_SequenceCols;
+    m_SeqSingleTexHeight = m_SequenceHeight / m_SequenceRows;
+    
     LOGI("%{public}s frames load Succeed. Program Created Succeed.", m_TextureRootPath.c_str());
     return true;
 }

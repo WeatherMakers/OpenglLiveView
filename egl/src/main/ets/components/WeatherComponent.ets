@@ -21,15 +21,17 @@ export struct WeatherComponent {
   }
 
   build() {
-    XComponent(this.xComponentAttrs)
-      .onLoad((xComponentContext) => {
-        this.xComponentContext = xComponentContext
-        try {
-          egl.setResourceManager(this.resMgr);
-          egl.setRenderType(Params.TYPE_IMAGE_FROM_NATIVE)
-        } catch (e) {
-          hilog.error(0x0000, 'GL', `原生SeqPlayer显示失败: ${JSON.stringify(e)}`)
-        }
-      })
+    Stack(){
+      XComponent(this.xComponentAttrs)
+        .onLoad((xComponentContext) => {
+          this.xComponentContext = xComponentContext
+          try {
+            egl.setResourceManager(this.resMgr);
+            egl.setRenderType(Params.TYPE_SEQ_PLAYER)
+          } catch (e) {
+            hilog.error(0x0000, 'GL', `原生SeqPlayer显示失败: ${JSON.stringify(e)}`)
+          }
+        })
+    }
   }
 }
