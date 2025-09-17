@@ -1,12 +1,10 @@
 #include "EglRender.h"
-#include "example/BaseExample.h"
-#include "example/ImageExample.h"
-#include "example/TriangleExample.h"
+#include "ScreenQuad.h"
 #include "log.h"
 
 using namespace hiveVG;
 
-EglRender* EglRender::m_pInstance;
+EglRender *EglRender::m_pInstance = nullptr;
 
 EglRender::~EglRender()
 {
@@ -17,7 +15,7 @@ EglRender::~EglRender()
     }
 }
 
-static void OnFrame(OH_NativeXComponent* component, uint64_t timestamp, uint64_t targetTimestamp)
+static void OnFrame(OH_NativeXComponent *component, uint64_t timestamp, uint64_t targetTimestamp)
 {
     EglRender::getInstance()->m_pEglCore->renderScene();
 }
@@ -38,13 +36,13 @@ void OnSurfaceCreated(OH_NativeXComponent *component, void *window)
         return;
     }
     EglRender::getInstance()->m_pEglCore->initEglContext(window, width, height);
-    
+    CScreenQuad::getOrCreate();
     // 注册帧回调，每帧都会调用 OnFrame 函数
     OH_NativeXComponent_RegisterOnFrameCallback(component, OnFrame);
 }
 
-void OnSurfaceChanged(OH_NativeXComponent *component, void *window) 
-{ 
+void OnSurfaceChanged(OH_NativeXComponent *component, void *window)
+{
     LOGD("OnSurfaceChanged - 屏幕尺寸变化");
     if (nullptr == component || nullptr == window)
     {
@@ -70,6 +68,7 @@ void OnSurfaceDestroyed(OH_NativeXComponent *component, void *window)
         delete m_pInstance;
         m_pInstance = nullptr;
     }
+    CScreenQuad::destroy();
 }
 
 EglRender::EglRender()
@@ -91,19 +90,24 @@ EglRender *EglRender::getInstance()
 
 void EglRender::Export(napi_env env, napi_value exports)
 {
-    // 缓存env以便后续在C++层读取rawfile
-    this->env = env;
+    LOGI("执行 Export.");
     napi_value exportInstance = nullptr;
     if (napi_ok != napi_get_named_property(env, exports, OH_NATIVE_XCOMPONENT_OBJ, &exportInstance))
     {
         LOGE("解析参数出错");
         return;
+    } else
+    {
+        LOGI("解析参数成功");
     }
     OH_NativeXComponent *nativeXComponent = nullptr;
     if (napi_ok != napi_unwrap(env, exportInstance, reinterpret_cast<void **>(&nativeXComponent)))
     {
         LOGE("获取OH_NativeXComponent对象出错");
         return;
+    } else
+    {
+        LOGI("获取OH_NativeXComponent对象成功");
     }
     // 获取id
     char idStr[OH_XCOMPONENT_ID_LEN_MAX + 1] = {'\0'};
@@ -112,6 +116,10 @@ void EglRender::Export(napi_env env, napi_value exports)
     {
         LOGE("获取XComponentId出错");
         return;
+    } 
+    else
+    {
+        LOGI("获取XComponentId成功");
     }
     // 注册回调
     OH_NativeXComponent_RegisterCallback(nativeXComponent, &Callback);

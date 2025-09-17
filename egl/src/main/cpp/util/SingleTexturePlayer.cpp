@@ -92,8 +92,8 @@ void CSingleTexturePlayer::updateFrame()
 {
     assert(m_pSingleShaderProgram != nullptr);
     m_pSingleShaderProgram->useProgram();
-    m_pSingleShaderProgram->setUniform("quadTexture", 0);
     glActiveTexture(GL_TEXTURE0);
+    m_pSingleShaderProgram->setUniform("quadTexture", 0);
     m_SeqTextures[0]->bindTexture();
 }
 

@@ -64,7 +64,6 @@ bool CSequenceFramePlayer::initTextureAndShaderProgram()
     for (int i = 0; i < m_TextureCount; i++)
     {
         std::string TexturePath = m_TextureRootPath + "frame_" + std::string(3 - std::to_string(i + 1).length(), '0') + std::to_string(i + 1) + PictureSuffix;
-        LOGE("loading texture [%{public}d].", i);
         CTexture2D* pSequenceTexture = CTexture2D::loadTexture(TexturePath, m_SequenceWidth, m_SequenceHeight, m_TextureType);
         if (!pSequenceTexture)
         {

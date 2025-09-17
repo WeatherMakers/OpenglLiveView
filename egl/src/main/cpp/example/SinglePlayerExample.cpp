@@ -1,5 +1,4 @@
 #include "SinglePlayerExample.h"
-#include "GLUtil.h"
 #include "log.h"
 #include "render/EglRender.h"
 #include <GLES3/gl3.h>
@@ -15,11 +14,6 @@ CSinglePlayerExample::~CSinglePlayerExample()
     {
         delete m_pTexturePlayer;
         m_pTexturePlayer = nullptr;
-    }
-    if (m_pScreenQuad != nullptr)
-    {
-        CScreenQuad::destroy();
-        m_pScreenQuad = nullptr;
     }
 }
 
@@ -38,15 +32,18 @@ bool CSinglePlayerExample::init()
         LOGE("Failed to initialize texture and shader program");
         return false;
     }
+    LOGI("Init CSinglePlayer done!");
     return true;
 }
 
 void CSinglePlayerExample::draw()
 {
+    glClearColor(0.345f,0.345f,0.345f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    
+    glDisable(GL_DEPTH_TEST);
+//    m_pTexturePlayer->draw(m_pScreenQuad);
     m_pTexturePlayer->updateFrame();
     m_pScreenQuad->bindAndDraw();
 }

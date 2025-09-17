@@ -1,12 +1,14 @@
 #include "render/EglRender.h"
 #include "napi/native_api.h"
 #include "AppContext.h"
+#include "log.h"
 
 using namespace hiveVG;
 
 EXTERN_C_START
 static napi_value Init(napi_env env, napi_value exports)
 {
+    LOGI("执行 Init ");
     napi_property_descriptor desc[] = {
         { "setRenderType", nullptr, EglRender::getInstance()->setRenderType, nullptr, nullptr, nullptr, napi_default, nullptr },
         { "setResourceManager", nullptr, CAppContext::setResourceManager, nullptr, nullptr, nullptr, napi_default, nullptr},

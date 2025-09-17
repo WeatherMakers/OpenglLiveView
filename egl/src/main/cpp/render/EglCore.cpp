@@ -1,11 +1,7 @@
 #include "EglCore.h"
-#include "example/EBORectangleExample.h"
-#include "example/TriangleExample.h"
-#include "example/VAOTriangleExample.h"
 #include "example/ImageExample.h"
-#include "example/VBOTriangleExample.h"
-#include "example/SinglePlayerExample.h"
 #include "example/SeqPlayerExample.h"
+#include "example/SinglePlayerExample.h"
 #include "log.h"
 
 using namespace hiveVG;
@@ -33,74 +29,78 @@ EglCore::~EglCore()
 
 bool EglCore::initEglContext(void *vWindow, int vWidth, int vHeight)
 {
-    this->m_WindowWidth = vWidth;
-    this->m_WindowHeight = vHeight;
-    m_EglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-    if (m_EglDisplay == EGL_NO_DISPLAY)
-    {
-        LOGE("eGLDisplay获取失败");
-        return false;
-    }
-    EGLint Major;
-    EGLint Minor;
-    if (!eglInitialize(m_EglDisplay, &Major, &Minor))
-    {
-        LOGE("eGLDisplay初始化失败");
-        return false;
-    }
-    const EGLint MaxConfigSize = 1;
-    EGLint NumConfigs;
-    if (!eglChooseConfig(m_EglDisplay, ATTRIB_LIST, &m_EglConfig, MaxConfigSize, &NumConfigs))
-    {
-        LOGE("eglConfig初始化失败");
-        return false;
-    }
+    LOGI("Init window = %{public}p, w = %{public}d, h = %{public}d.", vWindow, vWidth, vHeight);
+    m_WindowWidth = vWidth;
+    m_WindowHeight = vHeight;
     m_EglWindow = reinterpret_cast<EGLNativeWindowType>(vWindow);
-    m_EglSurface = eglCreateWindowSurface(m_EglDisplay, m_EglConfig, m_EglWindow, nullptr);
-    if (nullptr == m_EglSurface)
-    {
-        LOGE("创建eGLSurface失败");
-        return false;
-    }
-    m_EglContext = eglCreateContext(m_EglDisplay, m_EglConfig, EGL_NO_CONTEXT, CONTEXT_ATTRIBS);
-    if (nullptr == m_EglContext)
-    {
-        LOGE("创建eglContext失败");
-        return false;
-    }
-    if (!eglMakeCurrent(m_EglDisplay, m_EglSurface, m_EglSurface, m_EglContext))
-    {
-        LOGE("eglMakeCurrent失败");
-        return false;
-    }
+
+    constexpr EGLint Attributes[] = {
+        EGL_RENDERABLE_TYPE, EGL_OPENGL_ES3_BIT,
+        EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+        EGL_BLUE_SIZE, 8,
+        EGL_GREEN_SIZE, 8,
+        EGL_RED_SIZE, 8,
+        EGL_DEPTH_SIZE, 24,
+        EGL_NONE
+    };
+
+    auto Display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+    eglInitialize(Display, nullptr, nullptr);
+
+    EGLint NumConfigs;
+    eglChooseConfig(Display, Attributes, nullptr, 0, &NumConfigs);
+
+    std::unique_ptr<EGLConfig[]> pSupportedConfigs(new EGLConfig[NumConfigs]);
+    eglChooseConfig(Display, Attributes, pSupportedConfigs.get(), NumConfigs, &NumConfigs);
+
+    auto pConfig = *std::find_if(
+            pSupportedConfigs.get(),
+            pSupportedConfigs.get() + NumConfigs,
+            [&Display](const EGLConfig &Config)
+            {
+                EGLint Red, Green, Blue, Depth;
+                if (eglGetConfigAttrib(Display, Config, EGL_RED_SIZE, &Red)
+                    && eglGetConfigAttrib(Display, Config, EGL_GREEN_SIZE, &Green)
+                    && eglGetConfigAttrib(Display, Config, EGL_BLUE_SIZE, &Blue)
+                    && eglGetConfigAttrib(Display, Config, EGL_DEPTH_SIZE, &Depth))
+                {
+
+                    LOGI( "Found pConfig with Red: %{public}d, Green: %{public}d, Blue: %{public}d, Depth: %{public}d", Red, Green, Blue, Depth);
+                    return Red == 8 && Green == 8 && Blue == 8 && Depth == 24;
+                }
+                return false;
+            });
+
+    LOGI( "Found %{public}d configs", NumConfigs);
+
+    EGLint Format;
+    eglGetConfigAttrib(Display, pConfig, EGL_NATIVE_VISUAL_ID, &Format);
+    EGLSurface Surface = eglCreateWindowSurface(Display, pConfig, m_EglWindow, nullptr);
+
+    EGLint ContextAttribs[] = {EGL_CONTEXT_CLIENT_VERSION, 3, EGL_NONE};
+    EGLContext Context = eglCreateContext(Display, pConfig, nullptr, ContextAttribs);
+
+    auto MadeCurrent = eglMakeCurrent(Display, Surface, Surface, Context);
+    assert(MadeCurrent);
+
+    m_EglDisplay = Display;
+    m_EglSurface = Surface;
+    m_EglContext = Context;
+
+    glClearColor(0.0f, 1.0f, 1.0f, 1.0f);  // 设置清屏颜色
     return true;
 }
 
 void EglCore::setRenderType(int vParams)
 {
     m_RenderType = vParams;
-    if (m_pExample)
+    if (m_pExample != nullptr)
     {
         delete m_pExample;
         m_pExample = nullptr;
     }
     switch (m_RenderType)
     {
-    case TRIANGLE_TYPE:
-        m_pExample = new TriangleExample();
-        break;
-    case VBO_TRIANGLE_TYPE:
-        m_pExample = new VBOTriangleExample();
-        break;
-    case EBO_TRIANGLE_TYPE:
-        m_pExample = new EBORectangleExample();
-        break;
-    case VAO_TRIANGLE_TYPE:
-        m_pExample = new VAOTriangleExample();
-        break;
-    case IMAGE_TYPE:
-        m_pExample = new CImageExample();
-        break;
     case IMAGE_FROM_NATIVE_TYPE:
         m_pExample = new CImageExample();
         break;
@@ -111,18 +111,20 @@ void EglCore::setRenderType(int vParams)
         m_pExample = new CSeqPlayerExample();
         break;
     default:
-        m_pExample = new TriangleExample();
+        m_pExample = new CImageExample();
         break;
     }
     if (!m_pExample->init())
     {
         LOGE("init Example Error!");
+        __deleteSafely(m_pExample);
     }
 }
 
 void EglCore::renderScene()
 {
     __updateRenderArea();
+
     if (m_pExample != nullptr)
     {
         m_pExample->draw();
@@ -142,9 +144,12 @@ void EglCore::__updateRenderArea()
 
     if (Width != m_WindowWidth || Height != m_WindowHeight)
     {
-        m_WindowWidth  = Width;
+        m_WindowWidth = Width;
         m_WindowHeight = Height;
 //        glViewport(0, ViewportY, Width, ViewportHeight);
+        glViewport(0, 0, m_WindowWidth, m_WindowHeight);
+    } else
+    {
         glViewport(0, 0, m_WindowWidth, m_WindowHeight);
     }
 }

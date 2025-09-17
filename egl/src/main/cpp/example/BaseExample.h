@@ -1,17 +1,9 @@
 #pragma once
 
-#include "log.h"
-#include "napi/native_api.h"
 #include "native_common.h"
-#include "GLUtil.h"
 #include <GLES3/gl3.h>
 
-#define TRIANGLE_TYPE 1
-#define VBO_TRIANGLE_TYPE TRIANGLE_TYPE + 1
-#define EBO_TRIANGLE_TYPE VBO_TRIANGLE_TYPE + 1
-#define VAO_TRIANGLE_TYPE EBO_TRIANGLE_TYPE + 1
-#define IMAGE_TYPE VAO_TRIANGLE_TYPE + 1
-#define IMAGE_FROM_NATIVE_TYPE IMAGE_TYPE + 1
+#define IMAGE_FROM_NATIVE_TYPE 1
 #define SINGLE_PLAYER_TYPE IMAGE_FROM_NATIVE_TYPE + 1
 #define SEQ_PLAYER_TYPE SINGLE_PLAYER_TYPE + 1
 

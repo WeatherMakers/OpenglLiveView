@@ -2,13 +2,13 @@
 #include <GLES2/gl2ext.h>
 #include <omp.h>
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
 #include "Common.h"
-#include "log.h"
 #include "FileUtils.h"
 #include "TimeUtils.h"
-//#include "ktx.h"
+#include "log.h"
+#include "stb_image.h"
 #define ASTCHeaderMinSize 16
+
 using namespace hiveVG;
 
 CTexture2D *CTexture2D::loadTexture(const std::string &vTexturePath, EPictureType::EPictureType vPicType)
@@ -18,7 +18,8 @@ CTexture2D *CTexture2D::loadTexture(const std::string &vTexturePath, EPictureTyp
     return pTexture;
 }
 
-CTexture2D *CTexture2D::loadTexture(const std::string &vTexturePath, int &voWidth, int &voHeight, EPictureType::EPictureType &vPictureType)
+CTexture2D *CTexture2D::loadTexture(const std::string &vTexturePath, int &voWidth, int &voHeight,
+                                    EPictureType::EPictureType &vPictureType)
 {
     std::unique_ptr<unsigned char[]> pBuffer;
     size_t AssetSize;
@@ -42,79 +43,91 @@ CTexture2D *CTexture2D::loadTexture(const std::string &vTexturePath, int &voWidt
     unsigned char *pImageData = nullptr;
     if (vPictureType == EPictureType::PNG || vPictureType == EPictureType::JPG)
     {
-        pImageData = stbi_load_from_memory(pBuffer.get(), static_cast<int>(AssetSize), &voWidth, &voHeight, &Channels, 0);
-    }
-    else if(EPictureType::EPictureType::ASTC)
+        pImageData =
+            stbi_load_from_memory(pBuffer.get(), static_cast<int>(AssetSize), &voWidth, &voHeight, &Channels, 0);
+    } else if (EPictureType::EPictureType::ASTC)
     {
-        if (AssetSize <= ASTCHeaderMinSize) 
+        if (AssetSize <= ASTCHeaderMinSize)
         {
             LOGE("Invalid ASTC file size: %{public}zu", AssetSize);
             return nullptr;
         }
-        const unsigned char* pHeader = pBuffer.get();
-        if (pHeader[0] != 0x13 || pHeader[1] != 0xAB || pHeader[2] != 0xA1 || pHeader[3] != 0x5C) {
+        const unsigned char *pHeader = pBuffer.get();
+        if (pHeader[0] != 0x13 || pHeader[1] != 0xAB || pHeader[2] != 0xA1 || pHeader[3] != 0x5C)
+        {
             LOGE("Invalid ASTC file magic number");
             return nullptr;
         }
-        
+
         unsigned int BlockX = pHeader[4];
         unsigned int BlockY = pHeader[5];
-        unsigned int DimX = pHeader[7] | (pHeader[8] << 8) | (pHeader[9] << 16) ;
+        unsigned int DimX = pHeader[7] | (pHeader[8] << 8) | (pHeader[9] << 16);
         unsigned int DimY = pHeader[10] | (pHeader[11] << 8) | (pHeader[12] << 16);
-        LOGI("ASTC texture info - Block: %{public}dx%{public}d, Dimensions: %{public}dx%{public}d", BlockX, BlockY, DimX,DimY);
+        LOGI("ASTC texture info - Block: %{public}dx%{public}d, Dimensions: %{public}dx%{public}d", BlockX, BlockY, DimX, DimY);
+        if (!eglGetCurrentContext())
+        {
+            LOGE("No valid OpenGL context");
+            return nullptr;
+        }
         
-        GLuint TextureHandle;
+        GLuint TextureHandle = 0;
         glGenTextures(1, &TextureHandle);
         glBindTexture(GL_TEXTURE_2D, TextureHandle);
-        
+
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        
+
         GLenum InternalFormat = 0;
-        if (BlockX == 4 && BlockY == 4)        InternalFormat = GL_COMPRESSED_RGBA_ASTC_4x4_KHR;
-        else if (BlockX == 5 && BlockY == 4)   InternalFormat = GL_COMPRESSED_RGBA_ASTC_5x4_KHR;
-        else if (BlockX == 5 && BlockY == 5)   InternalFormat = GL_COMPRESSED_RGBA_ASTC_5x5_KHR;
-        else if (BlockX == 6 && BlockY == 6)   InternalFormat = GL_COMPRESSED_RGBA_ASTC_6x6_KHR;
-        else if (BlockX == 8 && BlockY == 8)   InternalFormat = GL_COMPRESSED_RGBA_ASTC_8x8_KHR;
-        else if (BlockX == 10 && BlockY == 10) InternalFormat = GL_COMPRESSED_RGBA_ASTC_10x10_KHR;
-        else if (BlockX == 12 && BlockY == 12) InternalFormat = GL_COMPRESSED_RGBA_ASTC_12x12_KHR;
-        else 
+        if (BlockX == 4 && BlockY == 4)
+            InternalFormat = GL_COMPRESSED_RGBA_ASTC_4x4_KHR;
+        else if (BlockX == 5 && BlockY == 4)
+            InternalFormat = GL_COMPRESSED_RGBA_ASTC_5x4_KHR;
+        else if (BlockX == 5 && BlockY == 5)
+            InternalFormat = GL_COMPRESSED_RGBA_ASTC_5x5_KHR;
+        else if (BlockX == 6 && BlockY == 6)
+            InternalFormat = GL_COMPRESSED_RGBA_ASTC_6x6_KHR;
+        else if (BlockX == 8 && BlockY == 8)
+            InternalFormat = GL_COMPRESSED_RGBA_ASTC_8x8_KHR;
+        else if (BlockX == 10 && BlockY == 10)
+            InternalFormat = GL_COMPRESSED_RGBA_ASTC_10x10_KHR;
+        else if (BlockX == 12 && BlockY == 12)
+            InternalFormat = GL_COMPRESSED_RGBA_ASTC_12x12_KHR;
+        else
         {
             LOGE("Unsupported ASTC block size: %{public}dx%{public}d", BlockX, BlockY);
             glDeleteTextures(1, &TextureHandle);
             return nullptr;
         }
-        
-        glCompressedTexImage2D(GL_TEXTURE_2D, 0, InternalFormat, 
-                             DimX, DimY, 0, 
-                             AssetSize - 16, 
-                             pBuffer.get() + 16);
-        
+
+        glCompressedTexImage2D(GL_TEXTURE_2D, 0, InternalFormat, DimX, DimY, 0, AssetSize - 16, pBuffer.get() + 16);
+
         GLenum Error = glGetError();
-        if (Error != GL_NO_ERROR) {
+        if (Error != GL_NO_ERROR)
+        {
             LOGE("Failed to upload ASTC texture, GL error: 0x%{public}x", Error);
             glDeleteTextures(1, &TextureHandle);
             return nullptr;
         }
-        
+
         voWidth = DimX;
         voHeight = DimY;
         double EndTime = CTimeUtils::getCurrentTime();
-        LOGI("Successfully loaded ASTC texture. Dimensions: %{public}dx%{public}d, Time: %{public}f", DimX, DimY, EndTime - StartTime);
+        LOGI("Successfully loaded ASTC texture. Dimensions: %{public}dx%{public}d, Time: %{public}f", DimX, DimY,
+             EndTime - StartTime);
         return new CTexture2D(TextureHandle);
     }
 
     if (!pImageData)
     {
-        LOGE( "Failed to load image from memory: %{public}s", vTexturePath.c_str());
+        LOGE("Failed to load image from memory: %{public}s", vTexturePath.c_str());
         return nullptr;
-    }
-    else
+    } else
     {
         double EndTime = CTimeUtils::getCurrentTime();
-        LOGI( "Loading image %{public}s from memory to CPU costs time: %{public}f", vTexturePath.c_str(), EndTime - StartTime);
+        LOGI("Loading image %{public}s from memory to CPU costs time: %{public}f", vTexturePath.c_str(),
+             EndTime - StartTime);
     }
 
     GLint Format = GL_RGB;
@@ -132,13 +145,13 @@ CTexture2D *CTexture2D::loadTexture(const std::string &vTexturePath, int &voWidt
 
     if (TextureHandle == 0)
     {
-        LOGE( "Failed to create texture: %{public}s", vTexturePath.c_str());
+        LOGE("Failed to create texture: %{public}s", vTexturePath.c_str());
         return nullptr;
-    }
-    else
+    } else
     {
         double EndTime = CTimeUtils::getCurrentTime();
-        LOGI( "Loading image %{public}s from memory to GPU costs time: %{public}f", vTexturePath.c_str(), EndTime - StartTime);
+        LOGI("Loading image %{public}s from memory to GPU costs time: %{public}f", vTexturePath.c_str(),
+             EndTime - StartTime);
     }
     stbi_image_free(pImageData);
     return new CTexture2D(TextureHandle);
@@ -154,7 +167,7 @@ CTexture2D *CTexture2D::createEmptyTexture(int vWidth, int vHeight, int vChannel
     else if (vChannels == 1)
         Format = GL_RED;
     else
-        LOGW( "Channel Count is invalid, set default format [GL_RGB].");
+        LOGW("Channel Count is invalid, set default format [GL_RGB].");
 
     double StartTime = CTimeUtils::getCurrentTime();
 
@@ -162,13 +175,12 @@ CTexture2D *CTexture2D::createEmptyTexture(int vWidth, int vHeight, int vChannel
 
     if (TextureHandle == 0)
     {
-        LOGE( "Failed to create empty texture.");
+        LOGE("Failed to create empty texture.");
         return nullptr;
-    }
-    else
+    } else
     {
         double EndTime = CTimeUtils::getCurrentTime();
-        LOGI( "Creating empty image costs time: %{public}f", EndTime - StartTime);
+        LOGI("Creating empty image costs time: %{public}f", EndTime - StartTime);
     }
 
     return new CTexture2D(TextureHandle);
@@ -180,10 +192,7 @@ CTexture2D::~CTexture2D()
     m_TextureHandle = 0;
 }
 
-void CTexture2D::bindTexture() const
-{
-    glBindTexture(GL_TEXTURE_2D, m_TextureHandle);
-}
+void CTexture2D::bindTexture() const { glBindTexture(GL_TEXTURE_2D, m_TextureHandle); }
 
 CTexture2D::CTexture2D(GLuint vTextureHandle) : m_TextureHandle(vTextureHandle) {}
 

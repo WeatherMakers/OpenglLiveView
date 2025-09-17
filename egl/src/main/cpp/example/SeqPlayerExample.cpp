@@ -1,5 +1,4 @@
 #include "SeqPlayerExample.h"
-#include "GLUtil.h"
 #include "log.h"
 #include "render/EglRender.h"
 #include <GLES3/gl3.h>
@@ -15,11 +14,6 @@ CSeqPlayerExample::~CSeqPlayerExample()
         delete m_pTexturePlayer;
         m_pTexturePlayer = nullptr;
     }
-    if (m_pScreenQuad != nullptr)
-    {
-        CScreenQuad::destroy();
-        m_pScreenQuad = nullptr;
-    }
 }
 
 bool CSeqPlayerExample::init()
@@ -30,7 +24,7 @@ bool CSeqPlayerExample::init()
         LOGE("Failed to get CScreenQuad instance");
         return false;
     }
-    m_pBackGroundPlayer = new CSingleTexturePlayer(m_BackGroundRootPath,m_PictureType);
+    m_pBackGroundPlayer = new CSingleTexturePlayer(m_BackgroundTexPath,m_PictureType);
     if(!m_pBackGroundPlayer->initTextureAndShaderProgram())
     {
         LOGE("Failed to initialize single texture and shader program");
@@ -53,10 +47,10 @@ void CSeqPlayerExample::draw()
     glClear(GL_COLOR_BUFFER_BIT);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDisable(GL_DEPTH_TEST);
     
     m_pBackGroundPlayer->updateFrame();
     m_pScreenQuad->bindAndDraw();
     m_pTexturePlayer->updateSeqKTXFrame(0.016f);
     m_pTexturePlayer->drawSeqKTX(m_pScreenQuad);
-  
 }

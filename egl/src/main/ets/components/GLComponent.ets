@@ -19,41 +19,21 @@ export struct GLComponent {
     type: XComponentType.SURFACE,
     libraryname: 'egl' // 加载模块的名称，必须与在native侧Napi模块注册时模块名字一致。
   }
-
+  aboutToAppear() {
+    console.log("aboutToAppear.");
+    // let resMgr = this.context.resourceManager;
+    // egl.setResourceManager(resMgr);
+    // console.log("ResourceManager has been set.");
+  }
   build() {
     Row() {
       Column() {
         Button('点击显示菜单')
           .bindMenu([
             {
-              value: '绘制三角形',
-              action: () => {
-                egl.setRenderType(Params.TYPE_TRIANGLE)
-              }
-            },
-            {
-              value: '使用VBO绘制三角形',
-              action: () => {
-                egl.setRenderType(Params.TYPE_VBO_TRIANGLE)
-              }
-            },
-            {
-              value: '使用EBO绘制矩形',
-              action: () => {
-                egl.setRenderType(Params.TYPE_EBO_TRIANGLE)
-              }
-            },
-            {
-              value: '使用VAO绘制三角形',
-              action: () => {
-                egl.setRenderType(Params.TYPE_VAO_TRIANGLE)
-              }
-            },
-            {
               value: '原生读取PNG',
               action: () => {
                 try {
-                  egl.setResourceManager(this.resMgr);
                   egl.setRenderType(Params.TYPE_IMAGE_FROM_NATIVE)
                 } catch (e) {
                   hilog.error(0x0000, 'GL', `原生读取PNG失败: ${JSON.stringify(e)}`)
@@ -64,7 +44,6 @@ export struct GLComponent {
               value: '原生SinglePlayer显示',
               action: () => {
                 try {
-                  egl.setResourceManager(this.resMgr);
                   egl.setRenderType(Params.TYPE_SINGLE_PLAYER)
                 } catch (e) {
                   hilog.error(0x0000, 'GL', `原生SinglePlayer显示失败: ${JSON.stringify(e)}`)
@@ -75,7 +54,6 @@ export struct GLComponent {
               value: '原生SeqPlayer显示',
               action: () => {
                 try {
-                  egl.setResourceManager(this.resMgr);
                   egl.setRenderType(Params.TYPE_SEQ_PLAYER)
                 } catch (e) {
                   hilog.error(0x0000, 'GL', `原生SeqPlayer显示失败: ${JSON.stringify(e)}`)
@@ -88,7 +66,9 @@ export struct GLComponent {
           .margin({top: 10, bottom: 10})
         XComponent(this.xComponentAttrs)
           .onLoad((xComponentContext) => {
+            console.info('XComponent on Load start');
             this.xComponentContext = xComponentContext
+            egl.setResourceManager(this.resMgr);
           })
       }
       .width('100%')

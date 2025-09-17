@@ -1,8 +1,7 @@
 #include "ShaderProgram.h"
 #include "Common.h"
 #include "log.h"
-#include "AppContext.h"
-//#include "FileUtils.h"
+#include "FileUtils.h"
 
 using namespace hiveVG;
 
@@ -80,49 +79,19 @@ void CShaderProgram::setUniform(const std::string& vName, const glm::mat4& vMat)
 
 bool CShaderProgram::__dumpShaderCodeFromFile(const std::string& vShaderPath, std::string& voShaderCode)
 {
-    if (!CAppContext::getResourceManager())
-    {
-        LOGE("NativeResourceManager is not initialized");
+    auto pAsset = CFileUtils::openFile(vShaderPath.c_str());
+    assert(pAsset);
+    if (!pAsset)
         return false;
-    }
-    
-    RawFile* rawFile = OH_ResourceManager_OpenRawFile(CAppContext::getResourceManager(), vShaderPath.c_str());
-    if (!rawFile)
-    {
-        LOGE("Failed to open shader file: %s", vShaderPath.c_str());
+    size_t AssetSize = CFileUtils::getFileBytes(pAsset);
+    std::unique_ptr<char[]> pBuffer(new char[AssetSize + 1]);
+    int Flag = CFileUtils::readFile<char>(pAsset, pBuffer.get(), AssetSize);
+    if(Flag < 0)
         return false;
-    }
-    
-    long fileSize = OH_ResourceManager_GetRawFileSize(rawFile);
-    if (fileSize <= 0)
-    {
-        LOGE("Invalid file size for shader file: %s", vShaderPath.c_str());
-        OH_ResourceManager_CloseRawFile(rawFile);
-        return false;
-    }
-    
-    std::unique_ptr<char[]> buffer(new char[fileSize + 1]);
-    if (!buffer)
-    {
-        LOGE("Failed to allocate memory for shader file: %s", vShaderPath.c_str());
-        OH_ResourceManager_CloseRawFile(rawFile);
-        return false;
-    }
-    
-    long bytesRead = OH_ResourceManager_ReadRawFile(rawFile, buffer.get(), fileSize);
-    if (bytesRead != fileSize)
-    {
-        LOGE("Failed to read complete shader file: %s, expected: %ld, actual: %ld", 
-            vShaderPath.c_str(), fileSize, bytesRead);
-        OH_ResourceManager_CloseRawFile(rawFile);
-        return false;
-    }
-    
-    OH_ResourceManager_CloseRawFile(rawFile);
-    
-    buffer[fileSize] = '\0';
-    voShaderCode = std::string(buffer.get());
-    LOGD("Successfully loaded shader file: %{public}s, size: %{public}ld bytes", vShaderPath.c_str(), fileSize);
+    CFileUtils::closeFile(pAsset);
+
+    pBuffer[AssetSize] = '\0';
+    voShaderCode = std::string(pBuffer.get());
     return true;
 }
 

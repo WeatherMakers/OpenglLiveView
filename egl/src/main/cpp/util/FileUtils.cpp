@@ -19,7 +19,7 @@ void *CFileUtils::openFile(const char *vPath, bool vIsLoadFromResource)
         RawFile* pRawFile = OH_ResourceManager_OpenRawFile(pNativeResManager, vPath);
         if (!pRawFile)
         {
-            LOGE("Failed to open resource file: %s", vPath);
+            LOGE("Failed to open resource file: %{public}s", vPath);
             return nullptr;
         }
         return pRawFile;
@@ -29,7 +29,7 @@ void *CFileUtils::openFile(const char *vPath, bool vIsLoadFromResource)
         FILE* pFile = fopen(vPath, "rb");
         if (!pFile)
         {
-            LOGE("Failed to open file: %s", vPath);
+            LOGE("Failed to open file: %{public}s", vPath);
             return nullptr;
         }
         return pFile;
