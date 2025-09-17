@@ -1,6 +1,5 @@
 #include "TimeUtils.h"
 #include <chrono>
-#include <ctime>
 
 using namespace hiveVG;
 

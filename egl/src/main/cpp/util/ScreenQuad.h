@@ -16,11 +16,12 @@ namespace hiveVG
 
     private:
         CScreenQuad();
+        CScreenQuad(const CScreenQuad&) = delete;
+        CScreenQuad& operator=(const CScreenQuad&) = delete;
 
         static CScreenQuad* m_pQuad;
-        static std::mutex m_Mutex;
-        GLuint m_VAOHandle;
-        GLuint m_VertexBufferHandle;
-        GLuint m_IndexBufferHandle;
+        GLuint m_VAOHandle = 0;
+        GLuint m_VertexBufferHandle = 0;
+        GLuint m_IndexBufferHandle  = 0;
     };
 }

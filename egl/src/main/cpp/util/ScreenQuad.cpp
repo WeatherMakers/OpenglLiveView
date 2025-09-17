@@ -3,20 +3,12 @@
 using namespace hiveVG;
 
 CScreenQuad* CScreenQuad::m_pQuad = nullptr;
-std::mutex   CScreenQuad::m_Mutex;
 
 CScreenQuad* CScreenQuad::getOrCreate()
 {
     if (m_pQuad == nullptr)
     {
-        std::lock_guard Lock(m_Mutex);
-        if (m_pQuad == nullptr)
-        {
-            auto t = new CScreenQuad;
-            // C++11 内存屏障
-            std::atomic_thread_fence(std::memory_order_acquire);
-            m_pQuad = t;
-        }
+        m_pQuad = new CScreenQuad;
     }
     return m_pQuad;
 }
@@ -74,4 +66,5 @@ CScreenQuad::CScreenQuad()
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), reinterpret_cast<void*>(2 * sizeof(float)));
     glEnableVertexAttribArray(1);
+    glBindVertexArray(0);
 }

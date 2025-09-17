@@ -18,7 +18,7 @@ CSinglePlayerRenderer::~CSinglePlayerRenderer()
 
 bool CSinglePlayerRenderer::init()
 {
-    m_pTexturePlayer = new CSingleTexturePlayer(m_TexturePath, EPictureType::ASTC);
+    m_pTexturePlayer = new CSingleTexturePlayer(m_TexturePath, m_TextureType);
     if (!m_pTexturePlayer->initTextureAndShaderProgram())
     {
         LOGE("Failed to initialize texture and shader program");

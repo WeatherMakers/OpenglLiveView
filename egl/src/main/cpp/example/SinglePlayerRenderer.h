@@ -1,7 +1,7 @@
 #pragma once
 
 #include "BaseRenderer.h"
-#include <string>
+#include "Common.h"
 
 namespace hiveVG 
 {
@@ -17,9 +17,10 @@ namespace hiveVG
         void draw() override;
         
     private:
-        std::string           m_TexturePath    = "snowScene.astc";
-        CSingleTexturePlayer* m_pTexturePlayer = nullptr;
-        CScreenQuad*          m_pScreenQuad    = nullptr;
+        std::string                m_TexturePath    = "snowScene.astc";
+        EPictureType::EPictureType m_TextureType    = EPictureType::ASTC;
+        CSingleTexturePlayer*      m_pTexturePlayer = nullptr;
+        CScreenQuad*               m_pScreenQuad    = nullptr;
     };
 }
 
