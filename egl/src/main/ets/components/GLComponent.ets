@@ -19,44 +19,38 @@ export struct GLComponent {
     type: XComponentType.SURFACE,
     libraryname: 'egl' // 加载模块的名称，必须与在native侧Napi模块注册时模块名字一致。
   }
-  aboutToAppear() {
-    console.log("aboutToAppear.");
-    // let resMgr = this.context.resourceManager;
-    // egl.setResourceManager(resMgr);
-    // console.log("ResourceManager has been set.");
-  }
   build() {
     Row() {
       Column() {
         Button('点击显示菜单')
           .bindMenu([
             {
-              value: '原生读取PNG',
+              value: '背景',
               action: () => {
                 try {
-                  egl.setRenderType(Params.TYPE_IMAGE_FROM_NATIVE)
+                  egl.setRenderType(Params.SINGLE_RENDER_TYPE)
                 } catch (e) {
-                  hilog.error(0x0000, 'GL', `原生读取PNG失败: ${JSON.stringify(e)}`)
+                  hilog.error(0x0000, 'GL', `背景，显示失败: ${JSON.stringify(e)}`)
                 }
               }
             },
             {
-              value: '原生SinglePlayer显示',
+              value: '雨滴飞溅',
               action: () => {
                 try {
-                  egl.setRenderType(Params.TYPE_SINGLE_PLAYER)
+                  egl.setRenderType(Params.SEQ_RENDER_TYPE)
                 } catch (e) {
-                  hilog.error(0x0000, 'GL', `原生SinglePlayer显示失败: ${JSON.stringify(e)}`)
+                  hilog.error(0x0000, 'GL', `雨滴飞溅，显示失败: ${JSON.stringify(e)}`)
                 }
               }
             },
             {
-              value: '原生SeqPlayer显示',
+              value: '雨景',
               action: () => {
                 try {
-                  egl.setRenderType(Params.TYPE_SEQ_PLAYER)
+                  egl.setRenderType(Params.RAIN_RENDER_TYPE)
                 } catch (e) {
-                  hilog.error(0x0000, 'GL', `原生SeqPlayer显示失败: ${JSON.stringify(e)}`)
+                  hilog.error(0x0000, 'GL', `雨景，显示失败: ${JSON.stringify(e)}`)
                 }
               }
             }
@@ -68,12 +62,11 @@ export struct GLComponent {
           .onLoad((xComponentContext) => {
             console.info('XComponent on Load start');
             this.xComponentContext = xComponentContext
-            egl.setResourceManager(this.resMgr);
+            egl.setResourceManager(this.resMgr)
           })
       }
       .width('100%')
     }
     .height('100%')
   }
-
 }

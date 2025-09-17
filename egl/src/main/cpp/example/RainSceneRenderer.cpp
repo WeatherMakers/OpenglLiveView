@@ -1,13 +1,14 @@
-#include "SeqPlayerExample.h"
+#include "RainSceneRenderer.h"
+#include "SequenceFramePlayer.h"
+#include "ScreenQuad.h"
+#include "SingleTexturePlayer.h"
 #include "log.h"
-#include "render/EglRender.h"
-#include <GLES3/gl3.h>
 
 using namespace hiveVG;
 
-CSeqPlayerExample::CSeqPlayerExample() {}
+CRainSceneRenderer::CRainSceneRenderer() {}
 
-CSeqPlayerExample::~CSeqPlayerExample()
+CRainSceneRenderer::~CRainSceneRenderer()
 {
     if (m_pTexturePlayer != nullptr)
     {
@@ -16,14 +17,8 @@ CSeqPlayerExample::~CSeqPlayerExample()
     }
 }
 
-bool CSeqPlayerExample::init()
+bool CRainSceneRenderer::init()
 {
-    m_pScreenQuad = CScreenQuad::getOrCreate();
-    if (!m_pScreenQuad)
-    {
-        LOGE("Failed to get CScreenQuad instance");
-        return false;
-    }
     m_pBackGroundPlayer = new CSingleTexturePlayer(m_BackgroundTexPath,m_PictureType);
     if(!m_pBackGroundPlayer->initTextureAndShaderProgram())
     {
@@ -37,13 +32,19 @@ bool CSeqPlayerExample::init()
         LOGE("Failed to initialize sequence texture and shader program");
         return false;
     }
-    
-    LOGI("SeqPlayerExample initialized successfully");
+    m_pScreenQuad = CScreenQuad::getOrCreate();
+    if (!m_pScreenQuad)
+    {
+        LOGE("Failed to get CScreenQuad instance");
+        return false;
+    }
+    LOGI("RainSceneRenderer initialized successfully");
     return true;
 }
 
-void CSeqPlayerExample::draw()
+void CRainSceneRenderer::draw()
 {
+    glClearColor(0.345f, 0.345f, 0.345f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

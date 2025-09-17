@@ -33,4 +33,4 @@
 #ifndef LOGE
 #define LOGE(...) ((void)OH_LOG_Print(LOG_APP, LOG_ERROR, LOG_DOMAIN, "[OpenGL]", __VA_ARGS__))
 #endif
-#endif // _LOG_H_
+#endif 

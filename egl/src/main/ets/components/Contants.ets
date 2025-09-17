@@ -1,6 +1,6 @@
 
 export class Params {
-  static readonly TYPE_IMAGE_FROM_NATIVE: number = 1
-  static readonly TYPE_SINGLE_PLAYER: number = Params.TYPE_IMAGE_FROM_NATIVE + 1
-  static readonly TYPE_SEQ_PLAYER: number = Params.TYPE_SINGLE_PLAYER + 1
+  static readonly SINGLE_RENDER_TYPE: number = 1
+  static readonly SEQ_RENDER_TYPE: number = Params.SINGLE_RENDER_TYPE + 1
+  static readonly RAIN_RENDER_TYPE: number = Params.SEQ_RENDER_TYPE + 1
 }

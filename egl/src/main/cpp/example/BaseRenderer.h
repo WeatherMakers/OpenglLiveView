@@ -1,0 +1,18 @@
+#pragma once
+
+#define SINGLE_RENDER_TYPE 1
+#define SEQ_RENDER_TYPE SINGLE_RENDER_TYPE + 1
+#define RAIN_RENDER_TYPE SEQ_RENDER_TYPE + 1
+
+namespace hiveVG
+{
+    class CBaseRenderer
+    {
+    public:
+        CBaseRenderer();
+        virtual ~CBaseRenderer();
+        virtual bool init() = 0;
+        virtual void draw() = 0;
+    };
+}
+

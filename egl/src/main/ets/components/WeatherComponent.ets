@@ -27,9 +27,9 @@ export struct WeatherComponent {
           this.xComponentContext = xComponentContext
           try {
             egl.setResourceManager(this.resMgr);
-            egl.setRenderType(Params.TYPE_SEQ_PLAYER)
+            egl.setRenderType(Params.RAIN_RENDER_TYPE)
           } catch (e) {
-            hilog.error(0x0000, 'GL', `原生SeqPlayer显示失败: ${JSON.stringify(e)}`)
+            hilog.error(0x0000, 'GL', `雨景，显示失败: ${JSON.stringify(e)}`)
           }
         })
     }

@@ -5,7 +5,6 @@
 #include <glm/glm.hpp>
 #include "EnumReflect.h"
 
-
 DECLARE_ENUM(EPlayType, FULLSCREEN = 0, PARTIAL)
 DECLARE_ENUM(EPictureType, PNG = 0, JPG, WEBP, ASTC)
 DECLARE_ENUM(EPlayMode, DEPTH = 0, CHANNEL)

@@ -3,7 +3,8 @@
 #include "napi/native_api.h"
 #include <ace/xcomponent/native_interface_xcomponent.h>
 #include "OpenGLCommon.h"
-#include "example/BaseExample.h"
+#include "example/BaseRenderer.h"
+#include <unordered_map>
 
 namespace hiveVG
 {
@@ -12,6 +13,7 @@ namespace hiveVG
     public:
         static CNativeRenderer* getInstance();
         static napi_value Init(napi_env env, napi_value exports);
+        static napi_value SetRenderType(napi_env env, napi_callback_info info);
         void   renderScene();
     
     private:
@@ -20,13 +22,9 @@ namespace hiveVG
         CNativeRenderer(const CNativeRenderer&) = delete;
         CNativeRenderer& operator=(const CNativeRenderer&) = delete;
     
-        // NAPI 方法，由 ArkTS 调用，用于传入 XComponent 实例
-        static napi_value OnCreate(napi_env env, napi_callback_info info);
         static void OnSurfaceCreated(OH_NativeXComponent*   vComponent, void* vWindow);
         static void OnSurfaceChanged(OH_NativeXComponent*   vComponent, void* vWindow);
         static void OnSurfaceDestroyed(OH_NativeXComponent* vComponent, void* vWindow);
-    
-        // 成员函数版本的回调处理器
         void HandleOnSurfaceCreated(void* vWindow);
         void HandleOnSurfaceChanged(uint64_t vWidth, uint64_t vHeight);
         void HandleOnSurfaceDestroyed();
@@ -44,8 +42,10 @@ namespace hiveVG
         EGLContext m_EglContext = EGL_NO_CONTEXT;
         EGLConfig  m_EglConfig  = nullptr;
         EGLSurface m_EglSurface = EGL_NO_SURFACE;
-
-        BaseExample* m_pExample = nullptr;
+        bool m_ContextReady = false;
+        int  m_CurrentType = 0;
+        CBaseRenderer* m_pExample = nullptr;
+        std::unordered_map<int, CBaseRenderer*> m_TypeToExample;
     };
 
     template<typename T>

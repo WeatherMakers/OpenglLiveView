@@ -1,6 +1,10 @@
 #include "NativeRenderer.h"
 #include "AppContext.h"
 #include "log.h"
+#include "example/BaseRenderer.h"
+#include "example/SeqPlayerRenderer.h"
+#include "example/SinglePlayerRenderer.h"
+#include "example/RainSceneRenderer.h"
 
 using namespace hiveVG;
 
@@ -16,60 +20,155 @@ CNativeRenderer::CNativeRenderer()
     m_pExample = nullptr;
 }
 
-CNativeRenderer::~CNativeRenderer()
-{
-    __deleteSafely(m_pExample);
-}
+CNativeRenderer::~CNativeRenderer() { __deleteSafely(m_pExample); }
 
-static void OnFrame(OH_NativeXComponent* component, uint64_t timestamp, uint64_t targetTimestamp)
-{
-    CNativeRenderer::getInstance()->renderScene(); 
-}
-
-napi_value CNativeRenderer::OnCreate(napi_env env, napi_callback_info info)
+napi_value CNativeRenderer::SetRenderType(napi_env env, napi_callback_info info)
 {
     size_t argc = 1;
     napi_value argv[1];
     napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
-    OH_NativeXComponent* pComponent = nullptr;
-    napi_unwrap(env, argv[0], reinterpret_cast<void **>(&pComponent));
+    int32_t Type = 0;
+    napi_get_value_int32(env, argv[0], &Type);
     auto Renderer = getInstance();
-    Renderer->m_NativeXComponent = pComponent;
+    Renderer->m_CurrentType = Type;
+
+    // 若已有缓存，直接切换当前引用；否则在合适时机构建
+    auto it = Renderer->m_TypeToExample.find(Type);
+    if (it != Renderer->m_TypeToExample.end())
+    {
+        Renderer->m_pExample = it->second;
+    } 
+    else if (Renderer->m_ContextReady)
+    {
+        CBaseRenderer *pExample = nullptr;
+        switch (Type)
+        {
+        case SINGLE_RENDER_TYPE:
+            pExample = new CSinglePlayerRenderer();
+            break;
+        case SEQ_RENDER_TYPE:
+            pExample = new CSeqPlayerRenderer();
+            break;
+        case RAIN_RENDER_TYPE:
+            pExample = new CRainSceneRenderer();
+            break;
+        default:
+            pExample = new CSinglePlayerRenderer();
+            break;
+        }
+        if (pExample && pExample->init())
+        {
+            Renderer->m_TypeToExample[Type] = pExample;
+            Renderer->m_pExample = pExample;
+        } 
+        else
+        {
+            LOGE("Init example failed in SetRenderType.");
+            if (pExample != nullptr)
+            {
+                delete pExample;
+                pExample = nullptr;
+            }
+        }
+    }
+    return nullptr;
+}
+
+void CNativeRenderer::renderScene()
+{
+    if (m_EglDisplay == EGL_NO_DISPLAY || m_EglSurface == EGL_NO_SURFACE)
+        return;
     
+    EGLint Width, Height;
+    eglQuerySurface(m_EglDisplay, m_EglSurface, EGL_WIDTH, &Width);
+    eglQuerySurface(m_EglDisplay, m_EglSurface, EGL_HEIGHT, &Height);
+    glViewport(0, 0, Width, Height);
+    if (m_pExample)
+    {
+        m_pExample->draw();
+    }
+    auto SwapResult = eglSwapBuffers(m_EglDisplay, m_EglSurface);
+    assert(SwapResult == EGL_TRUE);
+}
+
+static void OnFrame(OH_NativeXComponent *component, uint64_t timestamp, uint64_t targetTimestamp)
+{
+    CNativeRenderer::getInstance()->renderScene();
+}
+
+napi_value CNativeRenderer::Init(napi_env env, napi_value exports)
+{
+    napi_property_descriptor desc[] = {
+        {"setResourceManager", nullptr, CAppContext::setResourceManager, nullptr, nullptr, nullptr, napi_default, nullptr},
+        {"setRenderType", nullptr, SetRenderType, nullptr, nullptr, nullptr, napi_default, nullptr}
+    };
+    napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc);
+    napi_value exportInstance = nullptr;
+    if (napi_ok != napi_get_named_property(env, exports, OH_NATIVE_XCOMPONENT_OBJ, &exportInstance))
+    {
+        LOGE("解析参数出错");
+        return nullptr;
+    } 
+    else
+    {
+        LOGI("解析参数成功");
+    }
+    OH_NativeXComponent *pNativeXComponent = nullptr;
+    if (napi_ok != napi_unwrap(env, exportInstance, reinterpret_cast<void **>(&pNativeXComponent)))
+    {
+        LOGE("获取OH_NativeXComponent对象出错");
+        return nullptr;
+    } 
+    else
+    {
+        LOGI("获取OH_NativeXComponent对象成功");
+    }
+    char idStr[OH_XCOMPONENT_ID_LEN_MAX + 1] = {'\0'};
+    uint64_t size = OH_XCOMPONENT_ID_LEN_MAX + 1;
+    if (napi_ok != OH_NativeXComponent_GetXComponentId(pNativeXComponent, idStr, &size))
+    {
+        LOGE("获取XComponentId出错");
+        return nullptr;
+    } 
+    else
+    {
+        LOGI("获取XComponentId成功");
+    }
+
+    auto Renderer = getInstance();
+    Renderer->m_NativeXComponent = pNativeXComponent;
     Renderer->m_Callback.OnSurfaceCreated = CNativeRenderer::OnSurfaceCreated;
     Renderer->m_Callback.OnSurfaceChanged = CNativeRenderer::OnSurfaceChanged;
     Renderer->m_Callback.OnSurfaceDestroyed = CNativeRenderer::OnSurfaceDestroyed;
     OH_NativeXComponent_RegisterCallback(Renderer->m_NativeXComponent, &Renderer->m_Callback);
     OH_NativeXComponent_RegisterOnFrameCallback(Renderer->m_NativeXComponent, OnFrame);
-
-    LOGI("NativeRenderer::OnCreate: Callbacks registered.");
+    LOGI("Callbacks registered.");
     return nullptr;
 }
 
 // 静态回调函数，当 surface 创建时被系统调用
 void CNativeRenderer::OnSurfaceCreated(OH_NativeXComponent *vComponent, void *vWindow)
 {
-    LOGD("OnSurfaceCreated callback triggered.");
-    uint64_t width, height;
-    OH_NativeXComponent_GetXComponentSize(vComponent, vWindow, &width, &height);
+    LOGI("OnSurfaceCreated callback triggered.");
+    uint64_t Width, Height;
+    OH_NativeXComponent_GetXComponentSize(vComponent, vWindow, &Width, &Height);
 
-    auto renderer = getInstance();
+    auto Renderer = getInstance();
     // 初始化 EGL 环境
-    if (renderer->EglInitialization(vWindow))
+    if (Renderer->EglInitialization(vWindow))
     {
         // EGL 成功后，初始化渲染内容
-        renderer->HandleOnSurfaceCreated(vWindow);
-        // 设置初始视口
-        renderer->HandleOnSurfaceChanged(width, height);
+        Renderer->HandleOnSurfaceCreated(vWindow);
+        Renderer->HandleOnSurfaceChanged(Width, Height);
     }
 }
 
 void CNativeRenderer::OnSurfaceChanged(OH_NativeXComponent *vComponent, void *vWindow)
 {
     LOGD("OnSurfaceChanged callback triggered.");
-    uint64_t width, height;
-    OH_NativeXComponent_GetXComponentSize(vComponent, vWindow, &width, &height);
-    getInstance()->HandleOnSurfaceChanged(width, height);
+    uint64_t Width, Height;
+    OH_NativeXComponent_GetXComponentSize(vComponent, vWindow, &Width, &Height);
+    getInstance()->HandleOnSurfaceChanged(Width, Height);
 }
 
 void CNativeRenderer::OnSurfaceDestroyed(OH_NativeXComponent *vComponent, void *vWindow)
@@ -80,7 +179,40 @@ void CNativeRenderer::OnSurfaceDestroyed(OH_NativeXComponent *vComponent, void *
 
 void CNativeRenderer::HandleOnSurfaceCreated(void *vWindow)
 {
-    // TODO:创建并初始化渲染示例
+    if (m_pExample == nullptr && m_CurrentType > 0)
+    {
+        auto it = m_TypeToExample.find(m_CurrentType);
+        if (it != m_TypeToExample.end())
+        {
+            m_pExample = it->second;
+        } 
+        else
+        {
+            switch (m_CurrentType)
+            {
+            case SINGLE_RENDER_TYPE:
+                m_pExample = new CSinglePlayerRenderer();
+                break;
+            case SEQ_RENDER_TYPE:
+                m_pExample = new CSeqPlayerRenderer();
+                break;
+            case RAIN_RENDER_TYPE:
+                m_pExample = new CRainSceneRenderer();
+                break;
+            default:
+                m_pExample = new CSinglePlayerRenderer();
+                break;
+            }
+            if (m_pExample && m_pExample->init())
+            {
+                m_TypeToExample[m_CurrentType] = m_pExample; // 缓存
+            } else
+            {
+                LOGE("Init example failed on surface created.");
+                __deleteSafely(m_pExample);
+            }
+        }
+    }
 
     LOGI("Render example created and initialized.");
 }
@@ -90,23 +222,25 @@ void CNativeRenderer::HandleOnSurfaceChanged(uint64_t vWidth, uint64_t vHeight)
     if (m_EglDisplay != EGL_NO_DISPLAY)
     {
         glViewport(0, 0, vWidth, vHeight);
+        glClearColor(0.0, 1.0, 1.0, 1.0);
         LOGI("Viewport updated to %{public}lu x %{public}lu", vWidth, vHeight);
     }
 }
 
 void CNativeRenderer::HandleOnSurfaceDestroyed()
 {
-    if (m_pExample)
+    for (auto &kv : m_TypeToExample)
     {
-        delete m_pExample;
-        m_pExample = nullptr;
+        if (kv.second)
+        {
+            delete kv.second;
+            kv.second = nullptr;
+        }
     }
-
+    m_TypeToExample.clear();
+    m_pExample = nullptr;
+    m_ContextReady = false;
     EglTermination();
-}
-
-void CNativeRenderer::renderScene()
-{
 }
 
 bool CNativeRenderer::EglInitialization(void *vWindow)
@@ -171,6 +305,7 @@ bool CNativeRenderer::EglInitialization(void *vWindow)
         return false;
     }
 
+    m_ContextReady = true;
     LOGI("EGL Initialized successfully. Version: %{public}d.%{public}d", Major, Minor);
     return true;
 }
@@ -194,14 +329,4 @@ void CNativeRenderer::EglTermination()
         m_EglDisplay = EGL_NO_DISPLAY;
     }
     LOGI("EGL terminated.");
-}
-
-napi_value CNativeRenderer::Init(napi_env env, napi_value exports)
-{
-    napi_property_descriptor desc[] = {
-        {"onCreate", nullptr, OnCreate, nullptr, nullptr, nullptr, napi_default, nullptr},
-        {"setResourceManager", nullptr, CAppContext::setResourceManager, nullptr, nullptr, nullptr, napi_default, nullptr}
-    };
-    napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc);
-    return exports;
 }
