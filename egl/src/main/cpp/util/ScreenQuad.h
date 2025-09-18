@@ -8,18 +8,18 @@ namespace hiveVG
     class CScreenQuad
     {
     public:
-        static CScreenQuad* getOrCreate();
-        static void destroy();
-
+        static CScreenQuad& getInstance();
         ~CScreenQuad();
-        void bindAndDraw() const;
+    
+        bool init();
+        void bindAndDraw();
 
     private:
         CScreenQuad();
         CScreenQuad(const CScreenQuad&) = delete;
         CScreenQuad& operator=(const CScreenQuad&) = delete;
 
-        static CScreenQuad* m_pQuad;
+        bool   m_initialized = false;
         GLuint m_VAOHandle = 0;
         GLuint m_VertexBufferHandle = 0;
         GLuint m_IndexBufferHandle  = 0;

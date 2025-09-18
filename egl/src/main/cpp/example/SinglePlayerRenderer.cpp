@@ -24,10 +24,10 @@ bool CSinglePlayerRenderer::init()
         LOGE("Failed to initialize texture and shader program");
         return false;
     }
-    m_pScreenQuad = CScreenQuad::getOrCreate();
-    if (!m_pScreenQuad)
+    m_pScreenQuad = &CScreenQuad::getInstance();
+    if (!m_pScreenQuad->init())
     {
-        LOGE("Failed to get CScreenQuad instance");
+        LOGE("Failed to initialize CScreenQuad");
         return false;
     }
     LOGI("SinglePlayer inits successfully.");

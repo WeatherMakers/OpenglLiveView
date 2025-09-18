@@ -1,25 +1,12 @@
 #include "ScreenQuad.h"
+#include "log.h"
 
 using namespace hiveVG;
 
-CScreenQuad* CScreenQuad::m_pQuad = nullptr;
-
-CScreenQuad* CScreenQuad::getOrCreate()
+CScreenQuad &CScreenQuad::getInstance()
 {
-    if (m_pQuad == nullptr)
-    {
-        m_pQuad = new CScreenQuad;
-    }
-    return m_pQuad;
-}
-
-void CScreenQuad::destroy()
-{
-    if (m_pQuad != nullptr)
-    {
-        delete m_pQuad;
-        m_pQuad = nullptr;
-    }
+    static CScreenQuad instance;
+    return instance;
 }
 
 CScreenQuad::~CScreenQuad()
@@ -30,26 +17,35 @@ CScreenQuad::~CScreenQuad()
     m_IndexBufferHandle = 0;
     glDeleteVertexArrays(1, &m_VAOHandle);
     m_VAOHandle = 0;
+    LOGI("CScreenQuad destroyed.");
 }
 
-void CScreenQuad::bindAndDraw() const
+void CScreenQuad::bindAndDraw()
 {
+    if (!m_initialized && !init())
+    {
+        LOGE("CScreenQuad init failed in bindAndDraw");
+        return;
+    }
     glBindVertexArray(m_VAOHandle);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
 }
 
-CScreenQuad::CScreenQuad()
+CScreenQuad::CScreenQuad() {}
+
+bool CScreenQuad::init()
 {
-    constexpr float Vertices[] = {
-            -1.0f, 1.0f, 0.0f, 0.0f,
-            1.0f, 1.0f, 1.0f, 0.0f,
-            1.0f, -1.0, 1.0f, 1.0f,
-            -1.0f, -1.0f, 0.0f, 1.0f
-    };
-    const unsigned int Indices[] = {
-            0, 1, 2,
-            0, 2, 3
-    };
+    if (m_initialized)
+        return true;
+    if (!eglGetCurrentContext())
+    {
+        LOGE("No valid OpenGL context in CScreenQuad init");
+        return false;
+    }
+    constexpr float Vertices[] = {-1.0f, 1.0f, 0.0f, 0.0f, 1.0f,  1.0f,  1.0f, 0.0f,
+                                  1.0f,  -1.0, 1.0f, 1.0f, -1.0f, -1.0f, 0.0f, 1.0f};
+    const unsigned int Indices[] = {0, 1, 2, 0, 2, 3};
 
     glGenVertexArrays(1, &m_VAOHandle);
     glBindVertexArray(m_VAOHandle);
@@ -62,9 +58,12 @@ CScreenQuad::CScreenQuad()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBufferHandle);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), static_cast<void*>(nullptr));
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), static_cast<void *>(nullptr));
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), reinterpret_cast<void*>(2 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), reinterpret_cast<void *>(2 * sizeof(float)));
     glEnableVertexAttribArray(1);
     glBindVertexArray(0);
+    m_initialized = true;
+    LOGI("CScreenQuad initialized successfully.");
+    return true;
 }
