@@ -6,6 +6,14 @@
 
 namespace hiveVG
 {
+    struct AstcHeaderInfo 
+    {
+        uint32_t _BlockX = 0;
+        uint32_t _BlockY = 0;
+        uint32_t _DimX   = 0;
+        uint32_t _DimY   = 0;
+    };
+
     class CTexture2D
     {
     public:
@@ -18,7 +26,8 @@ namespace hiveVG
 
     private:
         inline explicit CTexture2D(GLuint vTextureHandle);
-        static GLuint __createHandle(GLint vFormat, int vWidth, int vHeight, unsigned char *vImgData);
+        static GLuint __createPngHandle(GLint vFormat, int vWidth, int vHeight, unsigned char *vImgData);
+        static GLuint __createAstcHandle(AstcHeaderInfo& vHeaderInfo, const unsigned char *vHeaderData, size_t vAssetSize);
 
         GLuint m_TextureHandle;
     };
