@@ -53,6 +53,26 @@ export struct GLComponent {
                   hilog.error(0x0000, 'GL', `雨景，显示失败: ${JSON.stringify(e)}`)
                 }
               }
+            },
+            {
+              value: '雪景',
+              action: () => {
+                try {
+                  egl.setRenderType(Params.SNOW_RENDER_TYPE)
+                } catch (e) {
+                  hilog.error(0x0000, 'GL', `雪景，显示失败: ${JSON.stringify(e)}`)
+                }
+              }
+            },
+            {
+              value: '云景',
+              action: () => {
+                try {
+                  egl.setRenderType(Params.CLOUD_RENDER_TYPE)
+                } catch (e) {
+                  hilog.error(0x0000, 'GL', `云景，显示失败: ${JSON.stringify(e)}`)
+                }
+              }
             }
           ])
           .height(48)

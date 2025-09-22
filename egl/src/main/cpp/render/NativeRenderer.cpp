@@ -5,6 +5,8 @@
 #include "example/SeqPlayerRenderer.h"
 #include "example/SinglePlayerRenderer.h"
 #include "example/RainSceneRenderer.h"
+#include "example/SnowSceneRenderer.h"
+#include "example/CloudSceneRenderer.h"
 
 using namespace hiveVG;
 
@@ -52,6 +54,12 @@ napi_value CNativeRenderer::SetRenderType(napi_env env, napi_callback_info info)
         case RAIN_RENDER_TYPE:
             pExample = new CRainSceneRenderer();
             break;
+        case SNOW_RENDER_TYPE:
+            pExample = new CSnowSceneRenderer();
+            break;
+        case CLOUD_RENDER_TYPE:
+            pExample = new CCloudSceneRenderer();
+            break;
         default:
             pExample = new CSinglePlayerRenderer();
             break;
@@ -82,7 +90,13 @@ void CNativeRenderer::renderScene()
     EGLint Width, Height;
     eglQuerySurface(m_EglDisplay, m_EglSurface, EGL_WIDTH, &Width);
     eglQuerySurface(m_EglDisplay, m_EglSurface, EGL_HEIGHT, &Height);
-    glViewport(0, 0, Width, Height);
+    
+    int renderWidth = Width;
+    int renderHeight = Height / 4;
+    int offsetX = 0;
+    int offsetY = (Height - renderHeight) / 4 * 3;
+    
+    glViewport(offsetX, offsetY, renderWidth, renderHeight);
     if (m_pExample)
     {
         m_pExample->draw();
@@ -199,6 +213,12 @@ void CNativeRenderer::HandleOnSurfaceCreated(void *vWindow)
             case RAIN_RENDER_TYPE:
                 m_pExample = new CRainSceneRenderer();
                 break;
+            case SNOW_RENDER_TYPE:
+                m_pExample = new CSnowSceneRenderer();
+                break;
+            case CLOUD_RENDER_TYPE:
+                m_pExample = new CCloudSceneRenderer();
+                break;
             default:
                 m_pExample = new CSinglePlayerRenderer();
                 break;
@@ -221,9 +241,16 @@ void CNativeRenderer::HandleOnSurfaceChanged(uint64_t vWidth, uint64_t vHeight)
 {
     if (m_EglDisplay != EGL_NO_DISPLAY)
     {
-        glViewport(0, 0, vWidth, vHeight);
+        // 宽度保持全屏，高度使用1/4屏幕（居中显示）
+        int renderWidth = vWidth;
+        int renderHeight = vHeight / 4;
+        int offsetX = 0;
+        int offsetY = (vHeight - renderHeight) / 3;
+        
+        glViewport(offsetX, offsetY, renderWidth, renderHeight);
         glClearColor(0.0, 1.0, 1.0, 1.0);
-        LOGI("Viewport updated to %{public}lu x %{public}lu", vWidth, vHeight);
+        LOGI("Viewport updated to %{public}lu x %{public}lu, render area: %{public}d x %{public}d at (%{public}d, %{public}d)", 
+             vWidth, vHeight, renderWidth, renderHeight, offsetX, offsetY);
     }
 }
 
