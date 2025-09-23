@@ -14,6 +14,12 @@ namespace hiveVG
         static CNativeRenderer* getInstance();
         static napi_value Init(napi_env env, napi_value exports);
         static napi_value SetRenderType(napi_env env, napi_callback_info info);
+        static napi_value TriggerLightning(napi_env env, napi_callback_info info);
+        static napi_value TriggerCloud(napi_env env, napi_callback_info info);
+        static napi_value TriggerLightRain(napi_env env, napi_callback_info info);
+        static napi_value TriggerModerateRain(napi_env env, napi_callback_info info);
+        static napi_value TriggerHeavyRain(napi_env env, napi_callback_info info);
+        static napi_value TriggerStormRain(napi_env env, napi_callback_info info);
         void   renderScene();
     
     private:

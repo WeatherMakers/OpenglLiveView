@@ -7,6 +7,7 @@
 #include "example/RainSceneRenderer.h"
 #include "example/SnowSceneRenderer.h"
 #include "example/CloudSceneRenderer.h"
+#include "example/FullSceneRenderer.h"
 
 using namespace hiveVG;
 
@@ -23,6 +24,41 @@ CNativeRenderer::CNativeRenderer()
 }
 
 CNativeRenderer::~CNativeRenderer() { __deleteSafely(m_pExample); }
+napi_value CNativeRenderer::TriggerLightning(napi_env env, napi_callback_info info)
+{
+    LOGI("TriggerLightning called.");
+    return nullptr;
+}
+
+napi_value CNativeRenderer::TriggerCloud(napi_env env, napi_callback_info info)
+{
+    LOGI("TriggerCloud called.");
+    return nullptr;
+}
+
+napi_value CNativeRenderer::TriggerLightRain(napi_env env, napi_callback_info info)
+{
+    LOGI("TriggerLightRain called.");
+    return nullptr;
+}
+
+napi_value CNativeRenderer::TriggerModerateRain(napi_env env, napi_callback_info info)
+{
+    LOGI("TriggerModerateRain called.");
+    return nullptr;
+}
+
+napi_value CNativeRenderer::TriggerHeavyRain(napi_env env, napi_callback_info info)
+{
+    LOGI("TriggerHeavyRain called.");
+    return nullptr;
+}
+
+napi_value CNativeRenderer::TriggerStormRain(napi_env env, napi_callback_info info)
+{
+    LOGI("TriggerStormRain called.");
+    return nullptr;
+}
 
 napi_value CNativeRenderer::SetRenderType(napi_env env, napi_callback_info info)
 {
@@ -60,6 +96,9 @@ napi_value CNativeRenderer::SetRenderType(napi_env env, napi_callback_info info)
         case CLOUD_RENDER_TYPE:
             pExample = new CCloudSceneRenderer();
             break;
+        case FULL_SCENE_RENDER_TYPE:
+            pExample = new CFullSceneRenderer();
+            break;
         default:
             pExample = new CSinglePlayerRenderer();
             break;
@@ -92,7 +131,7 @@ void CNativeRenderer::renderScene()
     eglQuerySurface(m_EglDisplay, m_EglSurface, EGL_HEIGHT, &Height);
     
     int renderWidth = Width;
-    int renderHeight = Height / 4;
+    int renderHeight = Height / 2;
     int offsetX = 0;
     int offsetY = (Height - renderHeight) / 4 * 3;
     
@@ -114,7 +153,13 @@ napi_value CNativeRenderer::Init(napi_env env, napi_value exports)
 {
     napi_property_descriptor desc[] = {
         {"setResourceManager", nullptr, CAppContext::setResourceManager, nullptr, nullptr, nullptr, napi_default, nullptr},
-        {"setRenderType", nullptr, SetRenderType, nullptr, nullptr, nullptr, napi_default, nullptr}
+        {"setRenderType", nullptr, SetRenderType, nullptr, nullptr, nullptr, napi_default, nullptr},
+        {"triggerLightning", nullptr, TriggerLightning, nullptr, nullptr, nullptr, napi_default, nullptr},
+        {"triggerCloud", nullptr, TriggerCloud, nullptr, nullptr, nullptr, napi_default, nullptr},
+        {"triggerLightRain", nullptr, TriggerLightRain, nullptr, nullptr, nullptr, napi_default, nullptr},
+        {"triggerModerateRain", nullptr, TriggerModerateRain, nullptr, nullptr, nullptr, napi_default, nullptr},
+        {"triggerHeavyRain", nullptr, TriggerHeavyRain, nullptr, nullptr, nullptr, napi_default, nullptr},
+        {"triggerStormRain", nullptr, TriggerStormRain, nullptr, nullptr, nullptr, napi_default, nullptr}
     };
     napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc);
     napi_value exportInstance = nullptr;
@@ -241,11 +286,10 @@ void CNativeRenderer::HandleOnSurfaceChanged(uint64_t vWidth, uint64_t vHeight)
 {
     if (m_EglDisplay != EGL_NO_DISPLAY)
     {
-        // 宽度保持全屏，高度使用1/4屏幕（居中显示）
         int renderWidth = vWidth;
-        int renderHeight = vHeight / 4;
+        int renderHeight = vHeight / 2;
         int offsetX = 0;
-        int offsetY = (vHeight - renderHeight) / 3;
+        int offsetY = (vHeight - renderHeight) / 4 * 3;
         
         glViewport(offsetX, offsetY, renderWidth, renderHeight);
         glClearColor(0.0, 1.0, 1.0, 1.0);
