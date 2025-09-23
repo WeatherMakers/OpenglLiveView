@@ -20,6 +20,10 @@ namespace hiveVG
         static CTexture2D *loadTexture(const std::string &vTexturePath, EPictureType::EPictureType vPictureType = EPictureType::PNG);
         static CTexture2D *loadTexture(const std::string &vTexturePath, int &voWidth, int &voHeight, EPictureType::EPictureType &vPictureType);
         static CTexture2D *createEmptyTexture(int vWidth, int vHeight, int vChannels);
+        static bool       loadAstcToMemory(const std::string &vTexturePath,
+                                  std::vector<unsigned char> &outData,
+                                  int &outWidth, int &outHeight);
+        static CTexture2D* createFromAstcMemory(const std::vector<unsigned char> &data);
         ~CTexture2D();
         [[nodiscard]] constexpr GLuint getTextureHandle() const { return m_TextureHandle; }
         void bindTexture() const;
