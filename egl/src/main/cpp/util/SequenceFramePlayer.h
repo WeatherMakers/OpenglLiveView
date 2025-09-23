@@ -99,7 +99,7 @@ namespace hiveVG
         glm::vec2 m_WindowSize     = glm::vec2(0.0f, 0.0f);
         glm::vec2 m_MovingSpeed    = glm::vec2(0.1f, 0.0f);
         EPictureType::EPictureType m_TextureType = EPictureType::PNG;
-        std::vector<CTexture2D *>  m_SeqTextures;
+        std::vector<CTexture2D*>   m_SeqTextures;
         CShaderProgram*            m_pSequenceShaderProgram = nullptr;
 
     };
