@@ -9,9 +9,7 @@ uniform int channelIndex;
 
 void main()
 {
-    vec2 BackgroundCoord = TexCoord;
-    BackgroundCoord.y = 1.0 - BackgroundCoord.y;
-    vec4 BackgroundColor = texture(backgroundTexture, BackgroundCoord);
+    vec4 BackgroundColor = texture(backgroundTexture, TexCoord);
     float LightMask = BackgroundColor.a;
 
     vec4 RainColor = texture(rainSequenceTexture, TexCoord);

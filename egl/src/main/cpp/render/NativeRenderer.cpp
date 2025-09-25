@@ -24,39 +24,70 @@ CNativeRenderer::CNativeRenderer()
 }
 
 CNativeRenderer::~CNativeRenderer() { __deleteSafely(m_pExample); }
+
 napi_value CNativeRenderer::TriggerLightning(napi_env env, napi_callback_info info)
 {
     LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerLightning called.");
+    auto Renderer = getInstance();
+    if (Renderer->m_pExample && dynamic_cast<CFullSceneRenderer*>(Renderer->m_pExample))
+    {
+        static_cast<CFullSceneRenderer*>(Renderer->m_pExample)->toggleLightning();
+    }
     return nullptr;
 }
 
 napi_value CNativeRenderer::TriggerCloud(napi_env env, napi_callback_info info)
 {
     LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerCloud called.");
+    auto Renderer = getInstance();
+    if (Renderer->m_pExample && dynamic_cast<CFullSceneRenderer*>(Renderer->m_pExample))
+    {
+        static_cast<CFullSceneRenderer*>(Renderer->m_pExample)->toggleCloud();
+    }
     return nullptr;
 }
 
 napi_value CNativeRenderer::TriggerLightRain(napi_env env, napi_callback_info info)
 {
     LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerLightRain called.");
+    auto Renderer = getInstance();
+    if (Renderer->m_pExample && dynamic_cast<CFullSceneRenderer*>(Renderer->m_pExample))
+    {
+        static_cast<CFullSceneRenderer*>(Renderer->m_pExample)->setChannel(ERenderChannel::R);
+    }
     return nullptr;
 }
 
 napi_value CNativeRenderer::TriggerModerateRain(napi_env env, napi_callback_info info)
 {
     LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerModerateRain called.");
+    auto Renderer = getInstance();
+    if (Renderer->m_pExample && dynamic_cast<CFullSceneRenderer*>(Renderer->m_pExample))
+    {
+        static_cast<CFullSceneRenderer*>(Renderer->m_pExample)->setChannel(ERenderChannel::G);
+    }
     return nullptr;
 }
 
 napi_value CNativeRenderer::TriggerHeavyRain(napi_env env, napi_callback_info info)
 {
     LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerHeavyRain called.");
+    auto Renderer = getInstance();
+    if (Renderer->m_pExample && dynamic_cast<CFullSceneRenderer*>(Renderer->m_pExample))
+    {
+        static_cast<CFullSceneRenderer*>(Renderer->m_pExample)->setChannel(ERenderChannel::B);
+    }
     return nullptr;
 }
 
 napi_value CNativeRenderer::TriggerStormRain(napi_env env, napi_callback_info info)
 {
     LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerStormRain called.");
+    auto Renderer = getInstance();
+    if (Renderer->m_pExample && dynamic_cast<CFullSceneRenderer*>(Renderer->m_pExample))
+    {
+        static_cast<CFullSceneRenderer*>(Renderer->m_pExample)->setChannel(ERenderChannel::A);
+    }
     return nullptr;
 }
 
