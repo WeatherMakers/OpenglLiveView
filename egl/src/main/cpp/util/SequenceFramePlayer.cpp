@@ -49,7 +49,7 @@ bool CSequenceFramePlayer::initTextureAndShaderProgram()
 
     if (!m_pSequenceShaderProgram)
     {
-        LOGE( "[%{public}s] ShaderProgram init Failed.", m_TextureRootPath.c_str());
+        LOGE(TAG_KEYWORD::SEQFRAME_PALYER_TAG, "[%{public}s] ShaderProgram init Failed.", m_TextureRootPath.c_str());
         return false;
     }
     assert(m_pSequenceShaderProgram != nullptr);
@@ -67,15 +67,26 @@ bool CSequenceFramePlayer::initTextureAndShaderProgram()
         CTexture2D* pSequenceTexture = CTexture2D::loadTexture(TexturePath, m_SequenceWidth, m_SequenceHeight, m_TextureType);
         if (!pSequenceTexture)
         {
-            LOGE("Error loading texture from path [%{public}s].", TexturePath.c_str());
+            LOGE(TAG_KEYWORD::SEQFRAME_PALYER_TAG, "Error loading texture from path [%{public}s].", TexturePath.c_str());
             return false;
         }
         m_SeqTextures.push_back(pSequenceTexture);
     }
+    
+//    std::vector<std::string> TexturePaths;
+//    TexturePaths.reserve(m_TextureCount);
+//    for (int i = 0; i < m_TextureCount; i++) 
+//    {
+//        std::string TexturePath = m_TextureRootPath + "frame_" + std::string(3 - std::to_string(i + 1).length(), '0') + std::to_string(i + 1) + PictureSuffix;
+//        TexturePaths.push_back(TexturePath);
+//    }
+//
+//    m_SeqTextures = CTexture2D::loadTexturesBatch(TexturePaths); 
+    
     m_SeqSingleTexWidth  = m_SequenceWidth / m_SequenceCols;
     m_SeqSingleTexHeight = m_SequenceHeight / m_SequenceRows;
     
-    LOGI("%{public}s frames load Succeed. Program Created Succeed.", m_TextureRootPath.c_str());
+    LOGI(TAG_KEYWORD::SEQFRAME_PALYER_TAG, "%{public}s frames load Succeed. Program Created Succeed.", m_TextureRootPath.c_str());
     return true;
 }
 
@@ -95,7 +106,7 @@ bool CSequenceFramePlayer::initTextureAndShaderProgram(const std::string& vVerte
         CTexture2D* pSequenceTexture = CTexture2D::loadTexture(TexturePath, m_SequenceWidth, m_SequenceHeight, m_TextureType);
         if (!pSequenceTexture)
         {
-            LOGE( "Error loading texture from path [%{public}s].", TexturePath.c_str());
+            LOGE(TAG_KEYWORD::SEQFRAME_PALYER_TAG, "Error loading texture from path [%{public}s].", TexturePath.c_str());
             return false;
         }
         m_SeqTextures.push_back(pSequenceTexture);
@@ -107,11 +118,11 @@ bool CSequenceFramePlayer::initTextureAndShaderProgram(const std::string& vVerte
 
     if (!m_pSequenceShaderProgram)
     {
-        LOGE( "[%{public}s] ShaderProgram init Failed.", m_TextureRootPath.c_str());
+        LOGE(TAG_KEYWORD::SEQFRAME_PALYER_TAG, "[%{public}s] ShaderProgram init Failed.", m_TextureRootPath.c_str());
         return false;
     }
     assert(m_pSequenceShaderProgram != nullptr);
-    LOGI("%{public}s frames load Succeed. Program Created Succeed.", m_TextureRootPath.c_str());
+    LOGI(TAG_KEYWORD::SEQFRAME_PALYER_TAG, "%{public}s frames load Succeed. Program Created Succeed.", m_TextureRootPath.c_str());
     return true;
 }
 

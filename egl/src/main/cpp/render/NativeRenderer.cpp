@@ -26,37 +26,37 @@ CNativeRenderer::CNativeRenderer()
 CNativeRenderer::~CNativeRenderer() { __deleteSafely(m_pExample); }
 napi_value CNativeRenderer::TriggerLightning(napi_env env, napi_callback_info info)
 {
-    LOGI("TriggerLightning called.");
+    LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerLightning called.");
     return nullptr;
 }
 
 napi_value CNativeRenderer::TriggerCloud(napi_env env, napi_callback_info info)
 {
-    LOGI("TriggerCloud called.");
+    LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerCloud called.");
     return nullptr;
 }
 
 napi_value CNativeRenderer::TriggerLightRain(napi_env env, napi_callback_info info)
 {
-    LOGI("TriggerLightRain called.");
+    LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerLightRain called.");
     return nullptr;
 }
 
 napi_value CNativeRenderer::TriggerModerateRain(napi_env env, napi_callback_info info)
 {
-    LOGI("TriggerModerateRain called.");
+    LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerModerateRain called.");
     return nullptr;
 }
 
 napi_value CNativeRenderer::TriggerHeavyRain(napi_env env, napi_callback_info info)
 {
-    LOGI("TriggerHeavyRain called.");
+    LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerHeavyRain called.");
     return nullptr;
 }
 
 napi_value CNativeRenderer::TriggerStormRain(napi_env env, napi_callback_info info)
 {
-    LOGI("TriggerStormRain called.");
+    LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerStormRain called.");
     return nullptr;
 }
 
@@ -110,7 +110,7 @@ napi_value CNativeRenderer::SetRenderType(napi_env env, napi_callback_info info)
         } 
         else
         {
-            LOGE("Init example failed in SetRenderType.");
+            LOGE(TAG_KEYWORD::NATIVE_RENDERER_TAG, "Init example failed in SetRenderType.");
             if (pExample != nullptr)
             {
                 delete pExample;
@@ -165,33 +165,33 @@ napi_value CNativeRenderer::Init(napi_env env, napi_value exports)
     napi_value exportInstance = nullptr;
     if (napi_ok != napi_get_named_property(env, exports, OH_NATIVE_XCOMPONENT_OBJ, &exportInstance))
     {
-        LOGE("解析参数出错");
+        LOGE(TAG_KEYWORD::NATIVE_RENDERER_TAG, "解析参数出错");
         return nullptr;
     } 
     else
     {
-        LOGI("解析参数成功");
+        LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "解析参数成功");
     }
     OH_NativeXComponent *pNativeXComponent = nullptr;
     if (napi_ok != napi_unwrap(env, exportInstance, reinterpret_cast<void **>(&pNativeXComponent)))
     {
-        LOGE("获取OH_NativeXComponent对象出错");
+        LOGE(TAG_KEYWORD::NATIVE_RENDERER_TAG, "获取OH_NativeXComponent对象出错");
         return nullptr;
     } 
     else
     {
-        LOGI("获取OH_NativeXComponent对象成功");
+        LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "获取OH_NativeXComponent对象成功");
     }
     char idStr[OH_XCOMPONENT_ID_LEN_MAX + 1] = {'\0'};
     uint64_t size = OH_XCOMPONENT_ID_LEN_MAX + 1;
     if (napi_ok != OH_NativeXComponent_GetXComponentId(pNativeXComponent, idStr, &size))
     {
-        LOGE("获取XComponentId出错");
+        LOGE(TAG_KEYWORD::NATIVE_RENDERER_TAG, "获取XComponentId出错");
         return nullptr;
     } 
     else
     {
-        LOGI("获取XComponentId成功");
+        LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "获取XComponentId成功");
     }
 
     auto Renderer = getInstance();
@@ -201,14 +201,14 @@ napi_value CNativeRenderer::Init(napi_env env, napi_value exports)
     Renderer->m_Callback.OnSurfaceDestroyed = CNativeRenderer::OnSurfaceDestroyed;
     OH_NativeXComponent_RegisterCallback(Renderer->m_NativeXComponent, &Renderer->m_Callback);
     OH_NativeXComponent_RegisterOnFrameCallback(Renderer->m_NativeXComponent, OnFrame);
-    LOGI("Callbacks registered.");
+    LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "Callbacks registered.");
     return nullptr;
 }
 
 // 静态回调函数，当 surface 创建时被系统调用
 void CNativeRenderer::OnSurfaceCreated(OH_NativeXComponent *vComponent, void *vWindow)
 {
-    LOGI("OnSurfaceCreated callback triggered.");
+    LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "OnSurfaceCreated callback triggered.");
     uint64_t Width, Height;
     OH_NativeXComponent_GetXComponentSize(vComponent, vWindow, &Width, &Height);
 
@@ -224,7 +224,7 @@ void CNativeRenderer::OnSurfaceCreated(OH_NativeXComponent *vComponent, void *vW
 
 void CNativeRenderer::OnSurfaceChanged(OH_NativeXComponent *vComponent, void *vWindow)
 {
-    LOGD("OnSurfaceChanged callback triggered.");
+    LOGD(TAG_KEYWORD::NATIVE_RENDERER_TAG, "OnSurfaceChanged callback triggered.");
     uint64_t Width, Height;
     OH_NativeXComponent_GetXComponentSize(vComponent, vWindow, &Width, &Height);
     getInstance()->HandleOnSurfaceChanged(Width, Height);
@@ -232,7 +232,7 @@ void CNativeRenderer::OnSurfaceChanged(OH_NativeXComponent *vComponent, void *vW
 
 void CNativeRenderer::OnSurfaceDestroyed(OH_NativeXComponent *vComponent, void *vWindow)
 {
-    LOGD("OnSurfaceDestroyed callback triggered.");
+    LOGD(TAG_KEYWORD::NATIVE_RENDERER_TAG, "OnSurfaceDestroyed callback triggered.");
     getInstance()->HandleOnSurfaceDestroyed();
 }
 
@@ -273,13 +273,13 @@ void CNativeRenderer::HandleOnSurfaceCreated(void *vWindow)
                 m_TypeToExample[m_CurrentType] = m_pExample; // 缓存
             } else
             {
-                LOGE("Init example failed on surface created.");
+                LOGE(TAG_KEYWORD::NATIVE_RENDERER_TAG, "Init example failed on surface created.");
                 __deleteSafely(m_pExample);
             }
         }
     }
 
-    LOGI("Render example created and initialized.");
+    LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "Render example created and initialized.");
 }
 
 void CNativeRenderer::HandleOnSurfaceChanged(uint64_t vWidth, uint64_t vHeight)
@@ -293,7 +293,7 @@ void CNativeRenderer::HandleOnSurfaceChanged(uint64_t vWidth, uint64_t vHeight)
         
         glViewport(offsetX, offsetY, renderWidth, renderHeight);
         glClearColor(0.0, 1.0, 1.0, 1.0);
-        LOGI("Viewport updated to %{public}lu x %{public}lu, render area: %{public}d x %{public}d at (%{public}d, %{public}d)", 
+        LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "Viewport updated to %{public}lu x %{public}lu, render area: %{public}d x %{public}d at (%{public}d, %{public}d)", 
              vWidth, vHeight, renderWidth, renderHeight, offsetX, offsetY);
     }
 }
@@ -319,14 +319,14 @@ bool CNativeRenderer::EglInitialization(void *vWindow)
     m_EglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
     if (m_EglDisplay == EGL_NO_DISPLAY)
     {
-        LOGE("Failed to get EGL display.");
+        LOGE(TAG_KEYWORD::NATIVE_RENDERER_TAG, "Failed to get EGL display.");
         return false;
     }
 
     EGLint Major, Minor;
     if (!eglInitialize(m_EglDisplay, &Major, &Minor))
     {
-        LOGE("Failed to initialize EGL.");
+        LOGE(TAG_KEYWORD::NATIVE_RENDERER_TAG, "Failed to initialize EGL.");
         return false;
     }
 
@@ -351,14 +351,14 @@ bool CNativeRenderer::EglInitialization(void *vWindow)
     EGLint NumConfigs;
     if (!eglChooseConfig(m_EglDisplay, Attribs, &m_EglConfig, 1, &NumConfigs) || NumConfigs == 0)
     {
-        LOGE("Failed to choose EGL config.");
+        LOGE(TAG_KEYWORD::NATIVE_RENDERER_TAG, "Failed to choose EGL config.");
         return false;
     }
 
     m_EglSurface = eglCreateWindowSurface(m_EglDisplay, m_EglConfig, reinterpret_cast<EGLNativeWindowType>(vWindow), nullptr);
     if (m_EglSurface == EGL_NO_SURFACE)
     {
-        LOGE("Failed to create EGL window surface. EGL error: %{public}d", eglGetError());
+        LOGE(TAG_KEYWORD::NATIVE_RENDERER_TAG, "Failed to create EGL window surface. EGL error: %{public}d", eglGetError());
         return false;
     }
 
@@ -366,18 +366,18 @@ bool CNativeRenderer::EglInitialization(void *vWindow)
     m_EglContext = eglCreateContext(m_EglDisplay, m_EglConfig, EGL_NO_CONTEXT, ContextAttribs);
     if (m_EglContext == EGL_NO_CONTEXT)
     {
-        LOGE("Failed to create EGL context. EGL error: %{public}d", eglGetError());
+        LOGE(TAG_KEYWORD::NATIVE_RENDERER_TAG, "Failed to create EGL context. EGL error: %{public}d", eglGetError());
         return false;
     }
 
     if (!eglMakeCurrent(m_EglDisplay, m_EglSurface, m_EglSurface, m_EglContext))
     {
-        LOGE("Failed to make EGL context current. EGL error: %{public}d", eglGetError());
+        LOGE(TAG_KEYWORD::NATIVE_RENDERER_TAG, "Failed to make EGL context current. EGL error: %{public}d", eglGetError());
         return false;
     }
 
     m_ContextReady = true;
-    LOGI("EGL Initialized successfully. Version: %{public}d.%{public}d", Major, Minor);
+    LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "EGL Initialized successfully. Version: %{public}d.%{public}d", Major, Minor);
     return true;
 }
 
@@ -399,5 +399,5 @@ void CNativeRenderer::EglTermination()
         eglTerminate(m_EglDisplay);
         m_EglDisplay = EGL_NO_DISPLAY;
     }
-    LOGI("EGL terminated.");
+    LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "EGL terminated.");
 }

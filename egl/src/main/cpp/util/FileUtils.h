@@ -1,7 +1,9 @@
 #pragma once
-#include "log.h"
+
 #include <cstdio>
 #include <rawfile/raw_file_manager.h>
+#include "log.h"
+#include "Common.h"
 
 struct RawFile;
 
@@ -23,7 +25,7 @@ namespace hiveVG
     {
         if (!vFile || !vBuffer)
         {
-            LOGE("Invalid parameters.");
+            LOGE(TAG_KEYWORD::FILE_UTILS_TAG, "Invalid parameters.");
             return -1;
         }
         
@@ -34,7 +36,7 @@ namespace hiveVG
             long bytesRead = OH_ResourceManager_ReadRawFile(pRawFile, vBuffer, bytesToRead);
             if (bytesRead < 0)
             {
-                LOGE("Failed to read from resource file");
+                LOGE(TAG_KEYWORD::FILE_UTILS_TAG, "Failed to read from resource file");
                 return -1;
             }
             return static_cast<int>(bytesRead / sizeof(T));
@@ -45,7 +47,7 @@ namespace hiveVG
             size_t elementsRead = fread(vBuffer, sizeof(T), vElementCount, pFile);
             if (elementsRead != vElementCount && ferror(pFile))
             {
-                LOGE("Failed to read from file");
+                LOGE(TAG_KEYWORD::FILE_UTILS_TAG, "Failed to read from file");
                 return -1;
             }
             return static_cast<int>(elementsRead);

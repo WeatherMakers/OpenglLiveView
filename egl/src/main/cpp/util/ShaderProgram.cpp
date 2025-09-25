@@ -109,7 +109,7 @@ bool CShaderProgram::__compileShader(GLenum vType, const std::string& vShaderPat
     {
         GLchar InfoLog[1024];
         glGetShaderInfoLog(voShaderHandle, 1024, nullptr, InfoLog);
-        LOGE("Failed to compile shader: %{public}s; Reason: %{public}s", vShaderPath.c_str(), InfoLog);
+        LOGE(TAG_KEYWORD::SHADER_PROGRAM_TAG, "Failed to compile shader: %{public}s; Reason: %{public}s", vShaderPath.c_str(), std::string(InfoLog).c_str());
         glDeleteShader(voShaderHandle);
         voShaderHandle = 0;
         return false;
@@ -133,7 +133,7 @@ bool CShaderProgram::__linkProgram(const std::vector<GLuint>& vShaderHandles, GL
     {
         GLchar InfoLog[1024];
         glGetProgramInfoLog(voProgramHandle, 1024, nullptr, InfoLog);
-        LOGE("Failed to link shader program: %{public}s", InfoLog);
+        LOGE(TAG_KEYWORD::SHADER_PROGRAM_TAG, "Failed to link shader program: %{public}s", std::string(InfoLog).c_str());
         glDeleteProgram(voProgramHandle);
         voProgramHandle = 0;
         return false;
@@ -150,7 +150,7 @@ GLint CShaderProgram::__getOrCreateUniformId(const std::string& vUniformName)
     const auto UniformId = glGetUniformLocation(m_ProgramHandle, vUniformName.c_str());
     if (UniformId == -1)
     {
-        LOGE("Uniform %{public}s does not exist or is not set correctly", vUniformName.c_str());
+        LOGE(TAG_KEYWORD::SHADER_PROGRAM_TAG, "Uniform %{public}s does not exist or is not set correctly", vUniformName.c_str());
     }
     m_UniformIdMap[vUniformName] = UniformId;
     return UniformId;

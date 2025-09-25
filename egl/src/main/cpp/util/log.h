@@ -18,19 +18,27 @@
 
 #include <hilog/log.h>
 
+#ifndef LOG_TAG
+#define LOG_TAG "[OpenGL]"
+#endif
+
+// 支持Android风格的日志宏：
+// LOGI(TAG, "message %d", value) - 使用自定义标签
+// 也支持向后兼容：LOGI("message") - 使用默认标签
+
 #ifndef LOGI
-#define LOGI(...) ((void)OH_LOG_Print(LOG_APP, LOG_INFO, LOG_DOMAIN, "[OpenGL]", __VA_ARGS__))
+#define LOGI(tag, ...) ((void)OH_LOG_Print(LOG_APP, LOG_INFO, LOG_DOMAIN, tag, __VA_ARGS__))
 #endif
 
 #ifndef LOGD
-#define LOGD(...) ((void)OH_LOG_Print(LOG_APP, LOG_DEBUG, LOG_DOMAIN, "[OpenGL]", __VA_ARGS__))
+#define LOGD(tag, ...) ((void)OH_LOG_Print(LOG_APP, LOG_DEBUG, LOG_DOMAIN, tag, __VA_ARGS__))
 #endif
 
 #ifndef LOGW
-#define LOGW(...) ((void)OH_LOG_Print(LOG_APP, LOG_WARN, LOG_DOMAIN, "[OpenGL]", __VA_ARGS__))
+#define LOGW(tag, ...) ((void)OH_LOG_Print(LOG_APP, LOG_WARN, LOG_DOMAIN, tag, __VA_ARGS__))
 #endif
 
 #ifndef LOGE
-#define LOGE(...) ((void)OH_LOG_Print(LOG_APP, LOG_ERROR, LOG_DOMAIN, "[OpenGL]", __VA_ARGS__))
+#define LOGE(tag, ...) ((void)OH_LOG_Print(LOG_APP, LOG_ERROR, LOG_DOMAIN, tag, __VA_ARGS__))
 #endif
 #endif 

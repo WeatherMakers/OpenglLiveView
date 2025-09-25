@@ -25,12 +25,25 @@ namespace hiveVG::TAG_KEYWORD
     const char *const BLENDER_MANAGER_TAG       = "CBlendManager";
     const char *const SYSTEMTEST_TAG            = "SystemTest";
     const char *const SNOW_STYLIZE_TAG          = "SnowStylize";
-    const char *const FILE_UTILS_TAG            = "FileUtils";
     const char *const APP_CONTEXT_TAG           = "AppContext";
     const char *const UNIT_TEST_TAG             = "UnitTest";
     const char *const WEATHER_TAG               = "Weather";
     const char *const EFFECT_TEST_TAG           = "EffectTest";
     const char *const SPLASH_MANAGER_TAG        = "CSplashManager";
+    
+    // Renderer class tags
+    const char *const SINGLE_PLAYER_RENDERER_TAG = "CSinglePlayerRenderer";
+    const char *const SEQ_PLAYER_RENDERER_TAG = "CSeqPlayerRenderer";
+    const char *const RAIN_SCENE_RENDERER_TAG = "CRainSceneRenderer";
+    const char *const SNOW_SCENE_RENDERER_TAG = "CSnowSceneRenderer";
+    const char *const CLOUD_SCENE_RENDERER_TAG = "CCloudSceneRenderer";
+    const char *const FULL_SCENE_RENDERER_TAG  = "CFullSceneRenderer";
+    const char *const NATIVE_RENDERER_TAG = "CNativeRenderer";
+    const char *const FILE_UTILS_TAG           = "FileUtils";
+    const char *const SCREEN_QUAD_TAG          = "CScreenQuad";
+    const char *const SINGLE_TEXTURE_PLAYER_TAG = "CSingleTexturePlayer";
+    const char *const LIGHTNING_SEQUENCE_PLAYER_TAG = "CLightningSequencePlayer";
+    const char *const NIGHT_SCENE_SEQUENCE_PLAYER_TAG = "CNightSceneSequencePlayer";
 }
 
 namespace hiveVG::CONFIG_KEYWORD

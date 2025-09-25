@@ -1,5 +1,6 @@
 #include "ScreenQuad.h"
 #include "log.h"
+#include "Common.h"
 
 using namespace hiveVG;
 
@@ -17,14 +18,14 @@ CScreenQuad::~CScreenQuad()
     m_IndexBufferHandle = 0;
     glDeleteVertexArrays(1, &m_VAOHandle);
     m_VAOHandle = 0;
-    LOGI("CScreenQuad destroyed.");
+    LOGI(TAG_KEYWORD::SCREEN_QUAD_TAG, "CScreenQuad destroyed.");
 }
 
 void CScreenQuad::bindAndDraw()
 {
     if (!m_initialized && !init())
     {
-        LOGE("CScreenQuad init failed in bindAndDraw");
+        LOGE(TAG_KEYWORD::SCREEN_QUAD_TAG, "CScreenQuad init failed in bindAndDraw");
         return;
     }
     glBindVertexArray(m_VAOHandle);
@@ -40,7 +41,7 @@ bool CScreenQuad::init()
         return true;
     if (!eglGetCurrentContext())
     {
-        LOGE("No valid OpenGL context in CScreenQuad init");
+        LOGE(TAG_KEYWORD::SCREEN_QUAD_TAG, "No valid OpenGL context in CScreenQuad init");
         return false;
     }
     constexpr float Vertices[] = {-1.0f, 1.0f, 0.0f, 0.0f, 1.0f,  1.0f,  1.0f, 0.0f,
@@ -64,6 +65,6 @@ bool CScreenQuad::init()
     glEnableVertexAttribArray(1);
     glBindVertexArray(0);
     m_initialized = true;
-    LOGI("CScreenQuad initialized successfully.");
+    LOGI(TAG_KEYWORD::SCREEN_QUAD_TAG, "CScreenQuad initialized successfully.");
     return true;
 }

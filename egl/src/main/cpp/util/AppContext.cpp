@@ -1,4 +1,5 @@
 #include "AppContext.h"
+#include "Common.h"
 #include "log.h"
 #include "native_common.h"
 
@@ -14,14 +15,14 @@ napi_value CAppContext::setResourceManager(napi_env env, napi_callback_info info
     napi_value args[1];
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, args, nullptr, nullptr));
     m_pNativeResManager = OH_ResourceManager_InitNativeResourceManager(env, args[0]);
-    LOGI("Resource manager sets down!");
+    LOGI(TAG_KEYWORD::APP_CONTEXT_TAG, "Resource manager sets down!");
     return 0;
 }
 
 NativeResourceManager* CAppContext::getResourceManager()
 {
     if (m_pNativeResManager == nullptr)
-        LOGE("Resource manager does not exist.");
+        LOGE(TAG_KEYWORD::APP_CONTEXT_TAG, "Resource manager does not exist.");
     return m_pNativeResManager;
 }
 
@@ -37,6 +38,6 @@ void CAppContext::setStoragePath(const std::string &vPath)
 std::string CAppContext::getStoragePath()
 {
     if(m_StoragePath.empty())
-        LOGE("Storage path does not set.");
+        LOGE(TAG_KEYWORD::APP_CONTEXT_TAG, "Storage path does not set.");
     return m_StoragePath;
 }

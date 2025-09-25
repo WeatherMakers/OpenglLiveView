@@ -21,16 +21,16 @@ bool CSinglePlayerRenderer::init()
     m_pTexturePlayer = new CSingleTexturePlayer(m_TexturePath, m_TextureType);
     if (!m_pTexturePlayer->initTextureAndShaderProgram())
     {
-        LOGE("Failed to initialize texture and shader program");
+        LOGE(TAG_KEYWORD::SINGLE_PLAYER_RENDERER_TAG, "Failed to initialize texture and shader program");
         return false;
     }
     m_pScreenQuad = &CScreenQuad::getInstance();
     if (!m_pScreenQuad->init())
     {
-        LOGE("Failed to initialize CScreenQuad");
+        LOGE(TAG_KEYWORD::SINGLE_PLAYER_RENDERER_TAG, "Failed to initialize CScreenQuad");
         return false;
     }
-    LOGI("SinglePlayer inits successfully.");
+    LOGI(TAG_KEYWORD::SINGLE_PLAYER_RENDERER_TAG, "SinglePlayer inits successfully.");
     return true;
 }
 

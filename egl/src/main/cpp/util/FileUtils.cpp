@@ -12,14 +12,14 @@ void *CFileUtils::openFile(const char *vPath, bool vIsLoadFromResource)
         auto* pNativeResManager = static_cast<NativeResourceManager*>(CAppContext::getResourceManager());
         if (!pNativeResManager)
         {
-            LOGE("NativeResourceManager is not initialized");
+            LOGE(TAG_KEYWORD::FILE_UTILS_TAG, "NativeResourceManager is not initialized");
             return nullptr;
         }
         
         RawFile* pRawFile = OH_ResourceManager_OpenRawFile(pNativeResManager, vPath);
         if (!pRawFile)
         {
-            LOGE("Failed to open resource file: %{public}s", vPath);
+            LOGE(TAG_KEYWORD::FILE_UTILS_TAG, "Failed to open resource file: %{public}s", vPath);
             return nullptr;
         }
         return pRawFile;
@@ -29,7 +29,7 @@ void *CFileUtils::openFile(const char *vPath, bool vIsLoadFromResource)
         FILE* pFile = fopen(vPath, "rb");
         if (!pFile)
         {
-            LOGE("Failed to open file: %{public}s", vPath);
+            LOGE(TAG_KEYWORD::FILE_UTILS_TAG, "Failed to open file: %{public}s", vPath);
             return nullptr;
         }
         return pFile;

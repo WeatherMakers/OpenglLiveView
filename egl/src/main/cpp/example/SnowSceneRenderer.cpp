@@ -22,23 +22,23 @@ bool CSnowSceneRenderer::init()
     m_pBackGroundPlayer = new CSingleTexturePlayer(m_BackgroundTexPath,m_PictureType);
     if(!m_pBackGroundPlayer->initTextureAndShaderProgram())
     {
-        LOGE("Failed to initialize single texture and shader program");
+        LOGE(TAG_KEYWORD::SNOW_SCENE_RENDERER_TAG, "Failed to initialize single texture and shader program");
         return false;
     }
     
     m_pTexturePlayer = new CSequenceFramePlayer(m_TextureRootPath, m_TextureCount, m_OneTextureFrames, m_FrameSeconds, m_PictureType);
     if (!m_pTexturePlayer->initTextureAndShaderProgram())
     {
-        LOGE("Failed to initialize sequence texture and shader program");
+        LOGE(TAG_KEYWORD::SNOW_SCENE_RENDERER_TAG, "Failed to initialize sequence texture and shader program");
         return false;
     }
     m_pScreenQuad = &CScreenQuad::getInstance();
     if (!m_pScreenQuad->init())
     {
-        LOGE("Failed to initialize CScreenQuad");
+        LOGE(TAG_KEYWORD::SNOW_SCENE_RENDERER_TAG, "Failed to initialize CScreenQuad");
         return false;
     }
-    LOGI("SnowSceneRenderer initialized successfully");
+    LOGI(TAG_KEYWORD::SNOW_SCENE_RENDERER_TAG, "SnowSceneRenderer initialized successfully");
     return true;
 }
 

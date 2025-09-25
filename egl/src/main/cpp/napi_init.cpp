@@ -1,3 +1,4 @@
+#include "Common.h"
 #include "render/NativeRenderer.h"
 #include "napi/native_api.h"
 #include "log.h"
@@ -7,7 +8,7 @@ using namespace hiveVG;
 EXTERN_C_START
 static napi_value Init(napi_env env, napi_value exports)
 {
-    LOGI("执行 Init ");
+    LOGI(TAG_KEYWORD::MAIN_TAG, "执行 Init ");
     return CNativeRenderer::Init(env, exports);
 }
 EXTERN_C_END

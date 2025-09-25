@@ -41,7 +41,7 @@ bool CSingleTexturePlayer::initTextureAndShaderProgram()
     CTexture2D* pSingleTexture = CTexture2D::loadTexture(m_TexturePath, m_TextureType);
     if (!pSingleTexture)
     {
-        LOGE( "Error loading texture from path [%{public}s].", m_TexturePath.c_str());
+        LOGE(TAG_KEYWORD::SINGLE_TEXTURE_PLAYER_TAG, "Error loading texture from path [%{public}s].", m_TexturePath.c_str());
         return false;
     }
     m_SeqTextures.push_back(pSingleTexture);
@@ -54,7 +54,7 @@ bool CSingleTexturePlayer::initTextureAndShaderProgram()
         m_pSingleShaderProgram = CShaderProgram::createProgram(SingleTexPlayVert, SingleTexPlayFragASTC);
 
     assert(m_pSingleShaderProgram != nullptr);
-    LOGI("%{public}s frames load Succeed. Program Created Succeed.", m_TexturePath.c_str());
+    LOGI(TAG_KEYWORD::SINGLE_TEXTURE_PLAYER_TAG, "%{public}s frames load Succeed. Program Created Succeed.", m_TexturePath.c_str());
     return true;
 }
 
@@ -75,7 +75,7 @@ bool CSingleTexturePlayer::initTextureAndShaderProgram(std::string& vVertexShade
         CTexture2D* pSingleTexture = CTexture2D::loadTexture(TexturePath, m_SeqSingleTexWidth, m_SeqSingleTexHeight, m_TextureType);
         if (!pSingleTexture)
         {
-            LOGE("Error loading texture from path [%{public}s].", m_TexturePath.c_str());
+            LOGE(TAG_KEYWORD::SINGLE_TEXTURE_PLAYER_TAG, "Error loading texture from path [%{public}s].", m_TexturePath.c_str());
             return false;
         }
         m_SeqTextures.push_back(pSingleTexture);
@@ -84,7 +84,7 @@ bool CSingleTexturePlayer::initTextureAndShaderProgram(std::string& vVertexShade
     m_pSingleShaderProgram = CShaderProgram::createProgram(vVertexShaderPath, vFragShaderShaderPath);
 
     assert(m_pSingleShaderProgram != nullptr);
-    LOGI( "%{public}s frames load Succeed. Program Created Succeed.", m_TexturePath.c_str());
+    LOGI(TAG_KEYWORD::SINGLE_TEXTURE_PLAYER_TAG, "%{public}s frames load Succeed. Program Created Succeed.", m_TexturePath.c_str());
     return true;
 }
 
@@ -125,7 +125,7 @@ void CSingleTexturePlayer::updateCompressedFrame(EPlayMode::EPlayMode vPlayMode,
                     m_CurrentTexture = (m_CurrentTexture + 1) % static_cast<int>(m_SeqTextures.size());
             }
         }
-        LOGI( "Frame: %{public}d, SeqTexture: %{public}d, Current Channel: %{public}d", m_CurrentFrame, m_CurrentTexture, m_CurrentChannel);
+        LOGI(TAG_KEYWORD::SINGLE_TEXTURE_PLAYER_TAG, "Frame: %{public}d, SeqTexture: %{public}d, Current Channel: %{public}d", m_CurrentFrame, m_CurrentTexture, m_CurrentChannel);
     }
 }
 
