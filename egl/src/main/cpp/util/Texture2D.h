@@ -24,6 +24,10 @@ namespace hiveVG
         static void startLoadingBatch(const std::vector<std::string>& vTexturePaths, bool IsReadFromAssetManager = true);
         static bool finalizeLoadingBatch(std::vector<CTexture2D*>& out_LoadedTextures, int vMaxToFinalize = 0);
         static CTexture2D *createEmptyTexture(int vWidth, int vHeight, int vChannels);
+        static bool       loadAstcToMemory(const std::string &vTexturePath,
+                                  std::vector<unsigned char> &outData,
+                                  int &outWidth, int &outHeight);
+        static CTexture2D* createFromAstcMemory(const std::vector<unsigned char> &data);
         ~CTexture2D();
         [[nodiscard]] constexpr GLuint getTextureHandle() const { return m_TextureHandle; }
         void bindTexture() const;

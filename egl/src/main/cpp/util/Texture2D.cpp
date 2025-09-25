@@ -400,3 +400,70 @@ GLuint CTexture2D::__createAstcHandle(AstcHeaderInfo& vHeaderInfo, const unsigne
     }
     return TextureHandle;
 }
+bool CTexture2D::loadAstcToMemory(const std::string &vTexturePath,
+                                  std::vector<unsigned char> &outData,
+                                  int &outWidth, int &outHeight)
+{
+    bool IsReadFromAssetManager = true;
+    auto pResource = CFileUtils::openFile(vTexturePath.c_str(), IsReadFromAssetManager);
+    if (!pResource) {
+        IsReadFromAssetManager = false;
+        pResource = CFileUtils::openFile(vTexturePath.c_str(), IsReadFromAssetManager);
+    }
+    if (!pResource) {
+        LOGE("CTexture2D::loadAstcToMemory - failed open: %s", vTexturePath.c_str());
+        return false;
+    }
+
+    size_t AssetSize = CFileUtils::getFileBytes(pResource, IsReadFromAssetManager);
+    if (AssetSize <= 0 || AssetSize <= AstcHeaderSize) {
+        CFileUtils::closeFile(pResource, IsReadFromAssetManager);
+        LOGE("CTexture2D::loadAstcToMemory - invalid file size: %zu (%s)", AssetSize, vTexturePath.c_str());
+        return false;
+    }
+
+    outData.resize(AssetSize);
+    int Flag = CFileUtils::readFile<unsigned char>(pResource, outData.data(), AssetSize, IsReadFromAssetManager);
+    CFileUtils::closeFile(pResource, IsReadFromAssetManager);
+    if (Flag < 0) {
+        LOGE("CTexture2D::loadAstcToMemory - read failed: %s", vTexturePath.c_str());
+        return false;
+    }
+
+    // 解析 header，确保文件有效并获取尺寸
+    AstcHeaderInfo Info;
+    if (!parseAstcHeader(reinterpret_cast<const uint8_t*>(outData.data()), outData.size(), Info)) {
+        LOGE("CTexture2D::loadAstcToMemory - parseAstcHeader failed: %s", vTexturePath.c_str());
+        return false;
+    }
+
+    outWidth  = Info._DimX;
+    outHeight = Info._DimY;
+    return true;
+}
+
+/// 在 GL 上下文线程调用：把内存里的 ASTC 数据上传到 GPU
+/// 返回 new CTexture2D(TextureHandle) 或 nullptr
+CTexture2D* CTexture2D::createFromAstcMemory(const std::vector<unsigned char> &data)
+{
+    if (data.empty() || data.size() <= AstcHeaderSize) {
+        LOGE("CTexture2D::createFromAstcMemory - invalid data size");
+        return nullptr;
+    }
+
+    AstcHeaderInfo Info;
+    if (!parseAstcHeader(reinterpret_cast<const uint8_t*>(data.data()), data.size(), Info)) {
+        LOGE("CTexture2D::createFromAstcMemory - parseAstcHeader failed");
+        return nullptr;
+    }
+
+    // __createAstcHandle 应该会做 glGenTextures + glBind + glCompressedTexImage2D 等
+    GLuint TextureHandle = __createAstcHandle(Info, data.data(), data.size());
+    if (TextureHandle == 0) {
+        LOGE("CTexture2D::createFromAstcMemory - __createAstcHandle failed");
+        return nullptr;
+    }
+
+    // 你的 CTexture2D 构造器接受 GLuint
+    return new CTexture2D(TextureHandle);
+}
