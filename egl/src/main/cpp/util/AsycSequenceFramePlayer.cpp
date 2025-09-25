@@ -50,7 +50,7 @@ bool CAsycSequenceFramePlayer::initTextureAndShaderProgram()
 
     if (!m_pSequenceShaderProgram)
     {
-        LOGE( "[%{public}s] ShaderProgram init Failed.", m_TextureRootPath.c_str());
+        LOGE(TAG_KEYWORD::ASYNC_SEQUENCE_FRAME_PLAYER_TAG, "[%{public}s] ShaderProgram init Failed.", m_TextureRootPath.c_str());
         return false;
     }
     assert(m_pSequenceShaderProgram != nullptr);
@@ -81,7 +81,7 @@ bool CAsycSequenceFramePlayer::initTextureAndShaderProgram()
         m_StopLoader = false;
         m_NextLoadIndex.store(0);
         m_LoadThread = std::thread(&CAsycSequenceFramePlayer::loaderThreadFunc, this);
-        LOGI("%s ASTC loader thread started.", m_TextureRootPath.c_str());
+        LOGI(TAG_KEYWORD::ASYNC_SEQUENCE_FRAME_PLAYER_TAG, "%s ASTC loader thread started.", m_TextureRootPath.c_str());
     }
     else
     {
@@ -90,7 +90,7 @@ bool CAsycSequenceFramePlayer::initTextureAndShaderProgram()
             std::string TexturePath = m_QueuedPaths[i];
             CTexture2D* pTex = CTexture2D::loadTexture(TexturePath, m_SequenceWidth, m_SequenceHeight, m_TextureType);
             if (!pTex) {
-                LOGE("Error loading texture from path [%s].", TexturePath.c_str());
+                LOGE(TAG_KEYWORD::ASYNC_SEQUENCE_FRAME_PLAYER_TAG, "Error loading texture from path [%s].", TexturePath.c_str());
                 return false;
             }
             m_SeqTextures[i] = pTex;
@@ -99,7 +99,7 @@ bool CAsycSequenceFramePlayer::initTextureAndShaderProgram()
     m_SeqSingleTexWidth  = m_SequenceWidth / m_SequenceCols;
     m_SeqSingleTexHeight = m_SequenceHeight / m_SequenceRows;
     
-    LOGI("%{public}s frames load Succeed. Program Created Succeed.", m_TextureRootPath.c_str());
+    LOGI(TAG_KEYWORD::ASYNC_SEQUENCE_FRAME_PLAYER_TAG, "%{public}s frames load Succeed. Program Created Succeed.", m_TextureRootPath.c_str());
     return true;
 }
 
@@ -119,7 +119,7 @@ bool CAsycSequenceFramePlayer::initTextureAndShaderProgram(const std::string& vV
         CTexture2D* pSequenceTexture = CTexture2D::loadTexture(TexturePath, m_SequenceWidth, m_SequenceHeight, m_TextureType);
         if (!pSequenceTexture)
         {
-            LOGE( "Error loading texture from path [%{public}s].", TexturePath.c_str());
+            LOGE(TAG_KEYWORD::ASYNC_SEQUENCE_FRAME_PLAYER_TAG, "Error loading texture from path [%{public}s].", TexturePath.c_str());
             return false;
         }
         m_SeqTextures.push_back(pSequenceTexture);
@@ -131,11 +131,11 @@ bool CAsycSequenceFramePlayer::initTextureAndShaderProgram(const std::string& vV
 
     if (!m_pSequenceShaderProgram)
     {
-        LOGE( "[%{public}s] ShaderProgram init Failed.", m_TextureRootPath.c_str());
+        LOGE(TAG_KEYWORD::ASYNC_SEQUENCE_FRAME_PLAYER_TAG, "[%{public}s] ShaderProgram init Failed.", m_TextureRootPath.c_str());
         return false;
     }
     assert(m_pSequenceShaderProgram != nullptr);
-    LOGI("%{public}s frames load Succeed. Program Created Succeed.", m_TextureRootPath.c_str());
+    LOGI(TAG_KEYWORD::ASYNC_SEQUENCE_FRAME_PLAYER_TAG, "%{public}s frames load Succeed. Program Created Succeed.", m_TextureRootPath.c_str());
     return true;
 }
 
@@ -447,12 +447,12 @@ void CAsycSequenceFramePlayer::loaderThreadFunc()
         double t1 = CTimeUtils::getCurrentTime();
 
         if (!ok) {
-            LOGE("loaderThreadFunc - failed to read ASTC: %s", path.c_str());
+            LOGE(TAG_KEYWORD::ASYNC_SEQUENCE_FRAME_PLAYER_TAG, "loaderThreadFunc - failed to read ASTC: %s", path.c_str());
             // 继续下一个
             continue;
         }
 
-        LOGI("ASTC read to memory: %{public}s (w=%{public}d h=%{public}d) cost: %{public}f", path.c_str(), task.width, task.height, t1 - t0);
+        LOGI(TAG_KEYWORD::ASYNC_SEQUENCE_FRAME_PLAYER_TAG, "ASTC read to memory: %{public}s (w=%{public}d h=%{public}d) cost: %{public}f", path.c_str(), task.width, task.height, t1 - t0);
 
         // push 到主线程待上传队列
         {
@@ -496,16 +496,16 @@ void CAsycSequenceFramePlayer::updateAstcTOGPU()
                         m_SeqTextures[task.index] = nullptr;
                     }
                     m_SeqTextures[task.index] = pTex;
-                    LOGI("ASTC uploaded to GPU: %{public}s (index=%{public}d) upload time: %{public}f", task.path.c_str(), task.index, t1 - t0);
+                    LOGI(TAG_KEYWORD::ASYNC_SEQUENCE_FRAME_PLAYER_TAG, "ASTC uploaded to GPU: %{public}s (index=%{public}d) upload time: %{public}f", task.path.c_str(), task.index, t1 - t0);
                 } else {
-                    LOGW("ASTC uploaded but index out of range: %d", task.index);
+                    LOGW(TAG_KEYWORD::ASYNC_SEQUENCE_FRAME_PLAYER_TAG, "ASTC uploaded but index out of range: %d", task.index);
                     delete pTex;
                 }
             } else {
-                LOGE("Failed to create GL texture from ASTC memory for %s", task.path.c_str());
+                LOGE(TAG_KEYWORD::ASYNC_SEQUENCE_FRAME_PLAYER_TAG, "Failed to create GL texture from ASTC memory for %s", task.path.c_str());
             }
         } else {
-            LOGE("PendingAstc had empty data for %s", task.path.c_str());
+            LOGE(TAG_KEYWORD::ASYNC_SEQUENCE_FRAME_PLAYER_TAG, "PendingAstc had empty data for %s", task.path.c_str());
         }
 
         localQueue.pop();

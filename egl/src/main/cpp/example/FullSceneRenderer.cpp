@@ -19,7 +19,7 @@ CFullSceneRenderer::CFullSceneRenderer()
 
 bool CFullSceneRenderer::init()
 {
-        std::string FileName   = "configs/RainMultiChannelSeqConfig.json";
+    std::string FileName   = "configs/RainMultiChannelSeqConfig.json";
     CJsonReader JsonReader = CJsonReader(FileName);
 
     Json::Value RainConfig = JsonReader.getObject("Rain");

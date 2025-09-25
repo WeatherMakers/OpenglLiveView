@@ -44,6 +44,7 @@ namespace hiveVG::TAG_KEYWORD
     const char *const SINGLE_TEXTURE_PLAYER_TAG = "CSingleTexturePlayer";
     const char *const LIGHTNING_SEQUENCE_PLAYER_TAG = "CLightningSequencePlayer";
     const char *const NIGHT_SCENE_SEQUENCE_PLAYER_TAG = "CNightSceneSequencePlayer";
+    const char *const ASYNC_SEQUENCE_FRAME_PLAYER_TAG = "CAsycSequenceFramePlayer";
 }
 
 namespace hiveVG::CONFIG_KEYWORD

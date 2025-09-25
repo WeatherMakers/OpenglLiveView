@@ -6,7 +6,7 @@
     "Rain": {
         "frames_path": "textures/rain_splash_4channel_ASTC12x12_Linear",
         "frames_type" : "astc",
-        "frames_count": 32,
+        "frames_count": 128,
         "one_texture_frames": 4,
         "fps": 80,
         "vertex_shader" : "shaders/multiChannelRianSeq.vert",
