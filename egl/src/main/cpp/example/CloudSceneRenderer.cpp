@@ -27,7 +27,7 @@ bool CCloudSceneRenderer::init()
     }
     
     m_pTexturePlayer = new CSequenceFramePlayer(m_TextureRootPath, m_TextureCount, m_OneTextureFrames, m_FrameSeconds, m_PictureType);
-    if (!m_pTexturePlayer->initTextureAndShaderProgram())
+    if (!m_pTexturePlayer->initTextureAndShaderProgram(SeqTexPlayVertASTC, SeqTexPlayFragRainCloudASTC))
     {
         LOGE(TAG_KEYWORD::CLOUD_SCENE_RENDERER_TAG, "Failed to initialize sequence texture and shader program");
         return false;

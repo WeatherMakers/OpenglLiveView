@@ -1,7 +1,8 @@
 #include "SnowSceneRenderer.h"
 #include "SequenceFramePlayer.h"
 #include "ScreenQuad.h"
-#include "SingleTexturePlayer.h"
+#include "JsonReader.h"
+#include "TimeUtils.h"
 #include "log.h"
 
 using namespace hiveVG;
@@ -10,48 +11,116 @@ CSnowSceneRenderer::CSnowSceneRenderer() {}
 
 CSnowSceneRenderer::~CSnowSceneRenderer()
 {
-    if (m_pTexturePlayer != nullptr)
-    {
-        delete m_pTexturePlayer;
-        m_pTexturePlayer = nullptr;
-    }
+    if (m_pConfigReader) { delete m_pConfigReader; m_pConfigReader = nullptr; }
+    if (m_pSnowBackgroundPlayer) { delete m_pSnowBackgroundPlayer; m_pSnowBackgroundPlayer = nullptr; }
+    if (m_pBackgroundPlayer)     { delete m_pBackgroundPlayer;     m_pBackgroundPlayer     = nullptr; }
+    if (m_pSnowForegroundPlayer) { delete m_pSnowForegroundPlayer; m_pSnowForegroundPlayer = nullptr; }
 }
 
 bool CSnowSceneRenderer::init()
 {
-    m_pBackGroundPlayer = new CSingleTexturePlayer(m_BackgroundTexPath,m_PictureType);
-    if(!m_pBackGroundPlayer->initTextureAndShaderProgram())
-    {
-        LOGE(TAG_KEYWORD::SNOW_SCENE_RENDERER_TAG, "Failed to initialize single texture and shader program");
-        return false;
-    }
-    
-    m_pTexturePlayer = new CSequenceFramePlayer(m_TextureRootPath, m_TextureCount, m_OneTextureFrames, m_FrameSeconds, m_PictureType);
-    if (!m_pTexturePlayer->initTextureAndShaderProgram())
-    {
-        LOGE(TAG_KEYWORD::SNOW_SCENE_RENDERER_TAG, "Failed to initialize sequence texture and shader program");
-        return false;
-    }
+    if (!m_pConfigReader) m_pConfigReader = new CJsonReader(m_ConfigFile);
+
+    __initBackgroundPlayer();
+//    __initSnowBackgroundPlayer();
+    __initSnowForegroundPlayer();
+
     m_pScreenQuad = &CScreenQuad::getInstance();
     if (!m_pScreenQuad->init())
     {
         LOGE(TAG_KEYWORD::SNOW_SCENE_RENDERER_TAG, "Failed to initialize CScreenQuad");
         return false;
     }
+
     LOGI(TAG_KEYWORD::SNOW_SCENE_RENDERER_TAG, "SnowSceneRenderer initialized successfully");
     return true;
 }
 
 void CSnowSceneRenderer::draw()
 {
-    glClearColor(0.8f, 0.8f, 0.9f, 1.0f);
+    glClearColor(0.345f, 0.345f, 0.345f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_DEPTH_TEST);
-    
-    m_pTexturePlayer->updateSeqKTXFrame(0.016f);
-    m_pTexturePlayer->drawSeqKTX(m_pScreenQuad);
-    m_pBackGroundPlayer->updateFrame();
-    m_pScreenQuad->bindAndDraw();
+
+    m_CurrentTime    = CTimeUtils::getCurrentTime();
+    double DeltaTime = m_CurrentTime - m_LastFrameTime;
+    m_LastFrameTime  = m_CurrentTime;
+
+    // 雪背景与雪前景：按多通道序列更新+绘制（同一张ASTC的不同RGBA通道）
+    if (m_pSnowBackgroundPlayer)
+    {
+        m_pSnowBackgroundPlayer->updateQuantizationFrame(DeltaTime);
+        m_pSnowBackgroundPlayer->drawMultiChannelKTX(m_pScreenQuad);
+    }
+
+    // 背景：逐张ASTC渲染
+    if (m_pBackgroundPlayer)
+    {
+        m_pBackgroundPlayer->updateSeqKTXFrame(DeltaTime);
+        m_pBackgroundPlayer->drawSeqKTX(m_pScreenQuad);
+    }
+
+    // 雪前景：按多通道序列更新+绘制
+    if (m_pSnowForegroundPlayer)
+    {
+        m_pSnowForegroundPlayer->updateQuantizationFrame(DeltaTime);
+        m_pSnowForegroundPlayer->drawMultiChannelKTX(m_pScreenQuad);
+    }
+}
+
+void CSnowSceneRenderer::__initBackgroundPlayer()
+{
+    Json::Value Config = m_pConfigReader->getObject("Background");
+    std::string FramesPath = Config["frames_path"].asString();
+    std::string FramesType = Config["frames_type"].asString();
+    int FramesCount = Config["frames_count"].asInt();
+    float Fps = Config["fps"].asFloat();
+    std::string VertexShader = Config["vertex_shader"].asString();
+    std::string FragShader = Config["fragment_shader"].asString();
+    EPictureType::EPictureType PicType = EPictureType::FromString(FramesType);
+    int SeqRows = 1, SeqCols = 1;
+    m_pBackgroundPlayer = new CSequenceFramePlayer(FramesPath, SeqRows, SeqCols, FramesCount, PicType);
+    if (!m_pBackgroundPlayer->initTextureAndShaderProgram(VertexShader, FragShader))
+    {
+        LOGE(TAG_KEYWORD::SNOW_SCENE_RENDERER_TAG, "Failed to init Background player");
+    }
+    m_pBackgroundPlayer->setFrameRate(Fps);
+}
+
+void CSnowSceneRenderer::__initSnowBackgroundPlayer()
+{
+    Json::Value Config = m_pConfigReader->getObject("SnowBackground");
+    std::string FramesPath = Config["frames_path"].asString();
+    std::string FramesType = Config["frames_type"].asString();
+    int FramesCount = Config["frames_count"].asInt();
+    int OneTextureFrames = Config["one_texture_frames"].asInt();
+    float Fps = Config["fps"].asFloat();
+    std::string VertexShader = Config["vertex_shader"].asString();
+    std::string FragShader = Config["fragment_shader"].asString();
+    EPictureType::EPictureType PicType = EPictureType::FromString(FramesType);
+    m_pSnowBackgroundPlayer = new CSequenceFramePlayer(FramesPath, FramesCount, OneTextureFrames, Fps, PicType);
+    if (!m_pSnowBackgroundPlayer->initTextureAndShaderProgram(VertexShader, FragShader))
+    {
+        LOGE(TAG_KEYWORD::SNOW_SCENE_RENDERER_TAG, "Failed to init SnowBackground player");
+    }
+}
+
+void CSnowSceneRenderer::__initSnowForegroundPlayer()
+{
+    Json::Value Config = m_pConfigReader->getObject("SnowForeground");
+    std::string FramesPath = Config["frames_path"].asString();
+    std::string FramesType = Config["frames_type"].asString();
+    int FramesCount = Config["frames_count"].asInt();
+    int OneTextureFrames = Config["one_texture_frames"].asInt();
+    float Fps = Config["fps"].asFloat();
+    std::string VertexShader = Config["vertex_shader"].asString();
+    std::string FragShader = Config["fragment_shader"].asString();
+    EPictureType::EPictureType PicType = EPictureType::FromString(FramesType);
+    m_pSnowForegroundPlayer = new CSequenceFramePlayer(FramesPath, FramesCount, OneTextureFrames, Fps, PicType);
+    if (!m_pSnowForegroundPlayer->initTextureAndShaderProgram(VertexShader, FragShader))
+    {
+        LOGE(TAG_KEYWORD::SNOW_SCENE_RENDERER_TAG, "Failed to init SnowForeground player");
+    }
 }

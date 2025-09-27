@@ -42,7 +42,7 @@ bool CRainSceneRenderer::init()
 //    }
 
     m_pAsycTexturePlayer = new CAsycSequenceFramePlayer(m_TextureRootPath, m_TextureCount, m_OneTextureFrames, m_FrameSeconds, m_PictureType);
-    if (!m_pAsycTexturePlayer->initTextureAndShaderProgram())
+    if (!m_pAsycTexturePlayer->initTextureAndShaderProgram(SeqTexPlayVertASTC, SeqTexPlayFragRainCloudASTC))
     {
         LOGE(TAG_KEYWORD::RAIN_SCENE_RENDERER_TAG, "Failed to initialize sequence texture and shader program");
         return false;

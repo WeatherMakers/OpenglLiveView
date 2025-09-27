@@ -46,7 +46,7 @@ bool CAsycSequenceFramePlayer::initTextureAndShaderProgram()
     else if (m_TextureType == EPictureType::JPG)
         m_pSequenceShaderProgram = CShaderProgram::createProgram(SeqTexPlayVertPNG, SeqTexPlayFragJPG);
     else if (m_TextureType == EPictureType::ASTC)
-        m_pSequenceShaderProgram = CShaderProgram::createProgram(SeqTexPlayVertKTX, SeqTexPlayFragKTX);
+        m_pSequenceShaderProgram = CShaderProgram::createProgram(SeqTexPlayVertASTC, SeqTexPlayFragASTC);
 
     if (!m_pSequenceShaderProgram)
     {

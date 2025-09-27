@@ -9,8 +9,8 @@
         "frames_count": 64,
         "one_texture_frames": 4,
         "fps": 80,
-        "vertex_shader" : "shaders/multiChannelRianSeq.vert",
-        "fragment_shader" : "shaders/multiChannelRianSeq8bitRainWithBackground.frag"
+        "vertex_shader" : "shaders/multiChannelRainSeq.vert",
+        "fragment_shader" : "shaders/multiChannelRainSeq8bitRainWithBackground.frag"
     },
     "Cloud": {
         "frames_path": "textures/cloud_ASTC12x12_Linear",
@@ -18,8 +18,8 @@
         "frames_count": 34,
         "one_texture_frames": 4,
         "fps": 7.3,
-        "vertex_shader" : "shaders/multiChannelRianSeq.vert",
-        "fragment_shader" : "shaders/multiChannelRianSeqLerp8bitFilteringLightCloud.frag"
+        "vertex_shader" : "shaders/multiChannelRainSeq.vert",
+        "fragment_shader" : "shaders/multiChannelRainSeqLerp8bitFilteringLightCloud.frag"
     },
     "LightningWithMask": {
         "frames_path": "textures/lightning_ASTC12x12_Linear",
@@ -44,8 +44,8 @@
         "frames_count": 24,
         "one_texture_frames": 4,
         "fps": 30,
-        "vertex_shader" : "shaders/multiChannelRianSeq.vert",
-        "fragment_shader" : "shaders/multiChannelRianSeq8bitRaindrop.frag"
+        "vertex_shader" : "shaders/multiChannelRainSeq.vert",
+        "fragment_shader" : "shaders/multiChannelRainSeq8bitRaindrop.frag"
     },
     "BigRaindrop": {
         "frames_path": "textures/bigRainDroppre_mergedpng_ASTC12x12_Linear",
@@ -53,7 +53,7 @@
         "frames_count": 31,
         "one_texture_frames": 4,
         "fps": 10,
-        "vertex_shader" : "shaders/multiChannelRianSeq.vert",
-        "fragment_shader" : "shaders/multiChannelRianSeq8bitRaindrop.frag"
+        "vertex_shader" : "shaders/multiChannelRainSeq.vert",
+        "fragment_shader" : "shaders/multiChannelRainSeq8bitRaindrop.frag"
     }
 }

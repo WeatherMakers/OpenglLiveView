@@ -74,16 +74,6 @@ export struct GLComponent {
               }
             },
             {
-              value: '雪景',
-              action: () => {
-                try {
-                  egl.setRenderType(Params.SNOW_RENDER_TYPE)
-                } catch (e) {
-                  hilog.error(0x0000, 'GL', `雪景，显示失败: ${JSON.stringify(e)}`)
-                }
-              }
-            },
-            {
               value: '云景',
               action: () => {
                 try {
@@ -94,12 +84,22 @@ export struct GLComponent {
               }
             },
             {
-              value: '全场景',
+              value: '雪景全场景',
+              action: () => {
+                try {
+                  egl.setRenderType(Params.SNOW_RENDER_TYPE)
+                } catch (e) {
+                  hilog.error(0x0000, 'GL', `雪景，显示失败: ${JSON.stringify(e)}`)
+                }
+              }
+            },
+            {
+              value: '雨景全场景',
               action: () => {
                 try {
                   egl.setRenderType(Params.FULL_SCENE_RENDER_TYPE)
                 } catch (e) {
-                  hilog.error(0x0000, 'GL', `全场景，显示失败: ${JSON.stringify(e)}`)
+                  hilog.error(0x0000, 'GL', `雨景全场景，显示失败: ${JSON.stringify(e)}`)
                 }
               }
             }
@@ -115,7 +115,6 @@ export struct GLComponent {
           })
           .width('100%')
           .height('55%')
-        // 两列三行的圆角按钮
         Grid() {
           GridItem() {
             Button('闪电')

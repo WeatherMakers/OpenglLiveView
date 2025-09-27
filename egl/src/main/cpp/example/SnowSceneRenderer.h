@@ -6,8 +6,8 @@
 namespace hiveVG 
 {
     class CScreenQuad;
-    class CSingleTexturePlayer;
     class CSequenceFramePlayer;
+    class CJsonReader;
 
     class CSnowSceneRenderer : public CBaseRenderer
     {
@@ -18,14 +18,22 @@ namespace hiveVG
         void draw() override;
         
     private:
-        std::string           m_TextureRootPath   = "textures/lightning_ASTC12x12_Linear";
-        std::string           m_BackgroundTexPath = "snowScene.astc";
-        int                   m_TextureCount      = 16;
-        int                   m_OneTextureFrames  = 4;
-        float                 m_FrameSeconds      = 16;
+        void __initSnowBackgroundPlayer();
+        void __initBackgroundPlayer();
+        void __initSnowForegroundPlayer();
+
+        CSequenceFramePlayer* m_pSnowBackgroundPlayer = nullptr;
+        CSequenceFramePlayer* m_pBackgroundPlayer     = nullptr;
+        CSequenceFramePlayer* m_pSnowForegroundPlayer = nullptr;
+        CScreenQuad*          m_pScreenQuad           = nullptr;
+    
+        std::string           m_ConfigFile        = "configs/SnowSeqConfig.json";
+        CJsonReader*          m_pConfigReader     = nullptr;
         EPictureType::EPictureType m_PictureType  = EPictureType::ASTC;
-        CSequenceFramePlayer* m_pTexturePlayer    = nullptr;
-        CSingleTexturePlayer* m_pBackGroundPlayer = nullptr;
-        CScreenQuad*          m_pScreenQuad       = nullptr;
+
+        ERenderChannel        m_CurrentSnowChannel = ERenderChannel::R;
+        double                m_LastFrameTime      = 0.0;
+        double                m_CurrentTime        = 0.0;
+        double                m_AccumTime          = 0.0;
     };
 }

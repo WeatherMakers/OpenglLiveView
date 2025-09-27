@@ -121,11 +121,11 @@ napi_value CNativeRenderer::SetRenderType(napi_env env, napi_callback_info info)
         case RAIN_RENDER_TYPE:
             pExample = new CRainSceneRenderer();
             break;
-        case SNOW_RENDER_TYPE:
-            pExample = new CSnowSceneRenderer();
-            break;
         case CLOUD_RENDER_TYPE:
             pExample = new CCloudSceneRenderer();
+            break;
+        case SNOW_RENDER_TYPE:
+            pExample = new CSnowSceneRenderer();
             break;
         case FULL_SCENE_RENDER_TYPE:
             pExample = new CFullSceneRenderer();
