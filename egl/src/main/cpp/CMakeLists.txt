@@ -4,7 +4,7 @@ project(OpenglLiveView)
 
 set(NATIVERENDER_ROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
-# 使用 C++17 标准
+# 使用 C++20 标准
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -32,6 +32,36 @@ else()
 endif()
 # ===========  第三方库 JSONCPP 配置结束  ===========
 
+# ===========  第三方库 OpenCV-Mobile  ===========
+# 1. 根据鸿蒙构建时的架构变量 (OHOS_ARCH) 设置OpenCV的路径
+if(OHOS_ARCH STREQUAL "arm64-v8a")
+    set(OpenCV_ARCH_DIR "arm64-v8a")
+elseif(OHOS_ARCH STREQUAL "x86_64")
+    set(OpenCV_ARCH_DIR "x86_64")
+else()
+    message(WARNING "OpenCV-Mobile does not have a prebuilt library for the current architecture: ${OHOS_ARCH}. Skipping OpenCV configuration.")
+endif()
+
+# 2. 如果找到了对应的架构目录，则继续配置
+if(DEFINED OpenCV_ARCH_DIR)
+    # 设置 OpenCV_DIR 变量，这是给 find_package 的一个提示，告诉它去哪里找配置文件
+    # 这个路径需要指向包含 OpenCVConfig.cmake 文件的目录
+    set(OpenCV_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/opencv-mobile-2.4.13.7-harmonyos/${OpenCV_ARCH_DIR}/share/OpenCV)
+
+    # 3. 查找OpenCV包。
+    #    REQUIRED 表示如果找不到OpenCV，构建过程将报错停止。
+    #    NO_MODULE 强制使用 Config 模式，这正是我们所需要的。
+    find_package(OpenCV REQUIRED NO_MODULE)
+
+    if(OpenCV_FOUND)
+        message(STATUS "Found OpenCV: ${OpenCV_VERSION} in ${OpenCV_DIR}")
+        # 4. 将OpenCV的头文件目录添加到项目中
+        #    find_package成功后，会自动创建 OpenCV_INCLUDE_DIRS 变量
+        include_directories(${OpenCV_INCLUDE_DIRS})
+    endif()
+endif()
+# ===========  第三方库 OpenCV-Mobile 配置结束  ===========
+
 # 查找相关库 (包括OpenGL ES相关库和XComponent提供的ndk接口)
 find_library(EGL-lib EGL)
 find_library(GLES-lib GLESv3)
@@ -58,4 +88,5 @@ target_link_libraries(egl PUBLIC
     libace_napi.z.so
     libc++.a
     jsoncpp
+    ${OpenCV_LIBS}
     )
