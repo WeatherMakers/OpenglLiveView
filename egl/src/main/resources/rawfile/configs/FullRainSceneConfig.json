@@ -4,7 +4,7 @@
         "frames_type": "png"
     },
     "Rain": {
-        "frames_path": "textures/rain_splash_4channel_ASTC12x12_Linear",
+        "frames_path": "textures/rainScene/rain_splash_4channel_ASTC12x12_Linear",
         "frames_type" : "astc",
         "frames_count": 128,
         "one_texture_frames": 4,
@@ -13,7 +13,7 @@
         "fragment_shader" : "shaders/multiChannelRainSeq8bitRainWithBackground.frag"
     },
     "Cloud": {
-        "frames_path": "textures/cloud_ASTC12x12_Linear",
+        "frames_path": "textures/rainScene/cloud_ASTC12x12_Linear",
         "frames_type" : "astc",
         "frames_count": 34,
         "one_texture_frames": 4,
@@ -22,7 +22,7 @@
         "fragment_shader" : "shaders/multiChannelRainSeqLerp8bitFilteringLightCloud.frag"
     },
     "LightningWithMask": {
-        "frames_path": "textures/lightning_ASTC12x12_Linear",
+        "frames_path": "textures/rainScene/lightning_ASTC12x12_Linear",
         "frames_type" : "astc",
         "frames_count": 16,
         "one_texture_frames": 4,
@@ -39,7 +39,7 @@
         "fragment_shader" : "shaders/lightning.frag"
     },
     "SmallRaindrop": {
-        "frames_path": "textures/small_rainDrop_mergedpng_ASTC12x12_Linear",
+        "frames_path": "textures/rainScene/small_rainDrop_mergedpng_ASTC12x12_Linear",
         "frames_type" : "astc",
         "frames_count": 24,
         "one_texture_frames": 4,
@@ -48,7 +48,7 @@
         "fragment_shader" : "shaders/multiChannelRainSeq8bitRaindrop.frag"
     },
     "BigRaindrop": {
-        "frames_path": "textures/bigRainDroppre_mergedpng_ASTC12x12_Linear",
+        "frames_path": "textures/rainScene/bigRainDroppre_mergedpng_ASTC12x12_Linear",
         "frames_type" : "astc",
         "frames_count": 31,
         "one_texture_frames": 4,

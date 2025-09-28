@@ -18,7 +18,7 @@ namespace hiveVG
         void draw() override;
         
     private:
-        std::string           m_TextureRootPath   = "textures/cloud_ASTC12x12_Linear";
+        std::string           m_TextureRootPath   = "textures/rainScene/cloud_ASTC12x12_Linear";
         std::string           m_BackgroundTexPath = "snowScene.astc";
         int                   m_TextureCount      = 34;
         int                   m_OneTextureFrames  = 4;
