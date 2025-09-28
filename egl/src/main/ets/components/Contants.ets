@@ -7,4 +7,5 @@ export class Params {
   static readonly CLOUD_RENDER_TYPE: number = Params.SNOW_RENDER_TYPE + 1
   static readonly FULL_SCENE_RENDER_TYPE: number = Params.CLOUD_RENDER_TYPE + 1
   static readonly FULL_SNOW_SCENE_RENDER_TYPE: number = Params.FULL_SCENE_RENDER_TYPE + 1
+  static readonly FULL_ALL_SCENE_RENDER_TYPE: number = Params.FULL_SNOW_SCENE_RENDER_TYPE + 1
 }

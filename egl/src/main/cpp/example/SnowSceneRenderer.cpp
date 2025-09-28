@@ -102,6 +102,7 @@ void CSnowSceneRenderer::__initSnowBackgroundPlayer()
     {
         LOGE(TAG_KEYWORD::SNOW_SCENE_RENDERER_TAG, "Failed to init SnowBackground player");
     }
+    m_pSnowBackgroundPlayer->setFrameRate(Fps);
 }
 
 void CSnowSceneRenderer::__initSnowForegroundPlayer()
@@ -120,4 +121,5 @@ void CSnowSceneRenderer::__initSnowForegroundPlayer()
     {
         LOGE(TAG_KEYWORD::SNOW_SCENE_RENDERER_TAG, "Failed to init SnowForeground player");
     }
+    m_pSnowForegroundPlayer->setFrameRate(Fps);
 }

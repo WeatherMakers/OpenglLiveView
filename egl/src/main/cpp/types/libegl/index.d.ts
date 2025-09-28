@@ -12,3 +12,17 @@ export const triggerLightSnow: () => void;
 export const triggerModerateSnow: () => void;
 export const triggerHeavySnow: () => void;
 export const triggerStormSnow: () => void;
+
+// 全场景相关函数
+export const triggerFullSceneRainLight: () => void;
+export const triggerFullSceneRainModerate: () => void;
+export const triggerFullSceneRainHeavy: () => void;
+export const triggerFullSceneRainStorm: () => void;
+export const triggerFullSceneRainCloud: () => void;
+export const triggerFullSceneRainLightning: () => void;
+export const triggerFullSceneSnowLight: () => void;
+export const triggerFullSceneSnowModerate: () => void;
+export const triggerFullSceneSnowHeavy: () => void;
+export const triggerFullSceneSnowStorm: () => void;
+export const triggerFullSceneSnowBackground: () => void;
+export const triggerFullSceneSnowForeground: () => void;

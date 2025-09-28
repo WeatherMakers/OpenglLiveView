@@ -10,7 +10,7 @@
 using namespace hiveVG;
 
 CSequenceFramePlayer::CSequenceFramePlayer(const std::string& vTextureRootPath, int vSequenceRows, int vSequenceCols, int vTextureCount, EPictureType::EPictureType vPictureType)
-        : m_SequenceRows(vSequenceRows), m_SequenceCols(vSequenceCols), m_TextureRootPath(vTextureRootPath), m_TextureCount(vTextureCount), m_TextureType(vPictureType)
+        : m_TextureRootPath(vTextureRootPath), m_SequenceRows(vSequenceRows), m_SequenceCols(vSequenceCols),m_TextureCount(vTextureCount), m_TextureType(vPictureType)
 {
     m_ValidFrames = m_SequenceRows * m_SequenceCols;
 }

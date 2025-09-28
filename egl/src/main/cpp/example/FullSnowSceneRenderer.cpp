@@ -68,8 +68,8 @@ void CFullSnowSceneRenderer::draw()
 
     if (m_SnowBackgroundInitialized && m_SnowBackgroundVisible && m_pSnowBackgroundPlayer)
     {
-        m_pSnowBackgroundPlayer->updateMultiChannelFrame(DeltaTime, m_RenderChannel);
         m_pSnowBackgroundPlayer->setFrameRate(CurrentFps);
+        m_pSnowBackgroundPlayer->updateMultiChannelFrame(DeltaTime, m_RenderChannel);
         m_pSnowBackgroundPlayer->drawMultiChannelKTX(m_pScreenQuad);
     }
 
@@ -81,8 +81,8 @@ void CFullSnowSceneRenderer::draw()
 
     if (m_SnowForegroundInitialized && m_SnowForegroundVisible && m_pSnowForegroundPlayer)
     {
-        m_pSnowForegroundPlayer->updateMultiChannelFrame(DeltaTime, m_RenderChannel);
         m_pSnowForegroundPlayer->setFrameRate(CurrentFps);
+        m_pSnowForegroundPlayer->updateMultiChannelFrame(DeltaTime, m_RenderChannel);
         m_pSnowForegroundPlayer->drawMultiChannelKTX(m_pScreenQuad);
     }
 }

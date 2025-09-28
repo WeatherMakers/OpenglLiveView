@@ -14,7 +14,7 @@ export struct GLComponent {
   @State context: Context = this.getUIContext().getHostContext() as Context;
   private resMgr: resourceManager.ResourceManager = this.context.resourceManager;
   xComponentContext: object | undefined = undefined;
-  @State currentSceneType: string = 'none' // 当前场景类型：'rain'、'snow' 或 'none'
+  @State currentSceneType: string = 'none' // 当前场景类型：'rain'、'snow'、'all' 或 'none'
   xComponentAttrs: XComponentAttrs = {
     id: 'xcomponentId', // 与XComponent组件为一一对应关系，不建议重复。可以在native侧通过OH_NativeXComponent_GetXComponentId接口来获取对应的id从而绑定对应的XComponent。
     type: XComponentType.SURFACE,
@@ -58,6 +58,44 @@ export struct GLComponent {
   }
   private onStormSnow(): void {
     try { egl.triggerStormSnow() } catch (e) { hilog.error(0x0000, 'GL', `triggerStormSnow 失败: ${JSON.stringify(e)}`) }
+  }
+  
+  // 全场景相关函数
+  private onFullSceneRainLight(): void {
+    try { egl.triggerFullSceneRainLight() } catch (e) { hilog.error(0x0000, 'GL', `triggerFullSceneRainLight 失败: ${JSON.stringify(e)}`) }
+  }
+  private onFullSceneRainModerate(): void {
+    try { egl.triggerFullSceneRainModerate() } catch (e) { hilog.error(0x0000, 'GL', `triggerFullSceneRainModerate 失败: ${JSON.stringify(e)}`) }
+  }
+  private onFullSceneRainHeavy(): void {
+    try { egl.triggerFullSceneRainHeavy() } catch (e) { hilog.error(0x0000, 'GL', `triggerFullSceneRainHeavy 失败: ${JSON.stringify(e)}`) }
+  }
+  private onFullSceneRainStorm(): void {
+    try { egl.triggerFullSceneRainStorm() } catch (e) { hilog.error(0x0000, 'GL', `triggerFullSceneRainStorm 失败: ${JSON.stringify(e)}`) }
+  }
+  private onFullSceneRainCloud(): void {
+    try { egl.triggerFullSceneRainCloud() } catch (e) { hilog.error(0x0000, 'GL', `triggerFullSceneRainCloud 失败: ${JSON.stringify(e)}`) }
+  }
+  private onFullSceneRainLightning(): void {
+    try { egl.triggerFullSceneRainLightning() } catch (e) { hilog.error(0x0000, 'GL', `triggerFullSceneRainLightning 失败: ${JSON.stringify(e)}`) }
+  }
+  private onFullSceneSnowLight(): void {
+    try { egl.triggerFullSceneSnowLight() } catch (e) { hilog.error(0x0000, 'GL', `triggerFullSceneSnowLight 失败: ${JSON.stringify(e)}`) }
+  }
+  private onFullSceneSnowModerate(): void {
+    try { egl.triggerFullSceneSnowModerate() } catch (e) { hilog.error(0x0000, 'GL', `triggerFullSceneSnowModerate 失败: ${JSON.stringify(e)}`) }
+  }
+  private onFullSceneSnowHeavy(): void {
+    try { egl.triggerFullSceneSnowHeavy() } catch (e) { hilog.error(0x0000, 'GL', `triggerFullSceneSnowHeavy 失败: ${JSON.stringify(e)}`) }
+  }
+  private onFullSceneSnowStorm(): void {
+    try { egl.triggerFullSceneSnowStorm() } catch (e) { hilog.error(0x0000, 'GL', `triggerFullSceneSnowStorm 失败: ${JSON.stringify(e)}`) }
+  }
+  private onFullSceneSnowBackground(): void {
+    try { egl.triggerFullSceneSnowBackground() } catch (e) { hilog.error(0x0000, 'GL', `triggerFullSceneSnowBackground 失败: ${JSON.stringify(e)}`) }
+  }
+  private onFullSceneSnowForeground(): void {
+    try { egl.triggerFullSceneSnowForeground() } catch (e) { hilog.error(0x0000, 'GL', `triggerFullSceneSnowForeground 失败: ${JSON.stringify(e)}`) }
   }
   build() {
     Row() {
@@ -130,17 +168,28 @@ export struct GLComponent {
                 }
               }
             },
-            {
-              value: '雪景全场景',
-              action: () => {
-                try {
-                  egl.setRenderType(Params.FULL_SNOW_SCENE_RENDER_TYPE)
-                  this.currentSceneType = 'snow'
-                } catch (e) {
-                  hilog.error(0x0000, 'GL', `雪景全场景，显示失败: ${JSON.stringify(e)}`)
-                }
-              }
-            }
+             {
+               value: '雪景全场景',
+               action: () => {
+                 try {
+                   egl.setRenderType(Params.FULL_SNOW_SCENE_RENDER_TYPE)
+                   this.currentSceneType = 'snow'
+                 } catch (e) {
+                   hilog.error(0x0000, 'GL', `雪景全场景，显示失败: ${JSON.stringify(e)}`)
+                 }
+               }
+             },
+             {
+               value: '全场景',
+               action: () => {
+                 try {
+                   egl.setRenderType(Params.FULL_ALL_SCENE_RENDER_TYPE)
+                   this.currentSceneType = 'all'
+                 } catch (e) {
+                   hilog.error(0x0000, 'GL', `全场景，显示失败: ${JSON.stringify(e)}`)
+                 }
+               }
+             }
           ])
           .height(48)
           .width('90%')
@@ -256,6 +305,137 @@ export struct GLComponent {
            .rowsTemplate('auto auto auto')
            .columnsGap(12)
            .rowsGap(12)
+           .width('90%')
+           .height('30%')
+           .margin({ top: 10 })
+         } else if (this.currentSceneType === 'all') {
+           Row() {
+             // 左边：雨景相关（2列3行）
+             Column() {
+               Text('雨景')
+                 .fontSize(14)
+                 .fontColor('#666666')
+                 .margin({ bottom: 8 })
+               
+               Grid() {
+                 // 第一行
+                 GridItem() {
+                   Button('小雨')
+                     .borderRadius(16)
+                     .width('100%')
+                     .height(40)
+                     .onClick(() => this.onFullSceneRainLight())
+                 }
+                 GridItem() {
+                   Button('中雨')
+                     .borderRadius(16)
+                     .width('100%')
+                     .height(40)
+                     .onClick(() => this.onFullSceneRainModerate())
+                 }
+                 // 第二行
+                 GridItem() {
+                   Button('大雨')
+                     .borderRadius(16)
+                     .width('100%')
+                     .height(40)
+                     .onClick(() => this.onFullSceneRainHeavy())
+                 }
+                 GridItem() {
+                   Button('暴雨')
+                     .borderRadius(16)
+                     .width('100%')
+                     .height(40)
+                     .onClick(() => this.onFullSceneRainStorm())
+                 }
+                 // 第三行
+                 GridItem() {
+                   Button('云朵')
+                     .borderRadius(16)
+                     .width('100%')
+                     .height(40)
+                     .onClick(() => this.onFullSceneRainCloud())
+                 }
+                 GridItem() {
+                   Button('闪电')
+                     .borderRadius(16)
+                     .width('100%')
+                     .height(40)
+                     .onClick(() => this.onFullSceneRainLightning())
+                 }
+               }
+               .columnsTemplate('1fr 1fr')
+               .rowsTemplate('auto auto auto')
+               .columnsGap(12)
+               .rowsGap(12)
+               .width('100%')
+             }
+             .width('50%')
+             .padding({ right: 8 })
+             
+             // 右边：雪景相关（2列3行）
+             Column() {
+               Text('雪景')
+                 .fontSize(14)
+                 .fontColor('#666666')
+                 .margin({ bottom: 8 })
+               
+               Grid() {
+                 // 第一行
+                 GridItem() {
+                   Button('小雪')
+                     .borderRadius(16)
+                     .width('100%')
+                     .height(40)
+                     .onClick(() => this.onFullSceneSnowLight())
+                 }
+                 GridItem() {
+                   Button('中雪')
+                     .borderRadius(16)
+                     .width('100%')
+                     .height(40)
+                     .onClick(() => this.onFullSceneSnowModerate())
+                 }
+                 // 第二行
+                 GridItem() {
+                   Button('大雪')
+                     .borderRadius(16)
+                     .width('100%')
+                     .height(40)
+                     .onClick(() => this.onFullSceneSnowHeavy())
+                 }
+                 GridItem() {
+                   Button('暴雪')
+                     .borderRadius(16)
+                     .width('100%')
+                     .height(40)
+                     .onClick(() => this.onFullSceneSnowStorm())
+                 }
+                 // 第三行
+                 GridItem() {
+                   Button('前景雪')
+                     .borderRadius(16)
+                     .width('100%')
+                     .height(40)
+                     .onClick(() => this.onFullSceneSnowForeground())
+                 }
+                 GridItem() {
+                   Button('背景雪')
+                     .borderRadius(16)
+                     .width('100%')
+                     .height(40)
+                     .onClick(() => this.onFullSceneSnowBackground())
+                 }
+               }
+               .columnsTemplate('1fr 1fr')
+               .rowsTemplate('auto auto auto')
+               .columnsGap(12)
+               .rowsGap(12)
+               .width('100%')
+             }
+             .width('50%')
+             .padding({ left: 8 })
+           }
            .width('90%')
            .height('30%')
            .margin({ top: 10 })

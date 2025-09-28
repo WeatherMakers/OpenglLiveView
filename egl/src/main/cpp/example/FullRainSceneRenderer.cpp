@@ -69,8 +69,8 @@ void CFullRainSceneRenderer::draw()
     {
         if (!vIsInitialized || !vPlayer) return;
         if (m_RenderChannel != vChannel1 && m_RenderChannel != vChannel2) return;
-        vPlayer->updateMultiChannelFrame(DeltaTime, m_RenderChannel);
         vPlayer->setFrameRate(m_RenderChannel == vChannel1 ? vFps1 : vFps2);
+        vPlayer->updateMultiChannelFrame(DeltaTime, m_RenderChannel);
         vPlayer->drawMultiChannelKTX(m_pScreenQuad);
     };
     

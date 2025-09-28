@@ -6,8 +6,8 @@
 #include "log.h"
 
 using namespace hiveVG;
-CNightSceneSequencePlayer::CNightSceneSequencePlayer(const std::string &vTextureRootPath, int vSequenceRows, int vSequenceCols, int vTextureCount, EPictureType::EPictureType vPictureType)
-        : CSequenceFramePlayer(vTextureRootPath, vSequenceRows, vSequenceCols, vTextureCount, vPictureType)
+CNightSceneSequencePlayer::CNightSceneSequencePlayer(const std::string &vTextureRootPath, int vTextureCount, int vOneTextureFrames, float vFramePerSecond, EPictureType::EPictureType vPictureType)
+        : CSequenceFramePlayer(vTextureRootPath, vTextureCount, vOneTextureFrames, vFramePerSecond, vPictureType)
 { }
 
 CNightSceneSequencePlayer::~CNightSceneSequencePlayer()

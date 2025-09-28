@@ -24,42 +24,6 @@
     "fps": 24,
     "vertex_shader": "shaders/sequenceTexturePlayerASTC.vert",
     "fragment_shader": "shaders/multiChannelRainSeq8bitRaindrop.frag"
-  },
-  "LightSnow": {
-    "frames_path": "textures/snowScene/lightSnow_ASTC12x12_Linear",
-    "frames_type": "ASTC",
-    "frames_count": 16,
-    "one_texture_frames": 4,
-    "fps": 13,
-    "vertex_shader": "shaders/sequenceTexturePlayerASTC.vert",
-    "fragment_shader": "shaders/multiChannelRainSeq8bitRaindrop.frag"
-  },
-  "ModerateSnow": {
-    "frames_path": "textures/snowScene/moderateSnow_ASTC12x12_Linear",
-    "frames_type": "ASTC",
-    "frames_count": 16,
-    "one_texture_frames": 4,
-    "fps": 15,
-    "vertex_shader": "shaders/sequenceTexturePlayerASTC.vert",
-    "fragment_shader": "shaders/multiChannelRainSeq8bitRaindrop.frag"
-  },
-  "HeavySnow": {
-    "frames_path": "textures/snowScene/heavySnow_ASTC12x12_Linear",
-    "frames_type": "ASTC",
-    "frames_count": 16,
-    "one_texture_frames": 4,
-    "fps": 10,
-    "vertex_shader": "shaders/sequenceTexturePlayerASTC.vert",
-    "fragment_shader": "shaders/multiChannelRainSeq8bitRaindrop.frag"
-  },
-  "StormSnow": {
-    "frames_path": "textures/snowScene/stormSnow_ASTC12x12_Linear",
-    "frames_type": "ASTC",
-    "frames_count": 16,
-    "one_texture_frames": 4,
-    "fps": 8,
-    "vertex_shader": "shaders/sequenceTexturePlayerASTC.vert",
-    "fragment_shader": "shaders/multiChannelRainSeq8bitRaindrop.frag"
   }
 }
 

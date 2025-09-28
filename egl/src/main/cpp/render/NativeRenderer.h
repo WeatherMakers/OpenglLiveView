@@ -26,6 +26,20 @@ namespace hiveVG
         static napi_value TriggerModerateSnow(napi_env env, napi_callback_info info);
         static napi_value TriggerHeavySnow(napi_env env, napi_callback_info info);
         static napi_value TriggerStormSnow(napi_env env, napi_callback_info info);
+        
+        // 全场景相关 NAPI 函数
+        static napi_value TriggerFullSceneRainLight(napi_env env, napi_callback_info info);
+        static napi_value TriggerFullSceneRainModerate(napi_env env, napi_callback_info info);
+        static napi_value TriggerFullSceneRainHeavy(napi_env env, napi_callback_info info);
+        static napi_value TriggerFullSceneRainStorm(napi_env env, napi_callback_info info);
+        static napi_value TriggerFullSceneRainCloud(napi_env env, napi_callback_info info);
+        static napi_value TriggerFullSceneRainLightning(napi_env env, napi_callback_info info);
+        static napi_value TriggerFullSceneSnowLight(napi_env env, napi_callback_info info);
+        static napi_value TriggerFullSceneSnowModerate(napi_env env, napi_callback_info info);
+        static napi_value TriggerFullSceneSnowHeavy(napi_env env, napi_callback_info info);
+        static napi_value TriggerFullSceneSnowStorm(napi_env env, napi_callback_info info);
+        static napi_value TriggerFullSceneSnowBackground(napi_env env, napi_callback_info info);
+        static napi_value TriggerFullSceneSnowForeground(napi_env env, napi_callback_info info);
         void   renderScene();
     
     private:

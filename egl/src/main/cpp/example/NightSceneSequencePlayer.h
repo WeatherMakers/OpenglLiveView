@@ -9,7 +9,7 @@ namespace hiveVG
     class CNightSceneSequencePlayer : public CSequenceFramePlayer
     {
     public:
-        CNightSceneSequencePlayer(const std::string& vTextureRootPath, int vSequenceRows, int vSequenceCols, int vTextureCount, EPictureType::EPictureType vPictureType = EPictureType::PNG);
+        CNightSceneSequencePlayer(const std::string& vTextureRootPath, int vTextureCount, int vOneTextureFrames, float vFramePerSecond, EPictureType::EPictureType vPictureType = EPictureType::PNG);
         ~CNightSceneSequencePlayer();
 
         void initBackground(const std::string& vTexturePath, EPictureType::EPictureType vPictureType);
