@@ -22,7 +22,7 @@ bool CSnowSceneRenderer::init()
     if (!m_pConfigReader) m_pConfigReader = new CJsonReader(m_ConfigFile);
 
     __initBackgroundPlayer();
-//    __initSnowBackgroundPlayer();
+    __initSnowBackgroundPlayer();
     __initSnowForegroundPlayer();
 
     m_pScreenQuad = &CScreenQuad::getInstance();
@@ -48,21 +48,18 @@ void CSnowSceneRenderer::draw()
     double DeltaTime = m_CurrentTime - m_LastFrameTime;
     m_LastFrameTime  = m_CurrentTime;
 
-    // 雪背景与雪前景：按多通道序列更新+绘制（同一张ASTC的不同RGBA通道）
     if (m_pSnowBackgroundPlayer)
     {
         m_pSnowBackgroundPlayer->updateQuantizationFrame(DeltaTime);
         m_pSnowBackgroundPlayer->drawMultiChannelKTX(m_pScreenQuad);
     }
 
-    // 背景：逐张ASTC渲染
     if (m_pBackgroundPlayer)
     {
         m_pBackgroundPlayer->updateSeqKTXFrame(DeltaTime);
         m_pBackgroundPlayer->drawSeqKTX(m_pScreenQuad);
     }
 
-    // 雪前景：按多通道序列更新+绘制
     if (m_pSnowForegroundPlayer)
     {
         m_pSnowForegroundPlayer->updateQuantizationFrame(DeltaTime);

@@ -20,6 +20,12 @@ namespace hiveVG
         static napi_value TriggerModerateRain(napi_env env, napi_callback_info info);
         static napi_value TriggerHeavyRain(napi_env env, napi_callback_info info);
         static napi_value TriggerStormRain(napi_env env, napi_callback_info info);
+        static napi_value TriggerSnowBackground(napi_env env, napi_callback_info info);
+        static napi_value TriggerSnowForeground(napi_env env, napi_callback_info info);
+        static napi_value TriggerLightSnow(napi_env env, napi_callback_info info);
+        static napi_value TriggerModerateSnow(napi_env env, napi_callback_info info);
+        static napi_value TriggerHeavySnow(napi_env env, napi_callback_info info);
+        static napi_value TriggerStormSnow(napi_env env, napi_callback_info info);
         void   renderScene();
     
     private:

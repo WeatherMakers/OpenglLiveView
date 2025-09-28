@@ -16,9 +16,7 @@ CLightningSequencePlayer::CLightningSequencePlayer(const std::string &vTextureRo
 CLightningSequencePlayer::CLightningSequencePlayer(const std::string& vTextureRootPath, int vTextureCount, int vOneTextureFrames, float vFrameSeconds, EPictureType::EPictureType vPictureType)
         : CSequenceFramePlayer(vTextureRootPath, vTextureCount, vOneTextureFrames, vFrameSeconds, vPictureType)
 {
-
-    std::string FileName   = "configs/RainMultiChannelSeqConfig.json";
-    CJsonReader JsonReader = CJsonReader(FileName);
+    CJsonReader JsonReader = CJsonReader(m_ConfigFileName);
 
     Json::Value CloudConfig = JsonReader.getObject("Cloud");
     std::string CloudPath = CloudConfig["frames_path"].asString();

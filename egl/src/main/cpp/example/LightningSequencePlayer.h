@@ -27,6 +27,7 @@ namespace hiveVG
         void __resetPlayback();
         void __initCloudTextures(const std::string& vCloudPath, int vFrameCount, EPictureType::EPictureType vCloudPicType);
 
+        std::string m_ConfigFileName  = "configs/FullRainSceneConfig.json";
         bool    m_LightningInFront    = false;
         bool    m_IsWaiting           = false;
         double  m_WaitTime            = 0.0;

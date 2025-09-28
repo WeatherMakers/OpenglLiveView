@@ -27,7 +27,7 @@ namespace hiveVG
         CSequenceFramePlayer* m_pSnowForegroundPlayer = nullptr;
         CScreenQuad*          m_pScreenQuad           = nullptr;
     
-        std::string           m_ConfigFile        = "configs/SnowSeqConfig.json";
+        std::string           m_ConfigFile        = "configs/SnowSceneConfig.json";
         CJsonReader*          m_pConfigReader     = nullptr;
         EPictureType::EPictureType m_PictureType  = EPictureType::ASTC;
 
