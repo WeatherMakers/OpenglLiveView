@@ -1,6 +1,6 @@
 {
     "Background":{
-        "frames_path": "snowScene.astc",
+        "frames_path": "textures/snowScene.astc",
         "frames_type": "astc"
     },
     "Rain": {
