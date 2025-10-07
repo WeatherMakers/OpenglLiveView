@@ -77,8 +77,8 @@ void CFullSceneRenderer::draw()
     // 雪景背景播放器 - 始终渲染（仅在雪景激活时）
     if (m_SnowActive && m_pBackgroundPlayer)
     {
-        m_pBackgroundPlayer->updateSeqKTXFrame(SnowDeltaTime);
-        m_pBackgroundPlayer->drawSeqKTX(m_pScreenQuad);
+        m_pBackgroundPlayer->updateSeqFrame(SnowDeltaTime);
+        m_pBackgroundPlayer->drawSeqFrame(m_pScreenQuad);
     }
 
     // 根据雪景通道设置不同的fps：R=13, G=18, B=23, A=28
@@ -96,7 +96,7 @@ void CFullSceneRenderer::draw()
     {
         m_pSnowBackgroundPlayer->updateMultiChannelFrame(SnowDeltaTime, m_SnowRenderChannel);
         m_pSnowBackgroundPlayer->setFrameRate(SnowCurrentFps);
-        m_pSnowBackgroundPlayer->drawMultiChannelKTX(m_pScreenQuad);
+        m_pSnowBackgroundPlayer->drawMultiChannelFrame(m_pScreenQuad);
     }
 
     // 雪景前景 - 受可见性控制，按通道同步（仅在雪景激活时）
@@ -104,7 +104,7 @@ void CFullSceneRenderer::draw()
     {
         m_pSnowForegroundPlayer->updateMultiChannelFrame(SnowDeltaTime, m_SnowRenderChannel);
         m_pSnowForegroundPlayer->setFrameRate(SnowCurrentFps);
-        m_pSnowForegroundPlayer->drawMultiChannelKTX(m_pScreenQuad);
+        m_pSnowForegroundPlayer->drawMultiChannelFrame(m_pScreenQuad);
     }
 
     // === 雨景渲染 ===
@@ -120,10 +120,10 @@ void CFullSceneRenderer::draw()
     // 云朵效果 - 在R和G通道显示（可见性开关，仅在雨景激活时）
     if (m_RainActive && m_CloudInitialized && m_CloudVisible && m_pCloudPlayer)
     {
-        m_pCloudPlayer->updateLerpQuantFrame(RainDeltaTime);
+        m_pCloudPlayer->updateCloudLerpMultiChannelFrame(RainDeltaTime);
         if (m_RainRenderChannel == ERenderChannel::R || m_RainRenderChannel == ERenderChannel::G)
         {
-            m_pCloudPlayer->drawInterpolationWithFiltering(m_pScreenQuad);
+            m_pCloudPlayer->drawCloudLerpMultiChannelFrame(m_pScreenQuad);
         }
     }
 

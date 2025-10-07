@@ -51,8 +51,8 @@ void CRainSceneRenderer::draw()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_DEPTH_TEST);
     
-    m_pTexturePlayer->updateSeqKTXFrame(0.016f);
-    m_pTexturePlayer->drawSeqKTX(m_pScreenQuad);
+    m_pTexturePlayer->updateMultiChannelFrame(0.016f);
+    m_pTexturePlayer->drawMultiChannelFrame(m_pScreenQuad);
     m_pBackGroundPlayer->updateFrame();
     m_pScreenQuad->bindAndDraw();
 }

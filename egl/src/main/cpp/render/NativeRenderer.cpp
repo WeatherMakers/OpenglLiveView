@@ -20,7 +20,7 @@ CNativeRenderer *CNativeRenderer::getInstance()
 
 CNativeRenderer::CNativeRenderer()
 {
-    m_NativeXComponent = nullptr;
+    m_pNativeXComponent = nullptr;
     m_pExample = nullptr;
 }
 
@@ -426,12 +426,12 @@ napi_value CNativeRenderer::Init(napi_env env, napi_value exports)
     }
 
     auto Renderer = getInstance();
-    Renderer->m_NativeXComponent = pNativeXComponent;
+    Renderer->m_pNativeXComponent = pNativeXComponent;
     Renderer->m_Callback.OnSurfaceCreated = CNativeRenderer::OnSurfaceCreated;
     Renderer->m_Callback.OnSurfaceChanged = CNativeRenderer::OnSurfaceChanged;
     Renderer->m_Callback.OnSurfaceDestroyed = CNativeRenderer::OnSurfaceDestroyed;
-    OH_NativeXComponent_RegisterCallback(Renderer->m_NativeXComponent, &Renderer->m_Callback);
-    OH_NativeXComponent_RegisterOnFrameCallback(Renderer->m_NativeXComponent, OnFrame);
+    OH_NativeXComponent_RegisterCallback(Renderer->m_pNativeXComponent, &Renderer->m_Callback);
+    OH_NativeXComponent_RegisterOnFrameCallback(Renderer->m_pNativeXComponent, OnFrame);
     LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "Callbacks registered.");
     return nullptr;
 }

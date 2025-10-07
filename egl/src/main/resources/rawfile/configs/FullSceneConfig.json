@@ -2,7 +2,7 @@
   "Rain": {
     "frames_path": "textures/rainScene/rain_ASTC12x12_Linear",
     "frames_type": "astc",
-    "frames_count": 64,
+    "frames_count": 128,
     "one_texture_frames": 4,
     "fps": 80,
     "vertex_shader": "shaders/multiChannelRainSeq.vert",
@@ -62,13 +62,13 @@
     "fragment_shader": "shaders/multiChannelRainSeq8bitRaindrop.frag"
   },
   "RainBackground": {
-    "frames_path": "textures/snowScene.astc",
+    "frames_path": "textures/background.astc",
     "frames_type": "astc"
   },
   "Background": {
     "frames_path": "textures/snowScene/snowCover_ASTC12x12_Linear",
     "frames_type": "ASTC",
-    "frames_count": 16,
+    "frames_count": 128,
     "fps": 10,
     "vertex_shader": "shaders/sequenceTexturePlayerASTC.vert",
     "fragment_shader": "shaders/sequenceTexturePlayerASTC.frag"

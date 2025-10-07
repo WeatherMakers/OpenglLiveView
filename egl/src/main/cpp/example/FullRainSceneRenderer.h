@@ -43,14 +43,14 @@ namespace hiveVG
         CScreenQuad*               m_pScreenQuad          = nullptr;
         glm::vec2                  m_WindowSize           = glm::vec2 (0,0);
 
-        CThickCloudSequencePlayer*  m_pThickCloudPlayer     = nullptr;
+        CThickCloudSequencePlayer* m_pThickCloudPlayer    = nullptr;
         CSequenceFramePlayer*      m_pCloudPlayer         = nullptr;
-        CRainWithBackgroundSeqPlayer*      m_pRainSeqPlayer       = nullptr;
+        CRainWithBackgroundSeqPlayer* m_pRainSeqPlayer    = nullptr;
     
-        bool                       m_ThickCloudInitialized     = false;
+        bool                       m_ThickCloudInitialized    = false;
         bool                       m_CloudInitialized         = false;
         bool                       m_CloudVisible             = false;
-        bool                       m_ThickCloudVisible         = false;
+        bool                       m_ThickCloudVisible        = false;
     };
 
     template<typename T>

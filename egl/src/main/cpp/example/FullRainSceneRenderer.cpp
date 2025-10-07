@@ -1,21 +1,19 @@
 #include "FullRainSceneRenderer.h"
 #include "Common.h"
-#include "Texture2D.h"
-#include "ShaderProgram.h"
-#include "ScreenQuad.h"
 #include "JsonReader.h"
-#include "TimeUtils.h"
-#include "SingleTexturePlayer.h"
-#include "SequenceFramePlayer.h"
 #include "RainWithBackgroundSeqPlayer.h"
+#include "ScreenQuad.h"
+#include "SequenceFramePlayer.h"
+#include "ShaderProgram.h"
+#include "SingleTexturePlayer.h"
+#include "Texture2D.h"
 #include "ThickCloudSequencePlayer.h"
+#include "TimeUtils.h"
 #include "log.h"
 
 using namespace hiveVG;
 
-CFullRainSceneRenderer::CFullRainSceneRenderer()
-{
-}
+CFullRainSceneRenderer::CFullRainSceneRenderer() {}
 
 CFullRainSceneRenderer::~CFullRainSceneRenderer()
 {
@@ -46,29 +44,29 @@ bool CFullRainSceneRenderer::init()
 
 void CFullRainSceneRenderer::draw()
 {
-    m_CurrentTime    = CTimeUtils::getCurrentTime();
+    m_CurrentTime = CTimeUtils::getCurrentTime();
     double DeltaTime = m_CurrentTime - m_LastFrameTime;
-    m_LastFrameTime  = m_CurrentTime;
+    m_LastFrameTime = m_CurrentTime;
 
-    glClearColor(0.345f,0.345f,0.345f, 1.0f);
+    glClearColor(0.345f, 0.345f, 0.345f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_DEPTH_TEST);
-    
+
     m_pRainSeqPlayer->setCurrentChannel(static_cast<std::uint8_t>(m_RenderChannel));
     m_pRainSeqPlayer->updateMultiChannelFrame(DeltaTime, m_RenderChannel);
     m_pRainSeqPlayer->draw(m_pScreenQuad);
-    
+
     if (m_CloudInitialized && m_CloudVisible && m_pCloudPlayer)
     {
-        m_pCloudPlayer->updateLerpQuantFrame(DeltaTime);
+        m_pCloudPlayer->updateCloudLerpMultiChannelFrame(DeltaTime);
         if (m_RenderChannel == ERenderChannel::R || m_RenderChannel == ERenderChannel::G)
         {
-            m_pCloudPlayer->drawInterpolationWithFiltering(m_pScreenQuad);
+            m_pCloudPlayer->drawCloudLerpMultiChannelFrame(m_pScreenQuad);
         }
     }
-    
+
     if (m_ThickCloudInitialized && m_ThickCloudVisible && m_pThickCloudPlayer)
     {
         m_pThickCloudPlayer->updateQuantizationFrame(DeltaTime);
@@ -85,12 +83,18 @@ void CFullRainSceneRenderer::setChannel(ERenderChannel vChannel)
 
     if (vChannel == ERenderChannel::R)
     {
-        if (!m_CloudInitialized)         { __initCloudPlayer(); }
+        if (!m_CloudInitialized)
+        {
+            __initCloudPlayer();
+        }
     }
 
     if (vChannel == ERenderChannel::B)
     {
-        if (!m_ThickCloudInitialized)    { __initThickCloudPlayer(); }
+        if (!m_ThickCloudInitialized)
+        {
+            __initThickCloudPlayer();
+        }
     }
 }
 
@@ -108,34 +112,37 @@ void CFullRainSceneRenderer::toggleCloud()
     m_ThickCloudVisible = !m_ThickCloudVisible;
 }
 
-
-
 void CFullRainSceneRenderer::__initRainSeqPlayer()
 {
-    if (m_pRainSeqPlayer) return;
-    if (m_pConfigReader == nullptr) m_pConfigReader = new CJsonReader(m_ConfigFile);
+    if (m_pRainSeqPlayer)
+        return;
+    if (m_pConfigReader == nullptr)
+        m_pConfigReader = new CJsonReader(m_ConfigFile);
     Json::Value RainConfig = m_pConfigReader->getObject("Rain");
     Json::Value BackGroundConfig = m_pConfigReader->getObject("Background");
-    std::string RainPath   = RainConfig["frames_path"].asString();
+    std::string RainPath = RainConfig["frames_path"].asString();
     std::string RainFrameType = RainConfig["frames_type"].asString();
-    int RainTextureCount   = RainConfig["frames_count"].asInt();
+    int RainTextureCount = RainConfig["frames_count"].asInt();
     int RainOneTextureFrames = RainConfig["one_texture_frames"].asInt();
     float RainFramePerSecond = RainConfig["fps"].asFloat();
     std::string RainVertexShader = RainConfig["vertex_shader"].asString();
-    std::string RainFragShader   = RainConfig["fragment_shader"].asString();
+    std::string RainFragShader = RainConfig["fragment_shader"].asString();
     EPictureType::EPictureType RainPictureType = EPictureType::FromString(RainFrameType);
-    std::string BackImgPath      = BackGroundConfig["frames_path"].asString();
-    std::string BackFrameType    = BackGroundConfig["frames_type"].asString();
+    std::string BackImgPath = BackGroundConfig["frames_path"].asString();
+    std::string BackFrameType = BackGroundConfig["frames_type"].asString();
     EPictureType::EPictureType BackPicType = EPictureType::FromString(BackFrameType);
-    m_pRainSeqPlayer = new CRainWithBackgroundSeqPlayer(RainPath, RainTextureCount, RainOneTextureFrames, RainFramePerSecond, RainPictureType);
+    m_pRainSeqPlayer = new CRainWithBackgroundSeqPlayer(RainPath, RainTextureCount, RainOneTextureFrames,
+                                                        RainFramePerSecond, RainPictureType);
     m_pRainSeqPlayer->initTextureAndShaderProgram(RainVertexShader, RainFragShader);
     m_pRainSeqPlayer->initBackground(BackImgPath, BackPicType);
 }
 
 void CFullRainSceneRenderer::__initCloudPlayer()
 {
-    if (m_pCloudPlayer) return;
-    if (m_pConfigReader == nullptr) m_pConfigReader = new CJsonReader(m_ConfigFile);
+    if (m_pCloudPlayer)
+        return;
+    if (m_pConfigReader == nullptr)
+        m_pConfigReader = new CJsonReader(m_ConfigFile);
     Json::Value CloudConfig = m_pConfigReader->getObject("Cloud");
     std::string CloudPath = CloudConfig["frames_path"].asString();
     std::string CloudType = CloudConfig["frames_type"].asString();
@@ -145,7 +152,8 @@ void CFullRainSceneRenderer::__initCloudPlayer()
     std::string CloudVertexShader = CloudConfig["vertex_shader"].asString();
     std::string CloudFragShader = CloudConfig["fragment_shader"].asString();
     EPictureType::EPictureType CloudPicType = EPictureType::FromString(CloudType);
-    m_pCloudPlayer = new CSequenceFramePlayer(CloudPath, CloudFrameCount, CloudOneTextureFrames, CloudPlayFPS, CloudPicType);
+    m_pCloudPlayer =
+        new CSequenceFramePlayer(CloudPath, CloudFrameCount, CloudOneTextureFrames, CloudPlayFPS, CloudPicType);
     m_pCloudPlayer->initTextureAndShaderProgram(CloudVertexShader, CloudFragShader);
     m_pCloudPlayer->setWindowSize(m_WindowSize);
     m_pCloudPlayer->setRatioUniform();
@@ -154,8 +162,10 @@ void CFullRainSceneRenderer::__initCloudPlayer()
 
 void CFullRainSceneRenderer::__initThickCloudPlayer()
 {
-    if (m_pThickCloudPlayer) return;
-    if (m_pConfigReader == nullptr) m_pConfigReader = new CJsonReader(m_ConfigFile);
+    if (m_pThickCloudPlayer)
+        return;
+    if (m_pConfigReader == nullptr)
+        m_pConfigReader = new CJsonReader(m_ConfigFile);
     Json::Value ThickCloudConfig = m_pConfigReader->getObject("ThickCloud");
     std::string ThickCloudFramePath = ThickCloudConfig["frames_path"].asString();
     std::string ThickCloudFrameType = ThickCloudConfig["frames_type"].asString();
@@ -165,13 +175,13 @@ void CFullRainSceneRenderer::__initThickCloudPlayer()
     std::string ThickCloudVertexShader = ThickCloudConfig["vertex_shader"].asString();
     std::string ThickCloudFragShader = ThickCloudConfig["fragment_shader"].asString();
     EPictureType::EPictureType ThickCloudPicType = EPictureType::FromString(ThickCloudFrameType);
-    m_pThickCloudPlayer = new CThickCloudSequencePlayer(ThickCloudFramePath, ThickCloudFrameCount, ThickCloudOneTextureFrames, ThickCloudPlayFPS, ThickCloudPicType);
+    m_pThickCloudPlayer = new CThickCloudSequencePlayer(
+        ThickCloudFramePath, ThickCloudFrameCount, ThickCloudOneTextureFrames, ThickCloudPlayFPS, ThickCloudPicType);
     if (m_pThickCloudPlayer->initShaderProgram(ThickCloudVertexShader, ThickCloudFragShader))
     {
         m_pThickCloudPlayer->setWindowSize(m_WindowSize);
         m_ThickCloudInitialized = true;
-    }
-    else
+    } else
     {
         LOGE(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "ThickCloudPlayer initialization failed.");
     }

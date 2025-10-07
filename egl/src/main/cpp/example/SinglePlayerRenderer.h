@@ -17,7 +17,7 @@ namespace hiveVG
         void draw() override;
         
     private:
-        std::string                m_TexturePath    = "textures/snowScene.astc";
+        std::string                m_TexturePath    = "textures/background.astc";
         EPictureType::EPictureType m_TextureType    = EPictureType::ASTC;
         CSingleTexturePlayer*      m_pTexturePlayer = nullptr;
         CScreenQuad*               m_pScreenQuad    = nullptr;

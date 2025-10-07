@@ -14,6 +14,8 @@ namespace hiveVG
         static CNativeRenderer* getInstance();
         static napi_value Init(napi_env env, napi_value exports);
         static napi_value SetRenderType(napi_env env, napi_callback_info info);
+    
+        //  全雨景 && 全雪景相关 NAPI 函数
         static napi_value TriggerCloud(napi_env env, napi_callback_info info);
         static napi_value TriggerLightRain(napi_env env, napi_callback_info info);
         static napi_value TriggerModerateRain(napi_env env, napi_callback_info info);
@@ -59,7 +61,7 @@ namespace hiveVG
         template<typename T>
         void __deleteSafely(T*& vPointer);
     
-        OH_NativeXComponent* m_NativeXComponent = nullptr;
+        OH_NativeXComponent* m_pNativeXComponent = nullptr;
         OH_NativeXComponent_Callback m_Callback;
  
         EGLDisplay m_EglDisplay = EGL_NO_DISPLAY;

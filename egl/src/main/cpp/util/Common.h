@@ -5,11 +5,7 @@
 #include <glm/glm.hpp>
 #include "EnumReflect.h"
 
-DECLARE_ENUM(EPlayType, FULLSCREEN = 0, PARTIAL)
-DECLARE_ENUM(EPictureType, PNG = 0, JPG, WEBP, ASTC)
-DECLARE_ENUM(EPlayMode, DEPTH = 0, CHANNEL)
-DECLARE_ENUM(EBlendingMode, NORMAL = 0, MULTIPLY, LIGHTEN, LINEAR_DODGE, LIGHTER_COLOR, NONE, COUNT)
-DECLARE_ENUM(ELayerType, SEQUENCE_FRAME, SINGLE_PICTURE, BILLBOARD, SLIDE_WINDOW)
+DECLARE_ENUM(EPictureType, PNG = 0, JPG, ASTC)
 
 namespace hiveVG::TAG_KEYWORD
 {
@@ -44,7 +40,6 @@ namespace hiveVG
         A
     };
 
-    // Shaders config path
     const static std::string SeqTexPlayVertPNG     = "shaders/sequenceTexturePlayer.vert";
     const static std::string SeqTexPlayFragPNG     = "shaders/sequenceTexturePlayerPNG.frag";
     const static std::string SeqTexPlayVertASTC    = "shaders/sequenceTexturePlayerASTC.vert";
@@ -55,17 +50,4 @@ namespace hiveVG
     const static std::string SingleTexPlayFragJPG  = "shaders/singleTexturePlayerJPG.frag";
     const static std::string SingleTexPlayFragASTC = "shaders/singleTexturePlayerASTC.frag";
     const static std::string SeqTexPlayFragJPG     = "shaders/sequenceTexturePlayerJPG.frag";
-
-    struct SSequenceState
-    {
-        bool _IsAlive;
-        float _PlannedLivingTime;
-        float _PlannedDeadTime;
-        float _AlreadyLivingTime;
-        float _AlreadyDeadTime;
-        float _MovingDirection;
-        float _MovingSpeed;
-        glm::vec2 _UVOffset;
-        float _UVScale;
-    };
 }
