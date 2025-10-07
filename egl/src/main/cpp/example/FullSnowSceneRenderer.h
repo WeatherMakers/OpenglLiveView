@@ -10,7 +10,7 @@ namespace hiveVG
     class CScreenQuad;
     class CSequenceFramePlayer;
     class CLightningSequencePlayer;
-    class CNightSceneSequencePlayer;
+    class CSceneSequencePlayer;
 
     class CFullSnowSceneRenderer : public CBaseRenderer
     {

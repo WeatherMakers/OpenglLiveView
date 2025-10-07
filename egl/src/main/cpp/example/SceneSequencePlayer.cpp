@@ -1,4 +1,4 @@
-#include "NightSceneSequencePlayer.h"
+#include "SceneSequencePlayer.h"
 #include "Common.h"
 #include "Texture2D.h"
 #include "ShaderProgram.h"
@@ -6,11 +6,11 @@
 #include "log.h"
 
 using namespace hiveVG;
-CNightSceneSequencePlayer::CNightSceneSequencePlayer(const std::string &vTextureRootPath, int vTextureCount, int vOneTextureFrames, float vFramePerSecond, EPictureType::EPictureType vPictureType)
+CSceneSequencePlayer::CSceneSequencePlayer(const std::string &vTextureRootPath, int vTextureCount, int vOneTextureFrames, float vFramePerSecond, EPictureType::EPictureType vPictureType)
         : CSequenceFramePlayer(vTextureRootPath, vTextureCount, vOneTextureFrames, vFramePerSecond, vPictureType)
 { }
 
-CNightSceneSequencePlayer::~CNightSceneSequencePlayer()
+CSceneSequencePlayer::~CSceneSequencePlayer()
 {
     if(m_pBackground)
     {
@@ -19,7 +19,7 @@ CNightSceneSequencePlayer::~CNightSceneSequencePlayer()
     }
 }
 
-void CNightSceneSequencePlayer::initBackground(const std::string &vTexturePath, EPictureType::EPictureType vPictureType)
+void CSceneSequencePlayer::initBackground(const std::string &vTexturePath, EPictureType::EPictureType vPictureType)
 {
     int Width, Height;
     m_pBackground = CTexture2D::loadTexture(vTexturePath, Width, Height, vPictureType);
@@ -31,7 +31,7 @@ void CNightSceneSequencePlayer::initBackground(const std::string &vTexturePath, 
     LOGI(TAG_KEYWORD::NIGHT_SCENE_SEQUENCE_PLAYER_TAG, "Successfully loading texture from path [%{public}s].", vTexturePath.c_str());
 }
 
-void CNightSceneSequencePlayer::draw(CScreenQuad *vQuad)
+void CSceneSequencePlayer::draw(CScreenQuad *vQuad)
 {
     assert(m_pSequenceShaderProgram != nullptr);
     m_pSequenceShaderProgram->useProgram();
