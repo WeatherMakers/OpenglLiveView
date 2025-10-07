@@ -14,20 +14,14 @@ DECLARE_ENUM(ELayerType, SEQUENCE_FRAME, SINGLE_PICTURE, BILLBOARD, SLIDE_WINDOW
 namespace hiveVG::TAG_KEYWORD
 {
     const char *const MAIN_TAG                  = "Main";
-    const char *const RENDERER_TAG              = "CRenderer";
-    const char *const SEQFRAME_RENDERER_TAG     = "CSequenceFrameRenderer";
     const char *const TEXTURE2D_TAG             = "CTexture2D";
     const char *const SHADER_PROGRAM_TAG        = "CShaderProgram";
     const char *const SEQFRAME_PALYER_TAG       = "CSequenceFramePlayer";
-    const char *const TEXTURE_BLENDER_TAG       = "CTextureBlender";
-    const char *const BLENDER_MANAGER_TAG       = "CBlendManager";
     const char *const SYSTEMTEST_TAG            = "SystemTest";
     const char *const APP_CONTEXT_TAG           = "AppContext";
-    const char *const WEATHER_TAG               = "Weather";
     
     // Renderer class tags
     const char *const SINGLE_PLAYER_RENDERER_TAG = "CSinglePlayerRenderer";
-    const char *const SEQ_PLAYER_RENDERER_TAG    = "CSeqPlayerRenderer";
     const char *const RAIN_SCENE_RENDERER_TAG    = "CRainSceneRenderer";
     const char *const SNOW_SCENE_RENDERER_TAG    = "CSnowSceneRenderer";
     const char *const CLOUD_SCENE_RENDERER_TAG   = "CCloudSceneRenderer";
@@ -40,37 +34,8 @@ namespace hiveVG::TAG_KEYWORD
     const char *const NIGHT_SCENE_SEQUENCE_PLAYER_TAG = "CNightSceneSequencePlayer";
 }
 
-namespace hiveVG::CONFIG_KEYWORD
-{
-    const char *const TexturePath = "texture_path";
-}
-
 namespace hiveVG
 {
-    enum class ERenderType : std::uint8_t
-    {
-        NONE = 0,
-        SNOW,
-        RAIN,
-        CLOUD,
-        SCROLL_RAIN,
-        SNOW_SCENE,
-        SMALL_SNOW_FORE,
-        SMALL_SNOW_BACK,
-        BIG_SNOW_FORE,
-        BIG_SNOW_BACK,
-        SMALL_RAIN_FORE,
-        SMALL_RAIN_BACK,
-        BIG_RAIN_FORE,
-        BIG_RAIN_BACK,
-        RAIN_QBC,
-        RAIN_QBD,
-        RAIN_Q32,
-        SNOW_QBC,
-        SNOW_QBD,
-        SNOW_Q32
-    };
-
     enum class ERenderChannel : std::uint8_t
     {
         R = 0,
@@ -90,7 +55,6 @@ namespace hiveVG
     const static std::string SingleTexPlayFragJPG  = "shaders/singleTexturePlayerJPG.frag";
     const static std::string SingleTexPlayFragASTC = "shaders/singleTexturePlayerASTC.frag";
     const static std::string SeqTexPlayFragJPG     = "shaders/sequenceTexturePlayerJPG.frag";
-
 
     struct SSequenceState
     {
