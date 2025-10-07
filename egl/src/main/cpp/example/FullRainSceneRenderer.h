@@ -10,7 +10,7 @@ namespace hiveVG
     class CScreenQuad;
     class CSequenceFramePlayer;
     class CThickCloudSequencePlayer;
-    class CSceneSequencePlayer;
+    class CRainWithBackgroundSeqPlayer;
     class CJsonReader;
 
     class CFullRainSceneRenderer : public CBaseRenderer
@@ -45,8 +45,7 @@ namespace hiveVG
 
         CThickCloudSequencePlayer*  m_pThickCloudPlayer     = nullptr;
         CSequenceFramePlayer*      m_pCloudPlayer         = nullptr;
-        CSceneSequencePlayer* m_pRainSeqPlayer       = nullptr;
-
+        CRainWithBackgroundSeqPlayer*      m_pRainSeqPlayer       = nullptr;
     
         bool                       m_ThickCloudInitialized     = false;
         bool                       m_CloudInitialized         = false;

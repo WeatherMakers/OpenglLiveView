@@ -7,7 +7,7 @@
 #include "TimeUtils.h"
 #include "SingleTexturePlayer.h"
 #include "SequenceFramePlayer.h"
-#include "SceneSequencePlayer.h"
+#include "RainWithBackgroundSeqPlayer.h"
 #include "ThickCloudSequencePlayer.h"
 #include "log.h"
 
@@ -60,7 +60,6 @@ void CFullRainSceneRenderer::draw()
     m_pRainSeqPlayer->updateMultiChannelFrame(DeltaTime, m_RenderChannel);
     m_pRainSeqPlayer->draw(m_pScreenQuad);
     
-
     if (m_CloudInitialized && m_CloudVisible && m_pCloudPlayer)
     {
         m_pCloudPlayer->updateLerpQuantFrame(DeltaTime);
@@ -100,7 +99,7 @@ void CFullRainSceneRenderer::toggleCloud()
     if (!m_CloudInitialized)
     {
         __initCloudPlayer();
-         __initThickCloudPlayer();
+        __initThickCloudPlayer();
         m_CloudVisible = true;
         m_ThickCloudVisible = true;
         return;
@@ -128,7 +127,7 @@ void CFullRainSceneRenderer::__initRainSeqPlayer()
     std::string BackImgPath      = BackGroundConfig["frames_path"].asString();
     std::string BackFrameType    = BackGroundConfig["frames_type"].asString();
     EPictureType::EPictureType BackPicType = EPictureType::FromString(BackFrameType);
-    m_pRainSeqPlayer = new CSceneSequencePlayer(RainPath, RainTextureCount, RainOneTextureFrames, RainFramePerSecond, RainPictureType);
+    m_pRainSeqPlayer = new CRainWithBackgroundSeqPlayer(RainPath, RainTextureCount, RainOneTextureFrames, RainFramePerSecond, RainPictureType);
     m_pRainSeqPlayer->initTextureAndShaderProgram(RainVertexShader, RainFragShader);
     m_pRainSeqPlayer->initBackground(BackImgPath, BackPicType);
 }

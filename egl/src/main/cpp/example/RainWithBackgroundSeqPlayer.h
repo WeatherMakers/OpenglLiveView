@@ -6,11 +6,11 @@ namespace hiveVG
 {
     class CTexture2D;
 
-    class CSceneSequencePlayer : public CSequenceFramePlayer
+    class CRainWithBackgroundSeqPlayer : public CSequenceFramePlayer
     {
     public:
-        CSceneSequencePlayer(const std::string& vTextureRootPath, int vTextureCount, int vOneTextureFrames, float vFramePerSecond, EPictureType::EPictureType vPictureType = EPictureType::PNG);
-        ~CSceneSequencePlayer();
+        CRainWithBackgroundSeqPlayer(const std::string& vTextureRootPath, int vTextureCount, int vOneTextureFrames, float vFramePerSecond, EPictureType::EPictureType vPictureType = EPictureType::PNG);
+        ~CRainWithBackgroundSeqPlayer();
 
         void initBackground(const std::string& vTexturePath, EPictureType::EPictureType vPictureType);
         void draw(CScreenQuad *vQuad);

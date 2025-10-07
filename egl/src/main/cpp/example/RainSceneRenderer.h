@@ -19,7 +19,7 @@ namespace hiveVG
         
     private:
         std::string           m_TextureRootPath   = "textures/rainScene/rain_splash_4channel_ASTC12x12_Linear";
-        std::string           m_BackgroundTexPath = "snowScene.astc";
+        std::string           m_BackgroundTexPath = "textures/snowScene.astc";
         int                   m_TextureCount      = 64;
         int                   m_OneTextureFrames  = 4;
         float                 m_FrameSeconds      = 60;

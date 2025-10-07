@@ -111,17 +111,6 @@ export struct GLComponent {
                }
              },
              {
-               value: '雨滴飞溅',
-               action: () => {
-                 try {
-                   egl.setRenderType(Params.SEQ_RENDER_TYPE)
-                   this.currentSceneType = 'none'
-                 } catch (e) {
-                   hilog.error(0x0000, 'GL', `雨滴飞溅，显示失败: ${JSON.stringify(e)}`)
-                 }
-               }
-             },
-             {
                value: '雨景',
                action: () => {
                  try {

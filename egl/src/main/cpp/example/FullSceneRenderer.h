@@ -10,7 +10,7 @@ namespace hiveVG
     class CScreenQuad;
     class CSequenceFramePlayer;
     class CThickCloudSequencePlayer;
-    class CSceneSequencePlayer;
+    class CRainWithBackgroundSeqPlayer;
 
     class CFullSceneRenderer : public CBaseRenderer
     {
@@ -62,7 +62,7 @@ namespace hiveVG
         glm::vec2                  m_WindowSize = glm::vec2(0,0);
 
         // 雨景播放器
-        CSceneSequencePlayer* m_pRainSeqPlayer = nullptr;
+        CRainWithBackgroundSeqPlayer* m_pRainSeqPlayer = nullptr;
         CSequenceFramePlayer*      m_pCloudPlayer = nullptr;
         CThickCloudSequencePlayer*  m_pThickCloudPlayer = nullptr;
 

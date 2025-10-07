@@ -1,12 +1,12 @@
 {
     "Background":{
-        "frames_path": "snowScene.astc",
+        "frames_path": "textures/snowScene.astc",
         "frames_type": "astc"
     },
     "Rain": {
         "frames_path": "textures/rainScene/rain_ASTC12x12_Linear",
         "frames_type" : "astc",
-        "frames_count": 128,
+        "frames_count": 64,
         "one_texture_frames": 4,
         "fps": 80,
         "vertex_shader" : "shaders/multiChannelRainSeq.vert",

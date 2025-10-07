@@ -2,7 +2,6 @@
 #include "AppContext.h"
 #include "log.h"
 #include "example/BaseRenderer.h"
-#include "example/SeqPlayerRenderer.h"
 #include "example/SinglePlayerRenderer.h"
 #include "example/RainSceneRenderer.h"
 #include "example/SnowSceneRenderer.h"
@@ -295,9 +294,6 @@ napi_value CNativeRenderer::SetRenderType(napi_env env, napi_callback_info info)
         case SINGLE_RENDER_TYPE:
             pExample = new CSinglePlayerRenderer();
             break;
-        case SEQ_RENDER_TYPE:
-            pExample = new CSeqPlayerRenderer();
-            break;
         case RAIN_RENDER_TYPE:
             pExample = new CRainSceneRenderer();
             break;
@@ -486,9 +482,6 @@ void CNativeRenderer::HandleOnSurfaceCreated(void *vWindow)
             {
             case SINGLE_RENDER_TYPE:
                 m_pExample = new CSinglePlayerRenderer();
-                break;
-            case SEQ_RENDER_TYPE:
-                m_pExample = new CSeqPlayerRenderer();
                 break;
             case RAIN_RENDER_TYPE:
                 m_pExample = new CRainSceneRenderer();
