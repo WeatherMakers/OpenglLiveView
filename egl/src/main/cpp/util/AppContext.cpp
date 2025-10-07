@@ -5,9 +5,7 @@
 
 using namespace hiveVG;
 
-std::mutex             CAppContext::m_AppMutex;
 NativeResourceManager* CAppContext::m_pNativeResManager = nullptr;
-std::string            CAppContext::m_StoragePath = "";
 
 napi_value CAppContext::setResourceManager(napi_env env, napi_callback_info info)
 {
@@ -24,20 +22,4 @@ NativeResourceManager* CAppContext::getResourceManager()
     if (m_pNativeResManager == nullptr)
         LOGE(TAG_KEYWORD::APP_CONTEXT_TAG, "Resource manager does not exist.");
     return m_pNativeResManager;
-}
-
-void CAppContext::setStoragePath(const std::string &vPath)
-{
-    std::string StoragePath = vPath;
-    if (StoragePath.back() != '/') {
-        StoragePath += '/';
-    }
-    m_StoragePath = StoragePath;
-}
-
-std::string CAppContext::getStoragePath()
-{
-    if(m_StoragePath.empty())
-        LOGE(TAG_KEYWORD::APP_CONTEXT_TAG, "Storage path does not set.");
-    return m_StoragePath;
 }

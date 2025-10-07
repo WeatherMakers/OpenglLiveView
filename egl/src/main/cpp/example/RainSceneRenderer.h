@@ -1,6 +1,5 @@
 #pragma once
 
-#include "AsycSequenceFramePlayer.h"
 #include "BaseRenderer.h"
 #include "Common.h"
 
@@ -9,7 +8,6 @@ namespace hiveVG
     class CScreenQuad;
     class CSingleTexturePlayer;
     class CSequenceFramePlayer;
-    class CAsycSequenceFramePlayer;
     
     class CRainSceneRenderer : public CBaseRenderer
     {
@@ -27,7 +25,6 @@ namespace hiveVG
         float                 m_FrameSeconds      = 60;
         EPictureType::EPictureType m_PictureType  = EPictureType::ASTC;
         CSequenceFramePlayer* m_pTexturePlayer    = nullptr;
-        CAsycSequenceFramePlayer* m_pAsycTexturePlayer = nullptr;
         CSingleTexturePlayer* m_pBackGroundPlayer = nullptr;
         CScreenQuad*          m_pScreenQuad       = nullptr;
     };

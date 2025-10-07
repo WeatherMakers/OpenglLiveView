@@ -13,38 +13,31 @@ DECLARE_ENUM(ELayerType, SEQUENCE_FRAME, SINGLE_PICTURE, BILLBOARD, SLIDE_WINDOW
 
 namespace hiveVG::TAG_KEYWORD
 {
-    const char *const MAIN_TAG = "Main";
-    const char *const RENDERER_TAG = "CRenderer";
-    const char *const SEQFRAME_RENDERER_TAG = "CSequenceFrameRenderer";
-    const char *const TEXTURE2D_TAG = "CTexture2D";
-    const char *const SHADER_PROGRAM_TAG = "CShaderProgram";
-    const char *const SINGLE_PALYER_TAG = "CSequenceFramePlayer";
-    const char *const SEQFRAME_PALYER_TAG = "CSequenceFramePlayer";
-    const char *const ASYNC_SEQFRAME_PALYER_TAG = "CAsyncSequenceFramePlayer";
+    const char *const MAIN_TAG                  = "Main";
+    const char *const RENDERER_TAG              = "CRenderer";
+    const char *const SEQFRAME_RENDERER_TAG     = "CSequenceFrameRenderer";
+    const char *const TEXTURE2D_TAG             = "CTexture2D";
+    const char *const SHADER_PROGRAM_TAG        = "CShaderProgram";
+    const char *const SEQFRAME_PALYER_TAG       = "CSequenceFramePlayer";
     const char *const TEXTURE_BLENDER_TAG       = "CTextureBlender";
     const char *const BLENDER_MANAGER_TAG       = "CBlendManager";
     const char *const SYSTEMTEST_TAG            = "SystemTest";
-    const char *const SNOW_STYLIZE_TAG          = "SnowStylize";
     const char *const APP_CONTEXT_TAG           = "AppContext";
-    const char *const UNIT_TEST_TAG             = "UnitTest";
     const char *const WEATHER_TAG               = "Weather";
-    const char *const EFFECT_TEST_TAG           = "EffectTest";
-    const char *const SPLASH_MANAGER_TAG        = "CSplashManager";
     
     // Renderer class tags
     const char *const SINGLE_PLAYER_RENDERER_TAG = "CSinglePlayerRenderer";
-    const char *const SEQ_PLAYER_RENDERER_TAG = "CSeqPlayerRenderer";
-    const char *const RAIN_SCENE_RENDERER_TAG = "CRainSceneRenderer";
-    const char *const SNOW_SCENE_RENDERER_TAG = "CSnowSceneRenderer";
-    const char *const CLOUD_SCENE_RENDERER_TAG = "CCloudSceneRenderer";
-    const char *const FULL_SCENE_RENDERER_TAG  = "CFullSceneRenderer";
-    const char *const NATIVE_RENDERER_TAG = "CNativeRenderer";
-    const char *const FILE_UTILS_TAG           = "FileUtils";
-    const char *const SCREEN_QUAD_TAG          = "CScreenQuad";
-    const char *const SINGLE_TEXTURE_PLAYER_TAG = "CSingleTexturePlayer";
-    const char *const LIGHTNING_SEQUENCE_PLAYER_TAG = "CLightningSequencePlayer";
+    const char *const SEQ_PLAYER_RENDERER_TAG    = "CSeqPlayerRenderer";
+    const char *const RAIN_SCENE_RENDERER_TAG    = "CRainSceneRenderer";
+    const char *const SNOW_SCENE_RENDERER_TAG    = "CSnowSceneRenderer";
+    const char *const CLOUD_SCENE_RENDERER_TAG   = "CCloudSceneRenderer";
+    const char *const FULL_SCENE_RENDERER_TAG    = "CFullSceneRenderer";
+    const char *const NATIVE_RENDERER_TAG        = "CNativeRenderer";
+    const char *const FILE_UTILS_TAG             = "FileUtils";
+    const char *const SCREEN_QUAD_TAG            = "CScreenQuad";
+    const char *const SINGLE_TEXTURE_PLAYER_TAG       = "CSingleTexturePlayer";
+    const char *const LIGHTNING_SEQUENCE_PLAYER_TAG   = "CLightningSequencePlayer";
     const char *const NIGHT_SCENE_SEQUENCE_PLAYER_TAG = "CNightSceneSequencePlayer";
-    const char *const ASYNC_SEQUENCE_FRAME_PLAYER_TAG = "CAsycSequenceFramePlayer";
 }
 
 namespace hiveVG::CONFIG_KEYWORD
@@ -86,8 +79,6 @@ namespace hiveVG
         A
     };
 
-    const static std::string P60SaveToPhotoPath = "/storage/emulated/0/Pictures/Screenshots/";
-
     // Shaders config path
     const static std::string SeqTexPlayVertPNG     = "shaders/sequenceTexturePlayer.vert";
     const static std::string SeqTexPlayFragPNG     = "shaders/sequenceTexturePlayerPNG.frag";
@@ -99,22 +90,7 @@ namespace hiveVG
     const static std::string SingleTexPlayFragJPG  = "shaders/singleTexturePlayerJPG.frag";
     const static std::string SingleTexPlayFragASTC = "shaders/singleTexturePlayerASTC.frag";
     const static std::string SeqTexPlayFragJPG     = "shaders/sequenceTexturePlayerJPG.frag";
-    const static std::string SeqTexPlayLerp        = "shaders/sequenceTextureIerpPlayer.frag";
-    const static std::string SeqTexPlayLerpQuan    = "shaders/sequenceTextureIerpQuanPlayer.frag";
-    const static std::string SlideWindowVert       = "shaders/slideWindow.vert";
-    const static std::string SlideWindowHFrag      = "shaders/slideWindowH.frag";
-    const static std::string SlideWindowHCFrag     = "shaders/slideWindowHCompressed.frag";
-    const static std::string SlideWindowVFrag      = "shaders/slideWindowV.frag";
-    const static std::string SlideWindowVCFrag     = "shaders/slideWindowVCompressed.frag";
 
-    const static std::string BlitTex2ScreenVert = "shaders/blitTex2Screen.vert";
-    const static std::string BlitTex2ScreenFrag = "shaders/blitTex2Screen.frag";
-    const static std::string BlendAlphaFrag     = "shaders/blendAlpha.frag";
-    const static std::string BlendMultiplyFrag  = "shaders/blendMultiply.frag";
-    const static std::string BlendLightenFrag   = "shaders/blendLighten.frag";
-    const static std::string BlendLinearDodgeFrag  = "shaders/blendLinearDodge.frag";
-    const static std::string BlendLighterColorFrag = "shaders/blendLighterColor.frag";
-    const static std::string BlendOverlayFrag   = "shaders/blendOverlay.frag";
 
     struct SSequenceState
     {
