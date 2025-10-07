@@ -162,10 +162,8 @@ void CFullRainSceneRenderer::__initCloudPlayer()
 
 void CFullRainSceneRenderer::__initThickCloudPlayer()
 {
-    if (m_pThickCloudPlayer)
-        return;
-    if (m_pConfigReader == nullptr)
-        m_pConfigReader = new CJsonReader(m_ConfigFile);
+    if (m_pThickCloudPlayer) return;
+    if (m_pConfigReader == nullptr) m_pConfigReader = new CJsonReader(m_ConfigFile);
     Json::Value ThickCloudConfig = m_pConfigReader->getObject("ThickCloud");
     std::string ThickCloudFramePath = ThickCloudConfig["frames_path"].asString();
     std::string ThickCloudFrameType = ThickCloudConfig["frames_type"].asString();
@@ -175,13 +173,18 @@ void CFullRainSceneRenderer::__initThickCloudPlayer()
     std::string ThickCloudVertexShader = ThickCloudConfig["vertex_shader"].asString();
     std::string ThickCloudFragShader = ThickCloudConfig["fragment_shader"].asString();
     EPictureType::EPictureType ThickCloudPicType = EPictureType::FromString(ThickCloudFrameType);
-    m_pThickCloudPlayer = new CThickCloudSequencePlayer(
-        ThickCloudFramePath, ThickCloudFrameCount, ThickCloudOneTextureFrames, ThickCloudPlayFPS, ThickCloudPicType);
+    m_pThickCloudPlayer = new CThickCloudSequencePlayer(ThickCloudFramePath, ThickCloudFrameCount, ThickCloudOneTextureFrames, ThickCloudPlayFPS, ThickCloudPicType);
     if (m_pThickCloudPlayer->initShaderProgram(ThickCloudVertexShader, ThickCloudFragShader))
     {
+        Json::Value LightningConfig = m_pConfigReader->getObject("LightningWithMask");
+        int LightningFrameCount = LightningConfig["frames_count"].asInt();
+        int LightningOneTextureFrames = LightningConfig["one_texture_frames"].asInt();
+        float LightningPlayFPS = LightningConfig["fps"].asFloat();
+        m_pThickCloudPlayer->setLightningAnimationParams(LightningFrameCount,LightningOneTextureFrames,LightningPlayFPS );
         m_pThickCloudPlayer->setWindowSize(m_WindowSize);
         m_ThickCloudInitialized = true;
-    } else
+    }
+    else
     {
         LOGE(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "ThickCloudPlayer initialization failed.");
     }

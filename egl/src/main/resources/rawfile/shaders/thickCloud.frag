@@ -7,10 +7,14 @@ uniform float Factor;
 uniform float Displacement;
 uniform int   CurrentChannel;
 uniform vec2  TexelSize;
+uniform float FlashProgress;
+uniform vec3  FlashColor;
+uniform float FlashAlpha;
+uniform bool  LightningInFront;
+uniform bool  isFinish;
 
 uniform sampler2D CurrentTexture;
 uniform sampler2D NextTexture;
-
 
 out vec4 FragColor;
 
@@ -55,5 +59,29 @@ void main()
     vec4 CloudColor = vec4(1.0, 1.0, 1.0, MixColor);
 
     vec3 CloudColorWithoutLight = remap(CloudColor.rgb, 0.0, 1.0, 0.0, 0.65);
-    FragColor =  vec4(CloudColorWithoutLight,MixColor);
+
+    // 云后效果
+    CloudColor.rgb = CloudColorWithoutLight;
+    vec4 ColorWhenBehind = CloudColor;
+
+    // 闪电提亮
+    float EnableFlash = step(0.0001, FlashProgress); // FlashProgress > 0 => 1.0，否则 0.0
+    float UP   = smoothstep(0.0, 0.5, FlashProgress);
+    float Down = 1.0 - smoothstep(0.5, 1.0, FlashProgress);
+    float FlashIntensity = UP * Down;
+
+    vec3 FinalLitColor = mix(CloudColor.rgb, FlashColor, FlashIntensity * FlashAlpha);
+    vec4 ColorWhenInFront = vec4(FinalLitColor, MixColor +  0.2);
+    FragColor = mix(ColorWhenBehind, ColorWhenInFront, float(LightningInFront) * EnableFlash);
+
+    //当闪电播放在云前的时候 变成全屏
+    if ((TexCoordCloud.x < 0.0 || TexCoordCloud.x > 1.0 ||
+        TexCoordCloud.y < 0.0 || TexCoordCloud.y > 1.0) && !LightningInFront ){
+        FragColor = vec4(0.0);
+    }else if((TexCoordCloud.x < 0.0 || TexCoordCloud.x > 1.0 ||
+                     TexCoordCloud.y < 0.0 || TexCoordCloud.y > 1.0) && isFinish){
+        FragColor = vec4(0.0);
+    }
+
+
 }

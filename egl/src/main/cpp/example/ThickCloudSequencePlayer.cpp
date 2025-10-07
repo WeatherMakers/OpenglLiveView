@@ -25,6 +25,29 @@ CThickCloudSequencePlayer::~CThickCloudSequencePlayer()
 {
 }
 
+void CThickCloudSequencePlayer::setLightningAnimationParams(int vTextureCount, int vOneTextureFrames, float vFrameSeconds){
+    m_TextureCount = vTextureCount;
+    m_OneTextureFrames = vOneTextureFrames;
+    m_FramePerSecond = vFrameSeconds;
+}
+
+void CThickCloudSequencePlayer::__resetPlayback()
+{
+    m_IsFinished = false;
+    m_IsWaiting  = false;
+    m_WaitTime  = 0.0;
+    m_CurrentFrame   = 0;
+    m_CurrentTexture = 0;
+    m_CurrentChannel = 0;
+
+    __randomizeLightningParameters();
+}
+
+void CThickCloudSequencePlayer::__randomizeLightningParameters()
+{
+    m_LightningInFront = m_BoolDist(m_Rng) == 1;
+}
+
 void CThickCloudSequencePlayer::updateQuantizationFrame(double vDeltaTime)
 {
     // === 更新云序列帧 ===
@@ -50,19 +73,60 @@ void CThickCloudSequencePlayer::updateQuantizationFrame(double vDeltaTime)
     }
     m_CloudInterpFactor = m_AccumCloudTime / CloudFrameTime;
 
+        // === 处理等待逻辑 ===
+    if (m_IsWaiting)
+    {
+        m_WaitTime += vDeltaTime;
+        if (m_WaitTime >= m_TargetWaitTime)
+        {
+            __resetPlayback();
+        }
+        return;
+    }
+
+    // === 更新闪电帧 ===
+    double FrameTime = 1.0 / m_FramePerSecond;
+    m_AccumFrameTime += vDeltaTime;
+
+    if (m_AccumFrameTime >= FrameTime)
+    {
+        m_AccumFrameTime = 0;
+        m_CurrentChannel = (m_CurrentChannel + 1) % m_OneTextureFrames;
+        if (m_CurrentChannel == 0)
+        {
+            m_CurrentTexture++;
+            if (m_CurrentTexture >= m_TextureCount / 2)
+            {
+                m_CurrentTexture = 0;
+                m_IsFinished = true;
+                m_IsWaiting = true;
+                m_TargetWaitTime = m_WaitDist(m_Rng);
+                return;
+            }
+        }
+    }
 }
 
 void CThickCloudSequencePlayer::draw(CScreenQuad *vQuad)
 {
+    float FlashProgress = (float)m_CurrentTexture / ((float)m_TextureCount / 2.0f - 1.0f);
+    FlashProgress = glm::clamp(FlashProgress, 0.0f, 1.0f);
+    if (FlashProgress >= 0.9) FlashProgress = 0;
 
     assert(m_pSequenceShaderProgram != nullptr);
     m_pSequenceShaderProgram->useProgram();
     m_pSequenceShaderProgram->setUniform("cloudUVOffset", glm::vec2(0.0,0.75));
     m_pSequenceShaderProgram->setUniform("cloudUVScale", glm::vec2(1,0.4));
+    m_pSequenceShaderProgram->setUniform("isFinish", m_IsFinished);
 
     m_pSequenceShaderProgram->setUniform("CurrentTexture", 0);
     m_pSequenceShaderProgram->setUniform("NextTexture", 1);
    
+    m_pSequenceShaderProgram->setUniform("FlashProgress", FlashProgress);
+    m_pSequenceShaderProgram->setUniform("FlashColor", glm::vec3(1.0f));
+    m_pSequenceShaderProgram->setUniform("FlashAlpha", 0.3f);
+    m_pSequenceShaderProgram->setUniform("LightningInFront", m_LightningInFront);
+
     m_pSequenceShaderProgram->setUniform("Factor", m_CloudInterpFactor);
     m_pSequenceShaderProgram->setUniform("Displacement", 0.01f);
     m_pSequenceShaderProgram->setUniform("CurrentChannel", m_CurrentCloudChannel);

@@ -10,10 +10,11 @@ void main()
 {
     gl_Position = vec4(aPos, 0.0, 1.0); // 直接传入标准化设备坐标 [-1,1]
 
-    // 纹理变换处理（绕中心缩放+旋转+偏移）
+    // 闪电纹理变换处理（绕中心缩放+旋转+偏移）
     vec2 centerCoord = aTexCoord - vec2(0.5); // 平移到中心
     vec2 safeCloudScale = max(cloudUVScale, vec2(0.0001)); // 防止除以 0
     vec2 scaledCloudCoord = centerCoord / safeCloudScale;
+
 
     TexCoordCloud = scaledCloudCoord + vec2(0.5) + cloudUVOffset;
 }
