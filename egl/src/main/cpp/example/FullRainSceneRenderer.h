@@ -10,7 +10,7 @@ namespace hiveVG
     class CScreenQuad;
     class CSequenceFramePlayer;
     class CLightningSequencePlayer;
-    class CSceneSequencePlayer;
+    class CRainWithBackgroundSeqPlayer;
     class CJsonReader;
 
     class CFullRainSceneRenderer : public CBaseRenderer
@@ -46,8 +46,7 @@ namespace hiveVG
 
         CLightningSequencePlayer*  m_pLightningPlayer     = nullptr;
         CSequenceFramePlayer*      m_pCloudPlayer         = nullptr;
-        CSceneSequencePlayer* m_pRainSeqPlayer       = nullptr;
-
+        CRainWithBackgroundSeqPlayer*      m_pRainSeqPlayer       = nullptr;
     
         bool                       m_LightningInitialized     = false;
         bool                       m_CloudInitialized         = false;

@@ -7,7 +7,7 @@
 #include "TimeUtils.h"
 #include "SingleTexturePlayer.h"
 #include "SequenceFramePlayer.h"
-#include "SceneSequencePlayer.h"
+#include "RainWithBackgroundSeqPlayer.h"
 #include "LightningSequencePlayer.h"
 #include "log.h"
 
