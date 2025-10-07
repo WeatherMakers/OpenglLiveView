@@ -14,7 +14,6 @@ namespace hiveVG
         static CNativeRenderer* getInstance();
         static napi_value Init(napi_env env, napi_value exports);
         static napi_value SetRenderType(napi_env env, napi_callback_info info);
-        static napi_value TriggerLightning(napi_env env, napi_callback_info info);
         static napi_value TriggerCloud(napi_env env, napi_callback_info info);
         static napi_value TriggerLightRain(napi_env env, napi_callback_info info);
         static napi_value TriggerModerateRain(napi_env env, napi_callback_info info);
@@ -33,7 +32,6 @@ namespace hiveVG
         static napi_value TriggerFullSceneRainHeavy(napi_env env, napi_callback_info info);
         static napi_value TriggerFullSceneRainStorm(napi_env env, napi_callback_info info);
         static napi_value TriggerFullSceneRainCloud(napi_env env, napi_callback_info info);
-        static napi_value TriggerFullSceneRainLightning(napi_env env, napi_callback_info info);
         static napi_value TriggerFullSceneSnowLight(napi_env env, napi_callback_info info);
         static napi_value TriggerFullSceneSnowModerate(napi_env env, napi_callback_info info);
         static napi_value TriggerFullSceneSnowHeavy(napi_env env, napi_callback_info info);

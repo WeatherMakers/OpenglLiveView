@@ -1,6 +1,6 @@
 {
   "Rain": {
-    "frames_path": "textures/rainScene/rain_splash_4channel_ASTC12x12_Linear",
+    "frames_path": "textures/rainScene/rain_ASTC12x12_Linear",
     "frames_type": "astc",
     "frames_count": 128,
     "one_texture_frames": 4,
@@ -33,6 +33,15 @@
     },
     "vertex_shader": "shaders/lightning.vert",
     "fragment_shader": "shaders/lightning.frag"
+  },
+  "ThickCloud": {
+    "frames_path": "textures/rainScene/cloud_ASTC12x12_Linear",
+    "frames_type" : "astc",
+    "frames_count": 34,
+    "one_texture_frames": 4,
+    "fps": 7.3,
+    "vertex_shader" : "shaders/thickCloud.vert",
+    "fragment_shader" : "shaders/thickCloud.frag"
   },
   "SmallRaindrop": {
     "frames_path": "textures/rainScene/small_rainDrop_mergedpng_ASTC12x12_Linear",

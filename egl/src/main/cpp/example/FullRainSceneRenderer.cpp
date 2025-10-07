@@ -8,7 +8,7 @@
 #include "SingleTexturePlayer.h"
 #include "SequenceFramePlayer.h"
 #include "SceneSequencePlayer.h"
-#include "LightningSequencePlayer.h"
+#include "ThickCloudSequencePlayer.h"
 #include "log.h"
 
 using namespace hiveVG;
@@ -20,7 +20,7 @@ CFullRainSceneRenderer::CFullRainSceneRenderer()
 CFullRainSceneRenderer::~CFullRainSceneRenderer()
 {
     __deleteSafely(m_pRainSeqPlayer);
-    __deleteSafely(m_pLightningPlayer);
+    __deleteSafely(m_pThickCloudPlayer);
     __deleteSafely(m_pCloudPlayer);
     __deleteSafely(m_pConfigReader);
 }
@@ -70,12 +70,12 @@ void CFullRainSceneRenderer::draw()
         }
     }
     
-    if (m_LightningInitialized && m_LightningVisible && m_pLightningPlayer)
+    if (m_ThickCloudInitialized && m_ThickCloudVisible && m_pThickCloudPlayer)
     {
-        m_pLightningPlayer->updateQuantizationFrame(DeltaTime);
+        m_pThickCloudPlayer->updateQuantizationFrame(DeltaTime);
         if (m_RenderChannel == ERenderChannel::B || m_RenderChannel == ERenderChannel::A)
         {
-            m_pLightningPlayer->draw(m_pScreenQuad);
+            m_pThickCloudPlayer->draw(m_pScreenQuad);
         }
     }
 }
@@ -91,7 +91,7 @@ void CFullRainSceneRenderer::setChannel(ERenderChannel vChannel)
 
     if (vChannel == ERenderChannel::B)
     {
-        if (!m_LightningInitialized)    { __initLightningPlayer(); }
+        if (!m_ThickCloudInitialized)    { __initThickCloudPlayer(); }
     }
 }
 
@@ -100,22 +100,16 @@ void CFullRainSceneRenderer::toggleCloud()
     if (!m_CloudInitialized)
     {
         __initCloudPlayer();
+         __initThickCloudPlayer();
         m_CloudVisible = true;
+        m_ThickCloudVisible = true;
         return;
     }
     m_CloudVisible = !m_CloudVisible;
+    m_ThickCloudVisible = !m_ThickCloudVisible;
 }
 
-void CFullRainSceneRenderer::toggleLightning()
-{
-    if (!m_LightningInitialized)
-    {
-        __initLightningPlayer();
-        m_LightningVisible = true;
-        return;
-    }
-    m_LightningVisible = !m_LightningVisible;
-}
+
 
 void CFullRainSceneRenderer::__initRainSeqPlayer()
 {
@@ -159,27 +153,27 @@ void CFullRainSceneRenderer::__initCloudPlayer()
     m_CloudInitialized = true;
 }
 
-void CFullRainSceneRenderer::__initLightningPlayer()
+void CFullRainSceneRenderer::__initThickCloudPlayer()
 {
-    if (m_pLightningPlayer) return;
+    if (m_pThickCloudPlayer) return;
     if (m_pConfigReader == nullptr) m_pConfigReader = new CJsonReader(m_ConfigFile);
-    Json::Value LightningConfig = m_pConfigReader->getObject("LightningWithMask");
-    std::string LightningFramePath = LightningConfig["frames_path"].asString();
-    std::string LightningFrameType = LightningConfig["frames_type"].asString();
-    int LightningFrameCount = LightningConfig["frames_count"].asInt();
-    int LightningOneTextureFrames = LightningConfig["one_texture_frames"].asInt();
-    float LightningPlayFPS = LightningConfig["fps"].asFloat();
-    std::string LightningVertexShader = LightningConfig["vertex_shader"].asString();
-    std::string LightningFragShader = LightningConfig["fragment_shader"].asString();
-    EPictureType::EPictureType LightningPicType = EPictureType::FromString(LightningFrameType);
-    m_pLightningPlayer = new CLightningSequencePlayer(LightningFramePath, LightningFrameCount, LightningOneTextureFrames, LightningPlayFPS, LightningPicType);
-    if (m_pLightningPlayer->initTextureAndShaderProgram(LightningVertexShader, LightningFragShader))
+    Json::Value ThickCloudConfig = m_pConfigReader->getObject("ThickCloud");
+    std::string ThickCloudFramePath = ThickCloudConfig["frames_path"].asString();
+    std::string ThickCloudFrameType = ThickCloudConfig["frames_type"].asString();
+    int ThickCloudFrameCount = ThickCloudConfig["frames_count"].asInt();
+    int ThickCloudOneTextureFrames = ThickCloudConfig["one_texture_frames"].asInt();
+    float ThickCloudPlayFPS = ThickCloudConfig["fps"].asFloat();
+    std::string ThickCloudVertexShader = ThickCloudConfig["vertex_shader"].asString();
+    std::string ThickCloudFragShader = ThickCloudConfig["fragment_shader"].asString();
+    EPictureType::EPictureType ThickCloudPicType = EPictureType::FromString(ThickCloudFrameType);
+    m_pThickCloudPlayer = new CThickCloudSequencePlayer(ThickCloudFramePath, ThickCloudFrameCount, ThickCloudOneTextureFrames, ThickCloudPlayFPS, ThickCloudPicType);
+    if (m_pThickCloudPlayer->initShaderProgram(ThickCloudVertexShader, ThickCloudFragShader))
     {
-        m_pLightningPlayer->setWindowSize(m_WindowSize);
-        m_LightningInitialized = true;
+        m_pThickCloudPlayer->setWindowSize(m_WindowSize);
+        m_ThickCloudInitialized = true;
     }
     else
     {
-        LOGE(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "LightningPlayer initialization failed.");
+        LOGE(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "ThickCloudPlayer initialization failed.");
     }
 }

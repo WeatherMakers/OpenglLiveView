@@ -9,7 +9,7 @@ namespace hiveVG
     class CShaderProgram;
     class CScreenQuad;
     class CSequenceFramePlayer;
-    class CLightningSequencePlayer;
+    class CThickCloudSequencePlayer;
     class CSceneSequencePlayer;
     class CJsonReader;
 
@@ -25,15 +25,14 @@ namespace hiveVG
         void setWindowSize(glm::vec2 vWindowSize) { m_WindowSize = vWindowSize; }
         void setChannel(ERenderChannel vChannel);
         void toggleCloud();
-        void toggleLightning();
-
+ 
     private:
         template<typename T>
         void __deleteSafely(T*& vPointer);
 
         void __initRainSeqPlayer();
         void __initCloudPlayer();
-        void __initLightningPlayer();
+        void __initThickCloudPlayer();
 
         std::string                m_ConfigFile           = "configs/FullRainSceneConfig.json";
         CJsonReader*               m_pConfigReader        = nullptr;
@@ -44,15 +43,15 @@ namespace hiveVG
         CScreenQuad*               m_pScreenQuad          = nullptr;
         glm::vec2                  m_WindowSize           = glm::vec2 (0,0);
 
-        CLightningSequencePlayer*  m_pLightningPlayer     = nullptr;
+        CThickCloudSequencePlayer*  m_pThickCloudPlayer     = nullptr;
         CSequenceFramePlayer*      m_pCloudPlayer         = nullptr;
         CSceneSequencePlayer* m_pRainSeqPlayer       = nullptr;
 
     
-        bool                       m_LightningInitialized     = false;
+        bool                       m_ThickCloudInitialized     = false;
         bool                       m_CloudInitialized         = false;
         bool                       m_CloudVisible             = false;
-        bool                       m_LightningVisible         = false;
+        bool                       m_ThickCloudVisible         = false;
     };
 
     template<typename T>

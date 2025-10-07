@@ -20,10 +20,7 @@ export struct GLComponent {
     type: XComponentType.SURFACE,
     libraryname: 'egl' // 加载模块的名称，必须与在native侧Napi模块注册时模块名字一致。
   }
-  // 空函数：闪电、云朵、小雨、中雨、大雨、暴雨
-  private onLightning(): void {
-    try { egl.triggerLightning() } catch (e) { hilog.error(0x0000, 'GL', `triggerLightning 失败: ${JSON.stringify(e)}`) }
-  }
+  // 空函数：云朵、小雨、中雨、大雨、暴雨
   private onCloud(): void {
     try { egl.triggerCloud() } catch (e) { hilog.error(0x0000, 'GL', `triggerCloud 失败: ${JSON.stringify(e)}`) }
   }
@@ -76,9 +73,6 @@ export struct GLComponent {
   private onFullSceneRainCloud(): void {
     try { egl.triggerFullSceneRainCloud() } catch (e) { hilog.error(0x0000, 'GL', `triggerFullSceneRainCloud 失败: ${JSON.stringify(e)}`) }
   }
-  private onFullSceneRainLightning(): void {
-    try { egl.triggerFullSceneRainLightning() } catch (e) { hilog.error(0x0000, 'GL', `triggerFullSceneRainLightning 失败: ${JSON.stringify(e)}`) }
-  }
   private onFullSceneSnowLight(): void {
     try { egl.triggerFullSceneSnowLight() } catch (e) { hilog.error(0x0000, 'GL', `triggerFullSceneSnowLight 失败: ${JSON.stringify(e)}`) }
   }
@@ -97,6 +91,9 @@ export struct GLComponent {
   private onFullSceneSnowForeground(): void {
     try { egl.triggerFullSceneSnowForeground() } catch (e) { hilog.error(0x0000, 'GL', `triggerFullSceneSnowForeground 失败: ${JSON.stringify(e)}`) }
   }
+
+
+
   build() {
     Row() {
       Column() {
@@ -205,21 +202,15 @@ export struct GLComponent {
          
          // 根据场景类型显示不同的按钮组
          if (this.currentSceneType === 'rain') {
+
            Grid() {
-             GridItem() {
-               Button('闪电')
-                 .borderRadius(16)
-                 .width('100%')
-                 .height(40)
-                 .onClick(() => this.onLightning())
-             }
              GridItem() {
                Button('云朵')
                  .borderRadius(16)
                  .width('100%')
                  .height(40)
                  .onClick(() => this.onCloud())
-             }
+             }.columnStart(0).columnEnd(1)
              GridItem() {
                Button('小雨')
                  .borderRadius(16)
@@ -355,14 +346,7 @@ export struct GLComponent {
                      .width('100%')
                      .height(40)
                      .onClick(() => this.onFullSceneRainCloud())
-                 }
-                 GridItem() {
-                   Button('闪电')
-                     .borderRadius(16)
-                     .width('100%')
-                     .height(40)
-                     .onClick(() => this.onFullSceneRainLightning())
-                 }
+                 }.columnStart(0).columnEnd(1)
                }
                .columnsTemplate('1fr 1fr')
                .rowsTemplate('auto auto auto')

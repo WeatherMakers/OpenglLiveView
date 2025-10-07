@@ -27,16 +27,6 @@ CNativeRenderer::CNativeRenderer()
 
 CNativeRenderer::~CNativeRenderer() { __deleteSafely(m_pExample); }
 
-napi_value CNativeRenderer::TriggerLightning(napi_env env, napi_callback_info info)
-{
-    LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerLightning called.");
-    auto Renderer = getInstance();
-    if (Renderer->m_pExample && dynamic_cast<CFullRainSceneRenderer*>(Renderer->m_pExample))
-    {
-        static_cast<CFullRainSceneRenderer*>(Renderer->m_pExample)->toggleLightning();
-    }
-    return nullptr;
-}
 
 napi_value CNativeRenderer::TriggerCloud(napi_env env, napi_callback_info info)
 {
@@ -216,17 +206,6 @@ napi_value CNativeRenderer::TriggerFullSceneRainCloud(napi_env env, napi_callbac
     return nullptr;
 }
 
-napi_value CNativeRenderer::TriggerFullSceneRainLightning(napi_env env, napi_callback_info info)
-{
-    LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerFullSceneRainLightning called.");
-    auto Renderer = getInstance();
-    if (Renderer->m_pExample && dynamic_cast<CFullSceneRenderer*>(Renderer->m_pExample))
-    {
-        static_cast<CFullSceneRenderer*>(Renderer->m_pExample)->toggleLightning();
-    }
-    return nullptr;
-}
-
 napi_value CNativeRenderer::TriggerFullSceneSnowLight(napi_env env, napi_callback_info info)
 {
     LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerFullSceneSnowLight called - setting R channel (13fps).");
@@ -392,7 +371,6 @@ napi_value CNativeRenderer::Init(napi_env env, napi_value exports)
     napi_property_descriptor desc[] = {
         {"setResourceManager", nullptr, CAppContext::setResourceManager, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"setRenderType", nullptr, SetRenderType, nullptr, nullptr, nullptr, napi_default, nullptr},
-        {"triggerLightning", nullptr, TriggerLightning, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerCloud", nullptr, TriggerCloud, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerLightRain", nullptr, TriggerLightRain, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerModerateRain", nullptr, TriggerModerateRain, nullptr, nullptr, nullptr, napi_default, nullptr},
@@ -411,7 +389,6 @@ napi_value CNativeRenderer::Init(napi_env env, napi_value exports)
         {"triggerFullSceneRainHeavy", nullptr, TriggerFullSceneRainHeavy, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerFullSceneRainStorm", nullptr, TriggerFullSceneRainStorm, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerFullSceneRainCloud", nullptr, TriggerFullSceneRainCloud, nullptr, nullptr, nullptr, napi_default, nullptr},
-        {"triggerFullSceneRainLightning", nullptr, TriggerFullSceneRainLightning, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerFullSceneSnowLight", nullptr, TriggerFullSceneSnowLight, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerFullSceneSnowModerate", nullptr, TriggerFullSceneSnowModerate, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerFullSceneSnowHeavy", nullptr, TriggerFullSceneSnowHeavy, nullptr, nullptr, nullptr, napi_default, nullptr},

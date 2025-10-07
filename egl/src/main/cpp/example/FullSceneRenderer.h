@@ -9,7 +9,7 @@ namespace hiveVG
 {
     class CScreenQuad;
     class CSequenceFramePlayer;
-    class CLightningSequencePlayer;
+    class CThickCloudSequencePlayer;
     class CSceneSequencePlayer;
 
     class CFullSceneRenderer : public CBaseRenderer
@@ -25,7 +25,6 @@ namespace hiveVG
         // 雨景相关函数
         void setRainChannel(ERenderChannel vChannel);
         void toggleCloud();
-        void toggleLightning();
         
         // 雪景相关函数
         void setSnowChannel(ERenderChannel vChannel);
@@ -39,7 +38,7 @@ namespace hiveVG
         // 雨景初始化函数
         void __initRainSeqPlayer();
         void __initCloudPlayer();
-        void __initLightningPlayer();
+        void __initThickCloudPlayer();
         
         // 雪景初始化函数
         void __initBackgroundPlayer();
@@ -65,7 +64,7 @@ namespace hiveVG
         // 雨景播放器
         CSceneSequencePlayer* m_pRainSeqPlayer = nullptr;
         CSequenceFramePlayer*      m_pCloudPlayer = nullptr;
-        CLightningSequencePlayer*  m_pLightningPlayer = nullptr;
+        CThickCloudSequencePlayer*  m_pThickCloudPlayer = nullptr;
 
         // 雪景播放器
         CSequenceFramePlayer*      m_pBackgroundPlayer = nullptr;
@@ -76,7 +75,7 @@ namespace hiveVG
         bool                       m_RainSeqInitialized = false;
         bool                       m_RainBackgroundInitialized = false;
         bool                       m_CloudInitialized = false;
-        bool                       m_LightningInitialized = false;
+        bool                       m_ThickCloudInitialized = false;
 
         // 雪景初始化状态
         bool                       m_BackgroundInitialized = false;
@@ -85,7 +84,7 @@ namespace hiveVG
 
         // 雨景可见性状态
         bool                       m_CloudVisible = false;
-        bool                       m_LightningVisible = false;
+        bool                       m_ThickCloudVisible = false;
 
         // 雪景可见性状态
         bool                       m_SnowBackgroundVisible = false;

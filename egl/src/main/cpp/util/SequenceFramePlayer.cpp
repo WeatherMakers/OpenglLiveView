@@ -90,6 +90,23 @@ bool CSequenceFramePlayer::initTextureAndShaderProgram()
     return true;
 }
 
+
+bool CSequenceFramePlayer::initShaderProgram(const std::string& vVertexShaderPath, const std::string& vFragShaderShaderPath)
+{
+    m_pSequenceShaderProgram = CShaderProgram::createProgram(vVertexShaderPath, vFragShaderShaderPath);
+
+    if (!m_pSequenceShaderProgram)
+    {
+        LOGE(TAG_KEYWORD::SEQFRAME_PALYER_TAG, "[%{public}s] ShaderProgram init Failed.", m_TextureRootPath.c_str());
+        return false;
+    }
+    assert(m_pSequenceShaderProgram != nullptr);
+    LOGI(TAG_KEYWORD::SEQFRAME_PALYER_TAG, "%{public}s frames load Succeed. Program Created Succeed.", m_TextureRootPath.c_str());
+    return true;
+}
+
+
+
 bool CSequenceFramePlayer::initTextureAndShaderProgram(const std::string& vVertexShaderPath, const std::string& vFragShaderShaderPath)
 {
     if (!m_TextureRootPath.empty() && m_TextureRootPath.back() != '/')

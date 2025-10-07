@@ -8,7 +8,7 @@
 #include "SingleTexturePlayer.h"
 #include "SequenceFramePlayer.h"
 #include "SceneSequencePlayer.h"
-#include "LightningSequencePlayer.h"
+#include "ThickCloudSequencePlayer.h"
 #include "log.h"
 
 using namespace hiveVG;

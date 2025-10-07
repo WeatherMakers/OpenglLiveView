@@ -45,7 +45,7 @@ namespace hiveVG
         [[nodiscard]] std::vector<CTexture2D *> getTextures() const { return m_SeqTextures; }
         
         bool initTextureAndShaderProgram();
-
+        bool initShaderProgram(const std::string& vVertexShaderPath, const std::string& vFragShaderShaderPath);
         bool initTextureAndShaderProgram(const std::string &vVertexShaderPath, const std::string &vFragShaderShaderPath);
 
         void updateFrameAndUV(double vDeltaTime);
