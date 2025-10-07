@@ -6,7 +6,7 @@
 #include "JsonReader.h"
 #include "TimeUtils.h"
 #include "SequenceFramePlayer.h"
-#include "NightSceneSequencePlayer.h"
+#include "SceneSequencePlayer.h"
 #include "LightningSequencePlayer.h"
 #include "log.h"
 
@@ -20,8 +20,6 @@ CFullSceneRenderer::~CFullSceneRenderer()
 {
     // 雨景播放器
     __deleteSafely(m_pRainSeqPlayer);
-    __deleteSafely(m_pSmallRaindropPlayer);
-    __deleteSafely(m_pBigRaindropPlayer);
     __deleteSafely(m_pCloudPlayer);
     __deleteSafely(m_pLightningPlayer);
     
@@ -117,28 +115,7 @@ void CFullSceneRenderer::draw()
         m_pRainSeqPlayer->draw(m_pScreenQuad);
     }
 
-    // 通用的小/大雨渲染逻辑（按通道选择帧率并绘制一次）
-    auto renderRainBlock = [&](CSequenceFramePlayer* vPlayer,
-        bool vIsInitialized,
-        ERenderChannel vChannel1, int vFps1,
-        ERenderChannel vChannel2, int vFps2)
-    {
-        if (!m_RainActive || !vIsInitialized || !vPlayer) return;
-        if (m_RainRenderChannel != vChannel1 && m_RainRenderChannel != vChannel2) return;
-        vPlayer->setFrameRate(m_RainRenderChannel == vChannel1 ? vFps1 : vFps2);
-        vPlayer->updateMultiChannelFrame(RainDeltaTime, m_RainRenderChannel);
-        vPlayer->drawMultiChannelKTX(m_pScreenQuad);
-    };
 
-    // 小雨：R/G 通道
-    renderRainBlock(m_pSmallRaindropPlayer, m_SmallRainDropInitialized,
-        ERenderChannel::R, 13,
-        ERenderChannel::G, 18);
-
-    // 大雨/暴雨：B/A 通道
-    renderRainBlock(m_pBigRaindropPlayer, m_BigRainDropInitialized,
-        ERenderChannel::B, 10,
-        ERenderChannel::A, 20);
 
     // 云朵效果 - 在R和G通道显示（可见性开关，仅在雨景激活时）
     if (m_RainActive && m_CloudInitialized && m_CloudVisible && m_pCloudPlayer)
@@ -166,8 +143,6 @@ void CFullSceneRenderer::setRainChannel(ERenderChannel vChannel)
     m_RainRenderChannel = vChannel;
     m_RainActive = true;
     m_SnowActive = false;
-    if (!m_SmallRainDropInitialized) { __initSmallRainPlayer(); }
-    if (!m_BigRainDropInitialized) { __initBigRainPlayer(); }
     LOGI(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "Setting rain render channel to %d, Rain active, Snow disabled", static_cast<int>(vChannel));
 }
 
@@ -259,53 +234,11 @@ void CFullSceneRenderer::__initRainSeqPlayer()
     std::string BackImgPath = BackGroundConfig["frames_path"].asString();
     std::string BackFrameType = BackGroundConfig["frames_type"].asString();
     EPictureType::EPictureType BackPicType = EPictureType::FromString(BackFrameType);
-    m_pRainSeqPlayer = new CNightSceneSequencePlayer(RainPath, RainTextureCount, RainOneTextureFrames, RainFramePerSecond, RainPictureType);
+    m_pRainSeqPlayer = new CSceneSequencePlayer(RainPath, RainTextureCount, RainOneTextureFrames, RainFramePerSecond, RainPictureType);
     m_pRainSeqPlayer->initTextureAndShaderProgram(RainVertexShader, RainFragShader);
     m_pRainSeqPlayer->initBackground(BackImgPath, BackPicType);
     m_RainSeqInitialized = true;
     LOGI(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "Rain Player initialized.");
-}
-
-void CFullSceneRenderer::__initSmallRainPlayer()
-{
-    if (m_pSmallRaindropPlayer) return;
-    Json::Value Config = m_pConfigReader->getObject("SmallRaindrop");
-    std::string FramesPath = Config["frames_path"].asString();
-    std::string FramesType = Config["frames_type"].asString();
-    int FramesCount = Config["frames_count"].asInt();
-    int OneTextureFrames = Config["one_texture_frames"].asInt();
-    float Fps = Config["fps"].asFloat();
-    std::string VertexShader = Config["vertex_shader"].asString();
-    std::string FragShader = Config["fragment_shader"].asString();
-    EPictureType::EPictureType PicType = EPictureType::FromString(FramesType);
-    m_pSmallRaindropPlayer = new CSequenceFramePlayer(FramesPath, FramesCount, OneTextureFrames, Fps, PicType);
-    if (!m_pSmallRaindropPlayer->initTextureAndShaderProgram(VertexShader, FragShader))
-    {
-        LOGE(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "Failed to init SmallRaindrop player");
-    }
-    m_SmallRainDropInitialized = true;
-    LOGI(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "SmallRaindrop Player initialized.");
-}
-
-void CFullSceneRenderer::__initBigRainPlayer()
-{
-    if (m_pBigRaindropPlayer) return;
-    Json::Value Config = m_pConfigReader->getObject("BigRaindrop");
-    std::string FramesPath = Config["frames_path"].asString();
-    std::string FramesType = Config["frames_type"].asString();
-    int FramesCount = Config["frames_count"].asInt();
-    int OneTextureFrames = Config["one_texture_frames"].asInt();
-    float Fps = Config["fps"].asFloat();
-    std::string VertexShader = Config["vertex_shader"].asString();
-    std::string FragShader = Config["fragment_shader"].asString();
-    EPictureType::EPictureType PicType = EPictureType::FromString(FramesType);
-    m_pBigRaindropPlayer = new CSequenceFramePlayer(FramesPath, FramesCount, OneTextureFrames, Fps, PicType);
-    if (!m_pBigRaindropPlayer->initTextureAndShaderProgram(VertexShader, FragShader))
-    {
-        LOGE(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "Failed to init BigRaindrop player");
-    }
-    m_BigRainDropInitialized = true;
-    LOGI(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "BigRaindrop Player initialized.");
 }
 
 void CFullSceneRenderer::__initCloudPlayer()

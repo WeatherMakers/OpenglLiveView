@@ -10,7 +10,7 @@ namespace hiveVG
     class CScreenQuad;
     class CSequenceFramePlayer;
     class CLightningSequencePlayer;
-    class CNightSceneSequencePlayer;
+    class CSceneSequencePlayer;
 
     class CFullSceneRenderer : public CBaseRenderer
     {
@@ -38,8 +38,6 @@ namespace hiveVG
 
         // 雨景初始化函数
         void __initRainSeqPlayer();
-        void __initSmallRainPlayer();
-        void __initBigRainPlayer();
         void __initCloudPlayer();
         void __initLightningPlayer();
         
@@ -65,9 +63,7 @@ namespace hiveVG
         glm::vec2                  m_WindowSize = glm::vec2(0,0);
 
         // 雨景播放器
-        CNightSceneSequencePlayer* m_pRainSeqPlayer = nullptr;
-        CSequenceFramePlayer*      m_pSmallRaindropPlayer = nullptr;
-        CSequenceFramePlayer*      m_pBigRaindropPlayer = nullptr;
+        CSceneSequencePlayer* m_pRainSeqPlayer = nullptr;
         CSequenceFramePlayer*      m_pCloudPlayer = nullptr;
         CLightningSequencePlayer*  m_pLightningPlayer = nullptr;
 
@@ -79,8 +75,6 @@ namespace hiveVG
         // 雨景初始化状态
         bool                       m_RainSeqInitialized = false;
         bool                       m_RainBackgroundInitialized = false;
-        bool                       m_SmallRainDropInitialized = false;
-        bool                       m_BigRainDropInitialized = false;
         bool                       m_CloudInitialized = false;
         bool                       m_LightningInitialized = false;
 

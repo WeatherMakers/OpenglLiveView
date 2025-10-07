@@ -13,6 +13,7 @@ if(DEFINED PACKAGE_FIND_FILE)
     include(${PACKAGE_FIND_FILE})
 endif()
 
+
 include_directories(${NATIVERENDER_ROOT_PATH}
                     ${NATIVERENDER_ROOT_PATH}/thirdparty
                     ${NATIVERENDER_ROOT_PATH}/thirdparty/glm

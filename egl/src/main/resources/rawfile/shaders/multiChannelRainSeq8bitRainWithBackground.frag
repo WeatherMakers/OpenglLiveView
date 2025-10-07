@@ -9,8 +9,8 @@ uniform int channelIndex;
 
 void main()
 {
-    vec4 BackgroundColor = texture(backgroundTexture, TexCoord);
-    float LightMask = BackgroundColor.a;
+    vec4 BackgroundColor = texture(backgroundTexture, vec2(TexCoord.x,1.0f - TexCoord.y));
+    float LightMask = 0.0f;
 
     vec4 RainColor = texture(rainSequenceTexture, TexCoord);
     float FinalRainColor = RainColor.r
@@ -19,9 +19,8 @@ void main()
                          + RainColor.a * float(channelIndex >= 3);
 
     vec4 SrcColor = vec4(vec3(FinalRainColor), 0.1 + LightMask);
-
     vec4 DstColor = BackgroundColor;
-    DstColor.a = 1.0;
+   // DstColor.a = 1.0;
 
     float BlendAlpha = SrcColor.a + DstColor.a - SrcColor.a * DstColor.a;
 
