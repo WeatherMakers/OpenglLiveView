@@ -53,7 +53,7 @@
     "fragment_shader": "shaders/multiChannelRainSeq8bitRaindrop.frag"
   },
   "RainBackground": {
-    "frames_path": "NightSceneWithLightMask.png",
+    "frames_path": "textures/NightSceneWithLightMask.png",
     "frames_type": "png"
   },
   "Background": {

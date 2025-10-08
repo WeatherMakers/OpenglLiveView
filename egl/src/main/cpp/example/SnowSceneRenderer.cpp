@@ -50,20 +50,20 @@ void CSnowSceneRenderer::draw()
 
     if (m_pSnowBackgroundPlayer)
     {
-        m_pSnowBackgroundPlayer->updateQuantizationFrame(DeltaTime);
-        m_pSnowBackgroundPlayer->drawMultiChannelKTX(m_pScreenQuad);
+        m_pSnowBackgroundPlayer->updateMultiChannelFrame(DeltaTime);
+        m_pSnowBackgroundPlayer->drawMultiChannelFrame(m_pScreenQuad);
     }
 
     if (m_pBackgroundPlayer)
     {
-        m_pBackgroundPlayer->updateSeqKTXFrame(DeltaTime);
-        m_pBackgroundPlayer->drawSeqKTX(m_pScreenQuad);
+        m_pBackgroundPlayer->updateSeqFrame(DeltaTime);
+        m_pBackgroundPlayer->drawSeqFrame(m_pScreenQuad);
     }
 
     if (m_pSnowForegroundPlayer)
     {
-        m_pSnowForegroundPlayer->updateQuantizationFrame(DeltaTime);
-        m_pSnowForegroundPlayer->drawMultiChannelKTX(m_pScreenQuad);
+        m_pSnowForegroundPlayer->updateMultiChannelFrame(DeltaTime);
+        m_pSnowForegroundPlayer->drawMultiChannelFrame(m_pScreenQuad);
     }
 }
 

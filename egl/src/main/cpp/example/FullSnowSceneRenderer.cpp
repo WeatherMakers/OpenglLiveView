@@ -70,20 +70,20 @@ void CFullSnowSceneRenderer::draw()
     {
         m_pSnowBackgroundPlayer->setFrameRate(CurrentFps);
         m_pSnowBackgroundPlayer->updateMultiChannelFrame(DeltaTime, m_RenderChannel);
-        m_pSnowBackgroundPlayer->drawMultiChannelKTX(m_pScreenQuad);
+        m_pSnowBackgroundPlayer->drawMultiChannelFrame(m_pScreenQuad);
     }
 
     if (m_pBackgroundPlayer)
     {
-        m_pBackgroundPlayer->updateSeqKTXFrame(DeltaTime);
-        m_pBackgroundPlayer->drawSeqKTX(m_pScreenQuad);
+        m_pBackgroundPlayer->updateSeqFrame(DeltaTime);
+        m_pBackgroundPlayer->drawSeqFrame(m_pScreenQuad);
     }
 
     if (m_SnowForegroundInitialized && m_SnowForegroundVisible && m_pSnowForegroundPlayer)
     {
         m_pSnowForegroundPlayer->setFrameRate(CurrentFps);
         m_pSnowForegroundPlayer->updateMultiChannelFrame(DeltaTime, m_RenderChannel);
-        m_pSnowForegroundPlayer->drawMultiChannelKTX(m_pScreenQuad);
+        m_pSnowForegroundPlayer->drawMultiChannelFrame(m_pScreenQuad);
     }
 }
 
@@ -161,7 +161,6 @@ void CFullSnowSceneRenderer::__initSnowBackgroundPlayer()
     m_pSnowBackgroundPlayer = new CSequenceFramePlayer(FramesPath, FramesCount, OneTextureFrames, Fps, PicType);
     m_pSnowBackgroundPlayer->initTextureAndShaderProgram(VertexShader, FragShader);
     m_pSnowBackgroundPlayer->setWindowSize(m_WindowSize);
-    m_pSnowBackgroundPlayer->setRatioUniform();
     m_SnowBackgroundInitialized = true;
     LOGI(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "Snow Background Player initialized.");
 }
@@ -181,7 +180,6 @@ void CFullSnowSceneRenderer::__initSnowForegroundPlayer()
     m_pSnowForegroundPlayer = new CSequenceFramePlayer(FramesPath, FramesCount, OneTextureFrames, Fps, PicType);
     m_pSnowForegroundPlayer->initTextureAndShaderProgram(VertexShader, FragShader);
     m_pSnowForegroundPlayer->setWindowSize(m_WindowSize);
-    m_pSnowForegroundPlayer->setRatioUniform();
     m_SnowForegroundInitialized = true;
     LOGI(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "Snow Foreground Player initialized.");
 }

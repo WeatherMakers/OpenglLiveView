@@ -1,6 +1,6 @@
 {
     "Background":{
-        "frames_path": "NightSceneWithLightMask.png",
+        "frames_path": "textures/NightSceneWithLightMask.png",
         "frames_type": "png"
     },
     "Rain": {

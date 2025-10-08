@@ -71,7 +71,7 @@ void CFullRainSceneRenderer::draw()
         if (m_RenderChannel != vChannel1 && m_RenderChannel != vChannel2) return;
         vPlayer->setFrameRate(m_RenderChannel == vChannel1 ? vFps1 : vFps2);
         vPlayer->updateMultiChannelFrame(DeltaTime, m_RenderChannel);
-        vPlayer->drawMultiChannelKTX(m_pScreenQuad);
+        vPlayer->drawMultiChannelFrame(m_pScreenQuad);
     };
     
     renderRainBlock(m_pSmallRaindropPlayer, m_SmallRainDropInitialized,
@@ -84,10 +84,10 @@ void CFullRainSceneRenderer::draw()
     
     if (m_CloudInitialized && m_CloudVisible && m_pCloudPlayer)
     {
-        m_pCloudPlayer->updateLerpQuantFrame(DeltaTime);
+        m_pCloudPlayer->updateCloudLerpMultiChannelFrame(DeltaTime);
         if (m_RenderChannel == ERenderChannel::R || m_RenderChannel == ERenderChannel::G)
         {
-            m_pCloudPlayer->drawInterpolationWithFiltering(m_pScreenQuad);
+            m_pCloudPlayer->drawCloudLerpMultiChannelFrame(m_pScreenQuad);
         }
     }
     

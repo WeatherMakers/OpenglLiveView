@@ -2,7 +2,6 @@
 #include "AppContext.h"
 #include "log.h"
 #include "example/BaseRenderer.h"
-#include "example/SeqPlayerRenderer.h"
 #include "example/SinglePlayerRenderer.h"
 #include "example/RainSceneRenderer.h"
 #include "example/SnowSceneRenderer.h"
@@ -21,22 +20,12 @@ CNativeRenderer *CNativeRenderer::getInstance()
 
 CNativeRenderer::CNativeRenderer()
 {
-    m_NativeXComponent = nullptr;
+    m_pNativeXComponent = nullptr;
     m_pExample = nullptr;
 }
 
 CNativeRenderer::~CNativeRenderer() { __deleteSafely(m_pExample); }
 
-napi_value CNativeRenderer::TriggerLightning(napi_env env, napi_callback_info info)
-{
-    LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerLightning called.");
-    auto Renderer = getInstance();
-    if (Renderer->m_pExample && dynamic_cast<CFullRainSceneRenderer*>(Renderer->m_pExample))
-    {
-        static_cast<CFullRainSceneRenderer*>(Renderer->m_pExample)->toggleLightning();
-    }
-    return nullptr;
-}
 
 napi_value CNativeRenderer::TriggerCloud(napi_env env, napi_callback_info info)
 {
@@ -89,6 +78,17 @@ napi_value CNativeRenderer::TriggerStormRain(napi_env env, napi_callback_info in
     if (Renderer->m_pExample && dynamic_cast<CFullRainSceneRenderer*>(Renderer->m_pExample))
     {
         static_cast<CFullRainSceneRenderer*>(Renderer->m_pExample)->setChannel(ERenderChannel::A);
+    }
+    return nullptr;
+}
+
+napi_value CNativeRenderer::TriggerLightning(napi_env env, napi_callback_info info)
+{
+    LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerLightning called.");
+    auto Renderer = getInstance();
+    if (Renderer->m_pExample && dynamic_cast<CFullRainSceneRenderer*>(Renderer->m_pExample))
+    {
+        static_cast<CFullRainSceneRenderer*>(Renderer->m_pExample)->toggleLightning();
     }
     return nullptr;
 }
@@ -316,9 +316,6 @@ napi_value CNativeRenderer::SetRenderType(napi_env env, napi_callback_info info)
         case SINGLE_RENDER_TYPE:
             pExample = new CSinglePlayerRenderer();
             break;
-        case SEQ_RENDER_TYPE:
-            pExample = new CSeqPlayerRenderer();
-            break;
         case RAIN_RENDER_TYPE:
             pExample = new CRainSceneRenderer();
             break;
@@ -392,12 +389,12 @@ napi_value CNativeRenderer::Init(napi_env env, napi_value exports)
     napi_property_descriptor desc[] = {
         {"setResourceManager", nullptr, CAppContext::setResourceManager, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"setRenderType", nullptr, SetRenderType, nullptr, nullptr, nullptr, napi_default, nullptr},
-        {"triggerLightning", nullptr, TriggerLightning, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerCloud", nullptr, TriggerCloud, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerLightRain", nullptr, TriggerLightRain, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerModerateRain", nullptr, TriggerModerateRain, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerHeavyRain", nullptr, TriggerHeavyRain, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerStormRain", nullptr, TriggerStormRain, nullptr, nullptr, nullptr, napi_default, nullptr},
+        {"triggerLightning", nullptr, TriggerLightning, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerSnowBackground", nullptr, TriggerSnowBackground, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerSnowForeground", nullptr, TriggerSnowForeground, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerLightSnow", nullptr, TriggerLightSnow, nullptr, nullptr, nullptr, napi_default, nullptr},
@@ -453,12 +450,12 @@ napi_value CNativeRenderer::Init(napi_env env, napi_value exports)
     }
 
     auto Renderer = getInstance();
-    Renderer->m_NativeXComponent = pNativeXComponent;
+    Renderer->m_pNativeXComponent = pNativeXComponent;
     Renderer->m_Callback.OnSurfaceCreated = CNativeRenderer::OnSurfaceCreated;
     Renderer->m_Callback.OnSurfaceChanged = CNativeRenderer::OnSurfaceChanged;
     Renderer->m_Callback.OnSurfaceDestroyed = CNativeRenderer::OnSurfaceDestroyed;
-    OH_NativeXComponent_RegisterCallback(Renderer->m_NativeXComponent, &Renderer->m_Callback);
-    OH_NativeXComponent_RegisterOnFrameCallback(Renderer->m_NativeXComponent, OnFrame);
+    OH_NativeXComponent_RegisterCallback(Renderer->m_pNativeXComponent, &Renderer->m_Callback);
+    OH_NativeXComponent_RegisterOnFrameCallback(Renderer->m_pNativeXComponent, OnFrame);
     LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "Callbacks registered.");
     return nullptr;
 }
@@ -509,9 +506,6 @@ void CNativeRenderer::HandleOnSurfaceCreated(void *vWindow)
             {
             case SINGLE_RENDER_TYPE:
                 m_pExample = new CSinglePlayerRenderer();
-                break;
-            case SEQ_RENDER_TYPE:
-                m_pExample = new CSeqPlayerRenderer();
                 break;
             case RAIN_RENDER_TYPE:
                 m_pExample = new CRainSceneRenderer();

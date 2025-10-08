@@ -61,7 +61,7 @@ namespace hiveVG
         template<typename T>
         void __deleteSafely(T*& vPointer);
     
-        OH_NativeXComponent* m_NativeXComponent = nullptr;
+        OH_NativeXComponent* m_pNativeXComponent = nullptr;
         OH_NativeXComponent_Callback m_Callback;
  
         EGLDisplay m_EglDisplay = EGL_NO_DISPLAY;

@@ -79,8 +79,8 @@ void CFullSceneRenderer::draw()
     // 雪景背景播放器 - 始终渲染（仅在雪景激活时）
     if (m_SnowActive && m_pBackgroundPlayer)
     {
-        m_pBackgroundPlayer->updateSeqKTXFrame(SnowDeltaTime);
-        m_pBackgroundPlayer->drawSeqKTX(m_pScreenQuad);
+        m_pBackgroundPlayer->updateSeqFrame(SnowDeltaTime);
+        m_pBackgroundPlayer->drawSeqFrame(m_pScreenQuad);
     }
 
     // 根据雪景通道设置不同的fps：R=13, G=18, B=23, A=28
@@ -98,7 +98,7 @@ void CFullSceneRenderer::draw()
     {
         m_pSnowBackgroundPlayer->updateMultiChannelFrame(SnowDeltaTime, m_SnowRenderChannel);
         m_pSnowBackgroundPlayer->setFrameRate(SnowCurrentFps);
-        m_pSnowBackgroundPlayer->drawMultiChannelKTX(m_pScreenQuad);
+        m_pSnowBackgroundPlayer->drawMultiChannelFrame(m_pScreenQuad);
     }
 
     // 雪景前景 - 受可见性控制，按通道同步（仅在雪景激活时）
@@ -106,7 +106,7 @@ void CFullSceneRenderer::draw()
     {
         m_pSnowForegroundPlayer->updateMultiChannelFrame(SnowDeltaTime, m_SnowRenderChannel);
         m_pSnowForegroundPlayer->setFrameRate(SnowCurrentFps);
-        m_pSnowForegroundPlayer->drawMultiChannelKTX(m_pScreenQuad);
+        m_pSnowForegroundPlayer->drawMultiChannelFrame(m_pScreenQuad);
     }
 
     // === 雨景渲染 ===
@@ -127,7 +127,7 @@ void CFullSceneRenderer::draw()
         if (m_RainRenderChannel != vChannel1 && m_RainRenderChannel != vChannel2) return;
         vPlayer->setFrameRate(m_RainRenderChannel == vChannel1 ? vFps1 : vFps2);
         vPlayer->updateMultiChannelFrame(RainDeltaTime, m_RainRenderChannel);
-        vPlayer->drawMultiChannelKTX(m_pScreenQuad);
+        vPlayer->drawMultiChannelFrame(m_pScreenQuad);
     };
 
     // 小雨：R/G 通道
@@ -143,10 +143,10 @@ void CFullSceneRenderer::draw()
     // 云朵效果 - 在R和G通道显示（可见性开关，仅在雨景激活时）
     if (m_RainActive && m_CloudInitialized && m_CloudVisible && m_pCloudPlayer)
     {
-        m_pCloudPlayer->updateLerpQuantFrame(RainDeltaTime);
+        m_pCloudPlayer->updateCloudLerpMultiChannelFrame(RainDeltaTime);
         if (m_RainRenderChannel == ERenderChannel::R || m_RainRenderChannel == ERenderChannel::G)
         {
-            m_pCloudPlayer->drawInterpolationWithFiltering(m_pScreenQuad);
+            m_pCloudPlayer->drawCloudLerpMultiChannelFrame(m_pScreenQuad);
         }
     }
 
@@ -168,7 +168,7 @@ void CFullSceneRenderer::setRainChannel(ERenderChannel vChannel)
     m_SnowActive = false;
     if (!m_SmallRainDropInitialized) { __initSmallRainPlayer(); }
     if (!m_BigRainDropInitialized) { __initBigRainPlayer(); }
-    LOGI(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "Setting rain render channel to %d, Rain active, Snow disabled", static_cast<int>(vChannel));
+    LOGI(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "Setting rain render channel to %{public}d, Rain active, Snow disabled", static_cast<int>(vChannel));
 }
 
 void CFullSceneRenderer::toggleCloud()
@@ -390,7 +390,6 @@ void CFullSceneRenderer::__initSnowBackgroundPlayer()
     m_pSnowBackgroundPlayer = new CSequenceFramePlayer(FramesPath, FramesCount, OneTextureFrames, Fps, PicType);
     m_pSnowBackgroundPlayer->initTextureAndShaderProgram(VertexShader, FragShader);
     m_pSnowBackgroundPlayer->setWindowSize(m_WindowSize);
-    m_pSnowBackgroundPlayer->setRatioUniform();
     m_SnowBackgroundInitialized = true;
     LOGI(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "Snow Background Player initialized.");
 }
@@ -410,7 +409,6 @@ void CFullSceneRenderer::__initSnowForegroundPlayer()
     m_pSnowForegroundPlayer = new CSequenceFramePlayer(FramesPath, FramesCount, OneTextureFrames, Fps, PicType);
     m_pSnowForegroundPlayer->initTextureAndShaderProgram(VertexShader, FragShader);
     m_pSnowForegroundPlayer->setWindowSize(m_WindowSize);
-    m_pSnowForegroundPlayer->setRatioUniform();
     m_SnowForegroundInitialized = true;
     LOGI(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "Snow Foreground Player initialized.");
 }
