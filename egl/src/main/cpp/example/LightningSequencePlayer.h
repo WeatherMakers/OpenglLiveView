@@ -16,7 +16,6 @@ namespace hiveVG
 
         void setLightningMode(bool vLightningInFront) { m_LightningInFront = vLightningInFront;};
 
-        void initBackground(const std::string& vTexturePath);
         bool initTextureAndShaderProgram(const std::string &vVertexShaderPath, const std::string &vFragShaderShaderPath);
         void updateFrameAndUV(double vDeltaTime);
         void updateQuantizationFrame(double vDeltaTime);
