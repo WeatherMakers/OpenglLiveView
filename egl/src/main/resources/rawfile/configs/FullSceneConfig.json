@@ -53,8 +53,8 @@
     "fragment_shader": "shaders/multiChannelRainSeq8bitRaindrop.frag"
   },
   "RainBackground": {
-    "frames_path": "textures/NightSceneWithLightMask.png",
-    "frames_type": "png"
+    "frames_path": "textures/NightSceneWithLightMask.astc",
+    "frames_type": "astc"
   },
   "Background": {
     "frames_path": "textures/snowScene/snowCover_ASTC12x12_Linear",
