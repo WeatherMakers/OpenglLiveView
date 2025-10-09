@@ -1,26 +1,12 @@
 {
   "app": {
-    "signingConfigs": [
-      {
-        "name": "default",
-        "type": "HarmonyOS",
-        "material": {
-          "certpath": "C:\\Users\\Administrator\\.ohos\\config\\default_OpenglLiveView_kW5qsUuVbXM2j96zOY94OOcf23dH3ixnj9lmSply7_k=.cer",
-          "keyAlias": "debugKey",
-          "keyPassword": "0000001ADDDCC71CEC1492BEB1824BC46B09C934FDCFF2E6936F07263B6B7555AB643224DF73D3478A48",
-          "profile": "C:\\Users\\Administrator\\.ohos\\config\\default_OpenglLiveView_kW5qsUuVbXM2j96zOY94OOcf23dH3ixnj9lmSply7_k=.p7b",
-          "signAlg": "SHA256withECDSA",
-          "storeFile": "C:\\Users\\Administrator\\.ohos\\config\\default_OpenglLiveView_kW5qsUuVbXM2j96zOY94OOcf23dH3ixnj9lmSply7_k=.p12",
-          "storePassword": "0000001A86F033E7B4F0C9410AE4173FCD02FFDFEC029CD8A49AC87F71E12E26680E2BDE940319795340"
-        }
-      }
-    ],
+    "signingConfigs": [],
     "products": [
       {
         "name": "default",
         "signingConfig": "default",
         "targetSdkVersion": "5.1.1(19)",
-        "compatibleSdkVersion": "5.0.5(17)",
+        "compatibleSdkVersion": "5.1.0(18)",
         "runtimeOS": "HarmonyOS",
         "buildOption": {
           "strictMode": {
