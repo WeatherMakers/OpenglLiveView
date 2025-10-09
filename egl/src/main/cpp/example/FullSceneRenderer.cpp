@@ -114,8 +114,7 @@ void CFullSceneRenderer::draw()
         m_pRainSeqPlayer->updateMultiChannelFrame(RainDeltaTime, m_RainRenderChannel);
         m_pRainSeqPlayer->draw(m_pScreenQuad);
     }
-
-
+    
 
     // 云朵效果 - 在R和G通道显示（可见性开关，仅在雨景激活时）
     if (m_RainActive && m_CloudInitialized && m_CloudVisible && m_pCloudPlayer)
@@ -163,8 +162,6 @@ void CFullSceneRenderer::toggleCloud()
     }
     LOGI(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "Cloud visibility toggled to %d. Thick cloud visibility toggled to %d", m_CloudVisible,m_ThickCloudVisible);
 }
-
-
 
 void CFullSceneRenderer::setSnowChannel(ERenderChannel vChannel)
 {

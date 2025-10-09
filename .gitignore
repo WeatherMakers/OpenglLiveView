@@ -11,4 +11,6 @@
 **/.test
 /.appanalyzer
 log.txt
-log.txt
+build-profile.json5
+**/build-profile.json5
+

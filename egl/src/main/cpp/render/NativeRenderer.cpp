@@ -26,7 +26,6 @@ CNativeRenderer::CNativeRenderer()
 
 CNativeRenderer::~CNativeRenderer() { __deleteSafely(m_pExample); }
 
-
 napi_value CNativeRenderer::TriggerCloud(napi_env env, napi_callback_info info)
 {
     LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerCloud called.");
