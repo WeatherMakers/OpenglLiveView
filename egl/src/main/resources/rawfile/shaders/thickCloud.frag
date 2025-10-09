@@ -2,6 +2,7 @@
 precision mediump float;
 
 in vec2 TexCoordCloud;
+in vec2 TexCoordLightning;
 
 uniform float Factor;
 uniform float Displacement;
@@ -12,9 +13,11 @@ uniform vec3  FlashColor;
 uniform float FlashAlpha;
 uniform bool  LightningInFront;
 uniform bool  isFinish;
+uniform int   ChannelIndex;
 
 uniform sampler2D CurrentTexture;
 uniform sampler2D NextTexture;
+uniform sampler2D LightningSequenceTexture;
 
 out vec4 FragColor;
 
@@ -59,6 +62,8 @@ void main()
     vec4 CloudColor = vec4(1.0, 1.0, 1.0, MixColor);
 
     vec3 CloudColorWithoutLight = remap(CloudColor.rgb, 0.0, 1.0, 0.0, 0.65);
+    vec4 LightningColor = texture(LightningSequenceTexture, TexCoordLightning);
+    float LightningMask = LightningColor[ChannelIndex];
 
     // 云后效果
     CloudColor.rgb = CloudColorWithoutLight;
@@ -70,8 +75,9 @@ void main()
     float Down = 1.0 - smoothstep(0.5, 1.0, FlashProgress);
     float FlashIntensity = UP * Down;
 
-    vec3 FinalLitColor = mix(CloudColor.rgb, FlashColor, FlashIntensity * FlashAlpha);
-    vec4 ColorWhenInFront = vec4(FinalLitColor, MixColor +  0.2);
+    //vec3 FinalLitColor = mix(CloudColor.rgb, FlashColor, FlashIntensity * FlashAlpha);
+    vec4 ColorWhenInFront = vec4(CloudColor.rgb, MixColor + LightningMask);
+//    FragColor = ColorWhenInFront;
     FragColor = mix(ColorWhenBehind, ColorWhenInFront, float(LightningInFront) * EnableFlash);
 
     //当闪电播放在云前的时候 变成全屏

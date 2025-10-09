@@ -25,11 +25,14 @@ CThickCloudSequencePlayer::~CThickCloudSequencePlayer()
 {
 }
 
-void CThickCloudSequencePlayer::setLightningAnimationParams(int vTextureCount, int vOneTextureFrames, float vFrameSeconds){
+void CThickCloudSequencePlayer::setLightningAnimationParams(const std::string& vTextureRootPath,int vTextureCount, int vOneTextureFrames, float vFrameSeconds,EPictureType::EPictureType vPictureType){
+    m_TextureRootPath = vTextureRootPath;
     m_TextureCount = vTextureCount;
     m_OneTextureFrames = vOneTextureFrames;
     m_FramePerSecond = vFrameSeconds;
+    m_TextureType = vPictureType;
 }
+
 
 void CThickCloudSequencePlayer::__resetPlayback()
 {
@@ -45,6 +48,19 @@ void CThickCloudSequencePlayer::__resetPlayback()
 
 void CThickCloudSequencePlayer::__randomizeLightningParameters()
 {
+    m_ScreenUVScale.x = m_ScaleDist(m_Rng);
+    m_ScreenUVScale.y = m_ScaleDist(m_Rng);
+
+    float MaxOffsetX = 1.0f - m_ScreenUVScale.x;
+    std::uniform_real_distribution<float> OffsetXDist(-0.8f, MaxOffsetX);
+    m_ScreenUVOffset.x = OffsetXDist(m_Rng);
+
+    float MinOffsetY = std::lerp(1.2f, 0.6f, (m_ScreenUVScale.y - m_ScaleMin) / (m_ScaleMax - m_ScaleMin));
+    float MaxOffsetY = std::min(MinOffsetY + 0.1f, 1.3f);
+
+    std::uniform_real_distribution<float> OffsetYDist(MinOffsetY, MaxOffsetY);
+    m_ScreenUVOffset.y = OffsetYDist(m_Rng);
+
     m_LightningInFront = m_BoolDist(m_Rng) == 1;
 }
 
@@ -95,7 +111,7 @@ void CThickCloudSequencePlayer::updateQuantizationFrame(double vDeltaTime)
         if (m_CurrentChannel == 0)
         {
             m_CurrentTexture++;
-            if (m_CurrentTexture >= m_TextureCount / 2)
+            if (m_CurrentTexture >= m_SeqTextures.size() / 2)
             {
                 m_CurrentTexture = 0;
                 m_IsFinished = true;
@@ -109,24 +125,29 @@ void CThickCloudSequencePlayer::updateQuantizationFrame(double vDeltaTime)
 
 void CThickCloudSequencePlayer::draw(CScreenQuad *vQuad)
 {
+    float RotationAngle = glm::radians(static_cast<float>(m_RotationAngle));
     float FlashProgress = (float)m_CurrentTexture / ((float)m_TextureCount / 2.0f - 1.0f);
     FlashProgress = glm::clamp(FlashProgress, 0.0f, 1.0f);
     if (FlashProgress >= 0.9) FlashProgress = 0;
+    int BindTextureIndex = m_CurrentTexture + (m_LightningInFront ? 0 : 8);
 
     assert(m_pSequenceShaderProgram != nullptr);
     m_pSequenceShaderProgram->useProgram();
+    m_pSequenceShaderProgram->setUniform("rotationAngle", RotationAngle);
+    m_pSequenceShaderProgram->setUniform("screenUVOffset", m_ScreenUVOffset);
+    m_pSequenceShaderProgram->setUniform("screenUVScale", m_ScreenUVScale);
     m_pSequenceShaderProgram->setUniform("cloudUVOffset", glm::vec2(0.0,0.75));
     m_pSequenceShaderProgram->setUniform("cloudUVScale", glm::vec2(1,0.4));
     m_pSequenceShaderProgram->setUniform("isFinish", m_IsFinished);
 
     m_pSequenceShaderProgram->setUniform("CurrentTexture", 0);
     m_pSequenceShaderProgram->setUniform("NextTexture", 1);
-   
+    m_pSequenceShaderProgram->setUniform("LightningSequenceTexture", 2);
     m_pSequenceShaderProgram->setUniform("FlashProgress", FlashProgress);
     m_pSequenceShaderProgram->setUniform("FlashColor", glm::vec3(1.0f));
     m_pSequenceShaderProgram->setUniform("FlashAlpha", 0.3f);
     m_pSequenceShaderProgram->setUniform("LightningInFront", m_LightningInFront);
-
+    m_pSequenceShaderProgram->setUniform("ChannelIndex", m_CurrentChannel);
     m_pSequenceShaderProgram->setUniform("Factor", m_CloudInterpFactor);
     m_pSequenceShaderProgram->setUniform("Displacement", 0.01f);
     m_pSequenceShaderProgram->setUniform("CurrentChannel", m_CurrentCloudChannel);
@@ -136,7 +157,8 @@ void CThickCloudSequencePlayer::draw(CScreenQuad *vQuad)
     m_SeqCloudTextures[m_CurrentCloudTexture]->bindTexture();
     glActiveTexture(GL_TEXTURE1);
     m_SeqCloudTextures[m_NextCloudTexture]->bindTexture();
-
+    glActiveTexture(GL_TEXTURE2);
+    m_SeqTextures[BindTextureIndex]->bindTexture();
     vQuad->bindAndDraw();
 }
 

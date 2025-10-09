@@ -174,13 +174,17 @@ void CFullRainSceneRenderer::__initThickCloudPlayer()
     std::string ThickCloudFragShader = ThickCloudConfig["fragment_shader"].asString();
     EPictureType::EPictureType ThickCloudPicType = EPictureType::FromString(ThickCloudFrameType);
     m_pThickCloudPlayer = new CThickCloudSequencePlayer(ThickCloudFramePath, ThickCloudFrameCount, ThickCloudOneTextureFrames, ThickCloudPlayFPS, ThickCloudPicType);
-    if (m_pThickCloudPlayer->initShaderProgram(ThickCloudVertexShader, ThickCloudFragShader))
+    
+    Json::Value LightningConfig = m_pConfigReader->getObject("LightningWithMask");
+    std::string LightningFramePath = LightningConfig["frames_path"].asString();
+    std::string LightningFrameType = LightningConfig["frames_type"].asString();
+     EPictureType::EPictureType LightningPicType = EPictureType::FromString(LightningFrameType);
+    int LightningFrameCount = LightningConfig["frames_count"].asInt();
+    int LightningOneTextureFrames = LightningConfig["one_texture_frames"].asInt();
+    float LightningPlayFPS = LightningConfig["fps"].asFloat();
+    m_pThickCloudPlayer->setLightningAnimationParams(LightningFramePath,LightningFrameCount,LightningOneTextureFrames,LightningPlayFPS,LightningPicType);
+    if (m_pThickCloudPlayer->initTextureAndShaderProgram(ThickCloudVertexShader, ThickCloudFragShader))
     {
-        Json::Value LightningConfig = m_pConfigReader->getObject("LightningWithMask");
-        int LightningFrameCount = LightningConfig["frames_count"].asInt();
-        int LightningOneTextureFrames = LightningConfig["one_texture_frames"].asInt();
-        float LightningPlayFPS = LightningConfig["fps"].asFloat();
-        m_pThickCloudPlayer->setLightningAnimationParams(LightningFrameCount,LightningOneTextureFrames,LightningPlayFPS );
         m_pThickCloudPlayer->setWindowSize(m_WindowSize);
         m_ThickCloudInitialized = true;
     }

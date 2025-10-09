@@ -17,24 +17,17 @@ namespace hiveVG
         void updateQuantizationFrame(double vDeltaTime);
         void draw(CScreenQuad *vQuad);
         void setWindowSize(glm::vec2 vWindowSize){m_WindowSize = vWindowSize;}
-        void setLightningAnimationParams(int vTextureCount, int vOneTextureFrames, float vFrameSeconds);
+        void setLightningAnimationParams(const std::string& vTextureRootPath,int vTextureCount, int vOneTextureFrames, float vFrameSeconds,EPictureType::EPictureType vPictureType);
     private:
         void __initCloudTextures(const std::string& vCloudPath, int vFrameCount, EPictureType::EPictureType vCloudPicType);
         void __randomizeLightningParameters();
         void __resetPlayback();
     
         std::string m_ConfigFileName  = "configs/FullRainSceneConfig.json";
-
+        bool    m_LightningInFront    = false;
         bool    m_IsWaiting           = false;
         double  m_WaitTime            = 0.0;
-        bool    m_LightningInFront    = false;
         double  m_TargetWaitTime      = 0.0;
-    
-        std::mt19937 m_Rng{std::random_device{}()};
-
-        std::uniform_real_distribution<float> m_WaitDist  {1.0f, 3.0f};
-        std::uniform_int_distribution<int>    m_BoolDist  {0, 1};
-    
         glm::vec2 m_WindowSize        = glm::vec2 (0,0);
         int     m_CurrentCloudTexture = 0;
         int     m_NextCloudTexture    = 0;
@@ -46,5 +39,11 @@ namespace hiveVG
         std::vector<CTexture2D*> m_SeqCloudTextures;
         int     m_CloudSingleTexWidth  = 0;
         int     m_CloudSingleTexHeight = 0;
+        float   m_ScaleMin = 0.4f;
+        float   m_ScaleMax = 0.5f;
+        std::mt19937 m_Rng{std::random_device{}()};
+        std::uniform_real_distribution<float> m_ScaleDist {m_ScaleMin, m_ScaleMax};
+        std::uniform_real_distribution<float> m_WaitDist  {1.0f, 3.0f};
+        std::uniform_int_distribution<int>    m_BoolDist  {0, 1};
     };
 }
