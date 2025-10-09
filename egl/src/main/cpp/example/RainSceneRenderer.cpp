@@ -2,6 +2,7 @@
 #include "SequenceFramePlayer.h"
 #include "ScreenQuad.h"
 #include "SingleTexturePlayer.h"
+#include "TimeUtils.h"
 #include "log.h"
 
 using namespace hiveVG;
@@ -51,7 +52,10 @@ void CRainSceneRenderer::draw()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_DEPTH_TEST);
     
-    m_pTexturePlayer->updateMultiChannelFrame(0.016f);
+    m_CurrentTime = CTimeUtils::getCurrentTime();
+    double DeltaTime = m_CurrentTime - m_LastFrameTime;
+    m_LastFrameTime = m_CurrentTime;
+    m_pTexturePlayer->updateMultiChannelFrame(DeltaTime, ERenderChannel::R);
     m_pTexturePlayer->drawMultiChannelFrame(m_pScreenQuad);
     m_pBackGroundPlayer->updateFrame();
     m_pScreenQuad->bindAndDraw();
