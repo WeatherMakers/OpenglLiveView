@@ -75,9 +75,7 @@ void main()
     float Down = 1.0 - smoothstep(0.5, 1.0, FlashProgress);
     float FlashIntensity = UP * Down;
 
-    //vec3 FinalLitColor = mix(CloudColor.rgb, FlashColor, FlashIntensity * FlashAlpha);
     vec4 ColorWhenInFront = vec4(CloudColor.rgb, MixColor + LightningMask);
-//    FragColor = ColorWhenInFront;
     FragColor = mix(ColorWhenBehind, ColorWhenInFront, float(LightningInFront) * EnableFlash);
 
     //当闪电播放在云前的时候 变成全屏
@@ -88,6 +86,4 @@ void main()
                      TexCoordCloud.y < 0.0 || TexCoordCloud.y > 1.0) && isFinish){
         FragColor = vec4(0.0);
     }
-
-
 }
