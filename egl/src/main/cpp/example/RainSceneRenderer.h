@@ -18,6 +18,8 @@ namespace hiveVG
         void draw() override;
         
     private:
+        double                m_LastFrameTime     = 0.0f;
+        double                m_CurrentTime       = 0.0f;
         std::string           m_TextureRootPath   = "textures/rainScene/rain_splash_4channel_ASTC12x12_Linear";
         std::string           m_BackgroundTexPath = "textures/background.astc";
         int                   m_TextureCount      = 64;
