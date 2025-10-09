@@ -1,7 +1,7 @@
 {
     "Background":{
-        "frames_path": "textures/NightSceneWithLightMask.png",
-        "frames_type": "png"
+        "frames_path": "textures/NightSceneWithLightMask.astc",
+        "frames_type": "astc"
     },
     "Rain": {
         "frames_path": "textures/rainScene/rain_splash_4channel_ASTC12x12_Linear",
