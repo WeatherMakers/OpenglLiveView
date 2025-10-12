@@ -187,7 +187,8 @@ export struct GLComponent {
              egl.setResourceManager(this.resMgr)
            })
            .width('100%')
-           .height('55%')
+           .height('45%').margin({bottom: 30})
+
          
          // 根据场景类型显示不同的按钮组
          if (this.currentSceneType === 'rain') {
@@ -235,7 +236,7 @@ export struct GLComponent {
            .rowsGap(12)
            .width('90%')
            .height('30%')
-           .margin({ top: 10 })
+           .margin({ top: 15 })
          } else if (this.currentSceneType === 'snow') {
            Grid() {
              GridItem() {
@@ -287,7 +288,7 @@ export struct GLComponent {
            .rowsGap(12)
            .width('90%')
            .height('30%')
-           .margin({ top: 10 })
+           .margin({ top: 15 })
          } else if (this.currentSceneType === 'all') {
            Row() {
              // 左边：雨景相关（2列3行）
@@ -411,12 +412,12 @@ export struct GLComponent {
            }
            .width('90%')
            .height('30%')
-           .margin({ top: 10 })
+           .margin({ top: 15 })
          } else {
            Blank()
              .width('90%')
              .height('30%')
-             .margin({ top: 10 })
+             .margin({ top: 15 })
          }
       }
       .width('100%')

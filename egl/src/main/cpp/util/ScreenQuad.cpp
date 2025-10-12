@@ -44,8 +44,10 @@ bool CScreenQuad::init()
         LOGE(TAG_KEYWORD::SCREEN_QUAD_TAG, "No valid OpenGL context in CScreenQuad init");
         return false;
     }
-    constexpr float Vertices[] = {-1.0f, 1.0f, 0.0f, 0.0f, 1.0f,  1.0f,  1.0f, 0.0f,
-                                  1.0f,  -1.0, 1.0f, 1.0f, -1.0f, -1.0f, 0.0f, 1.0f};
+    constexpr float Vertices[] = {-1.0f, 1.0f, 0.0f,0.0f, 
+        1.0f,1.0f,1.0f, 0.0f,
+        1.0f,-1.0,1.0f, 1.0f, 
+        -1.0f, -1.0f, 0.0f, 1.0f};
     const unsigned int Indices[] = {0, 1, 2, 0, 2, 3};
 
     glGenVertexArrays(1, &m_VAOHandle);
