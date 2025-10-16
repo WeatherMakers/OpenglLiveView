@@ -9,6 +9,7 @@ uniform int CurrentChannel;
 uniform vec2 TexelSize;
 uniform sampler2D CurrentTexture;
 uniform sampler2D NextTexture;
+uniform float SliderColor;
 
 out vec4 FragColor;
 
@@ -45,7 +46,7 @@ void main()
     float NextSpaceFilterColor = filteredChannelSpace3x3(NextTexture, NextUV, NextChannel);
     float MixColor = mix(CurrentSpaceFilterColor, NextSpaceFilterColor, Factor);
 
-    FragColor = vec4(1.0, 1.0, 1.0, MixColor);
+    FragColor = vec4(SliderColor, SliderColor, SliderColor, MixColor);
 
     if ((TexCoordCloud.x < 0.0 || TexCoordCloud.x > 1.0 ||
          TexCoordCloud.y < 0.0 || TexCoordCloud.y > 1.0)){

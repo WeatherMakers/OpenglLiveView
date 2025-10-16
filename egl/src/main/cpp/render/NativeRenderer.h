@@ -45,6 +45,9 @@ namespace hiveVG
         static napi_value TriggerFullSceneSnowBackground(napi_env env, napi_callback_info info);
         static napi_value TriggerFullSceneSnowForeground(napi_env env, napi_callback_info info);
     
+        // 背景自适应相关NAPI函数
+        static napi_value TriggerColorSetting(napi_env env, napi_callback_info info);
+    
     private:
         CNativeRenderer();
         ~CNativeRenderer();

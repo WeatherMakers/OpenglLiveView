@@ -26,3 +26,6 @@ export const triggerFullSceneSnowHeavy: () => void;
 export const triggerFullSceneSnowStorm: () => void;
 export const triggerFullSceneSnowBackground: () => void;
 export const triggerFullSceneSnowForeground: () => void;
+
+// 背景自适应相关函数
+export const triggerColorSetting : (value: number) => void;

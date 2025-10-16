@@ -243,6 +243,25 @@ void CFullSceneRenderer::toggleSnowForeground()
     LOGI(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "Snow Foreground visibility toggled to %d", m_SnowForegroundVisible);
 }
 
+void CFullSceneRenderer::setColor(float vValue)
+{
+    if(!m_pRainSeqPlayer) __initRainSeqPlayer();
+    if(!m_SnowForegroundInitialized) 
+    {
+        __initSnowForegroundPlayer();
+        m_SnowForegroundInitialized = true;
+    }
+    if(!m_SnowBackgroundInitialized) 
+    {
+        __initSnowBackgroundPlayer();
+        m_SnowBackgroundInitialized = true;
+    }
+    
+    m_pRainSeqPlayer->setColor(vValue);
+    m_pSnowForegroundPlayer->setColor(vValue);
+    m_pSnowBackgroundPlayer->setColor(vValue);
+}
+
 void CFullSceneRenderer::__initRainSeqPlayer()
 {
     if (m_pRainSeqPlayer) return;

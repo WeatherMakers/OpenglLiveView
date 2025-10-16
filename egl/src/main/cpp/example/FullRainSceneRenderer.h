@@ -26,7 +26,7 @@ namespace hiveVG
         void setChannel(ERenderChannel vChannel);
         void toggleCloud();
         void toggleLightning();
-
+        
     private:
         template<typename T>
         void __deleteSafely(T*& vPointer);
@@ -58,6 +58,8 @@ namespace hiveVG
         bool                       m_CloudInitialized         = false;
         bool                       m_CloudVisible             = false;
         bool                       m_LightningVisible         = false;
+    
+        double                     m_RainColor                = 0.0f;
     };
 
     template<typename T>

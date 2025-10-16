@@ -38,6 +38,7 @@ void CNightSceneSequencePlayer::draw(CScreenQuad *vQuad)
     m_pSequenceShaderProgram->setUniform("channelIndex", m_CurrentChannel);
     m_pSequenceShaderProgram->setUniform("rainSequenceTexture", 0);
     m_pSequenceShaderProgram->setUniform("backgroundTexture", 1);
+    m_pSequenceShaderProgram->setUniform("SliderColor", m_uniformColorValue);
 
     glActiveTexture(GL_TEXTURE0);
     m_SeqTextures[m_CurrentTexture]->bindTexture();
