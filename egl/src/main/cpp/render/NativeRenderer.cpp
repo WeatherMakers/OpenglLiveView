@@ -234,6 +234,23 @@ napi_value CNativeRenderer::TriggerFullSceneSnowForeground(napi_env env, napi_ca
     return nullptr;
 }
 
+napi_value CNativeRenderer::TriggerColorSetting(napi_env env, napi_callback_info info){
+    size_t argc = 1;
+    napi_value argv[1];
+    napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
+    double colorValue = 0;
+    napi_get_value_double(env, argv[0], &colorValue);
+    colorValue /= 100.0;
+    
+    LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerColorSetting called.");
+    auto Renderer = getInstance();
+    if (Renderer->m_pExample && dynamic_cast<CFullSceneRenderer*>(Renderer->m_pExample))
+    {
+        static_cast<CFullSceneRenderer*>(Renderer->m_pExample)->setColor(float(colorValue));
+    }
+    return nullptr;
+}
+
 napi_value CNativeRenderer::SetRenderType(napi_env env, napi_callback_info info)
 {
     size_t argc = 1;
@@ -356,7 +373,10 @@ napi_value CNativeRenderer::Init(napi_env env, napi_value exports)
         {"triggerFullSceneSnowHeavy", nullptr, TriggerFullSceneSnowHeavy, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerFullSceneSnowStorm", nullptr, TriggerFullSceneSnowStorm, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerFullSceneSnowBackground", nullptr, TriggerFullSceneSnowBackground, nullptr, nullptr, nullptr, napi_default, nullptr},
-        {"triggerFullSceneSnowForeground", nullptr, TriggerFullSceneSnowForeground, nullptr, nullptr, nullptr, napi_default, nullptr}
+        {"triggerFullSceneSnowForeground", nullptr, TriggerFullSceneSnowForeground, nullptr, nullptr, nullptr, napi_default, nullptr},
+    
+        // 背景自适应相关 NAPI 函数
+        {"triggerColorSetting", nullptr, TriggerColorSetting, nullptr, nullptr, nullptr, napi_default, nullptr}
     };
     napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc);
     napi_value exportInstance = nullptr;
