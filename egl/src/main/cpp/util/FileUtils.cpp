@@ -66,3 +66,30 @@ void CFileUtils::closeFile(void* vFile, bool vIsLoadFromResource)
     else
         fclose(static_cast<FILE*>(vFile));
 }
+
+bool CFileUtils::readFileToBuffer(const std::string &vFilePath, std::unique_ptr<unsigned char[]> &oBuffer, size_t &oSize)
+{
+    bool IsReadFromAssetManager = true;
+    auto pResource = CFileUtils::openFile(vFilePath.c_str(), IsReadFromAssetManager);
+    if (!pResource)
+    {
+        IsReadFromAssetManager = false;
+        pResource = CFileUtils::openFile(vFilePath.c_str(), IsReadFromAssetManager);
+    }
+    if (!pResource)
+    {
+        LOGE(TAG_KEYWORD::FILE_UTILS_TAG, "Failed to read file: %{public}s", vFilePath.c_str());
+        return false;
+    }
+
+    oSize = CFileUtils::getFileBytes(pResource, IsReadFromAssetManager);
+    oBuffer = std::make_unique<unsigned char[]>(oSize);
+    int Flag = CFileUtils::readFile<unsigned char>(pResource, oBuffer.get(), oSize, IsReadFromAssetManager);
+    CFileUtils::closeFile(pResource, IsReadFromAssetManager);
+    if (Flag < 0 || oSize == 0)
+    {
+        LOGE(TAG_KEYWORD::FILE_UTILS_TAG, "Failed to read file: %{public}s", vFilePath.c_str());
+        return false;
+    }
+    return true;
+}
