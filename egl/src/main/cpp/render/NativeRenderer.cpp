@@ -251,6 +251,41 @@ napi_value CNativeRenderer::TriggerColorSetting(napi_env env, napi_callback_info
     return nullptr;
 }
 
+
+napi_value CNativeRenderer::TriggerBackgroundSetting(napi_env env, napi_callback_info info){
+    size_t argc = 3;
+    napi_value argv[3];
+    napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
+    double  colorR = 0, colorG = 0, colorB = 0;
+    napi_get_value_double(env, argv[0], &colorR);
+    napi_get_value_double(env, argv[1], &colorG);
+    napi_get_value_double(env, argv[2], &colorB);
+    
+    LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerBackgroundSetting called.");
+    auto Renderer = getInstance();
+    if (Renderer->m_pExample && dynamic_cast<CFullSceneRenderer*>(Renderer->m_pExample))
+    {
+        static_cast<CFullSceneRenderer*>(Renderer->m_pExample)->setBackgroundColor(colorR, colorG, colorB);
+    }
+    return nullptr;
+}
+
+
+napi_value CNativeRenderer::TriggerColorSelfAdjustment(napi_env env, napi_callback_info info){
+    LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerColorSelfAdjustment called.");
+    auto Renderer = getInstance();
+    napi_value ReturnValue = nullptr;
+    if (Renderer->m_pExample && dynamic_cast<CFullSceneRenderer*>(Renderer->m_pExample))
+    {
+        auto FullSceneRenderer = static_cast<CFullSceneRenderer*>(Renderer->m_pExample);
+        FullSceneRenderer->updateBackgroundLumin();
+        float Value = FullSceneRenderer->adjustRainColor();
+        napi_create_double(env, Value, &ReturnValue);
+    }
+    return ReturnValue;
+}
+    
+
 napi_value CNativeRenderer::SetRenderType(napi_env env, napi_callback_info info)
 {
     size_t argc = 1;
@@ -376,7 +411,9 @@ napi_value CNativeRenderer::Init(napi_env env, napi_value exports)
         {"triggerFullSceneSnowForeground", nullptr, TriggerFullSceneSnowForeground, nullptr, nullptr, nullptr, napi_default, nullptr},
     
         // 背景自适应相关 NAPI 函数
-        {"triggerColorSetting", nullptr, TriggerColorSetting, nullptr, nullptr, nullptr, napi_default, nullptr}
+        {"triggerColorSetting", nullptr, TriggerColorSetting, nullptr, nullptr, nullptr, napi_default, nullptr},
+        {"triggerBackgroundSetting", nullptr, TriggerBackgroundSetting, nullptr, nullptr, nullptr, napi_default, nullptr},
+        {"triggerColorSelfAdjustment", nullptr, TriggerColorSelfAdjustment, nullptr, nullptr, nullptr, napi_default, nullptr}
     };
     napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc);
     napi_value exportInstance = nullptr;

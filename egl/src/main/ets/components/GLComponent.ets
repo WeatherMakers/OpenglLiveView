@@ -14,6 +14,12 @@ export struct GLComponent {
   @State context: Context = this.getUIContext().getHostContext() as Context;
   private resMgr: resourceManager.ResourceManager = this.context.resourceManager;
   xComponentContext: object | undefined = undefined;
+  allSceneButtonHeight :number = 30;
+  @State rainGrayValue : number = 100;
+  backgroundColorR: number = 0x000000;
+  backgroundColorG: number = 0x000000;
+  backgroundColorB: number = 0x000000;
+  
   @State currentSceneType: string = 'none' // 当前场景类型：'rain'、'snow'、'all' 或 'none'
   xComponentAttrs: XComponentAttrs = {
     id: 'xcomponentId', // 与XComponent组件为一一对应关系，不建议重复。可以在native侧通过OH_NativeXComponent_GetXComponentId接口来获取对应的id从而绑定对应的XComponent。
@@ -99,9 +105,34 @@ export struct GLComponent {
   }
 
   // 背景自适应相关函数
+
   private onFullSceneColorSetting(vValue : number) : void {
-    try { egl.triggerColorSetting(vValue) } catch(e) { hilog.error(0x0000, 'GL', `triggerFullSceneColorSetting 失败: ${JSON.stringify(e)}`) }
+    try {
+      this.rainGrayValue = vValue;
+      egl.triggerColorSetting(vValue)
+    } catch (e) {
+      hilog.error(0x0000, 'GL', `triggerFullSceneColorSetting 失败: ${JSON.stringify(e)}`)
+    }
   }
+
+  private onBackgroundColorSetting() : void {
+    try { egl.triggerBackgroundSetting(this.backgroundColorR, this.backgroundColorG, this.backgroundColorB) } catch(e) { hilog.error(0x0000, 'GL', `triggerBackgroundSetting 失败: ${JSON.stringify(e)}`) }
+  }
+
+  private onRainColorSelfAdjust() : void {
+    try {
+      let result = egl.triggerColorSelfAdjustment()
+      if (result) {
+        this.rainGrayValue = 0;
+        this.rainGrayValue = result * 100;
+      }
+    } catch(e) {
+      hilog.error(0x0000, 'GL', `triggerColorSelfAdjustment 失败: ${JSON.stringify(e)}`)
+    }
+  }
+
+
+
 
   build() {
     Row() {
@@ -194,6 +225,7 @@ export struct GLComponent {
              console.info('XComponent on Load start');
              this.xComponentContext = xComponentContext
              egl.setResourceManager(this.resMgr)
+
            })
            .width('100%')
            .height('55%')
@@ -314,12 +346,13 @@ export struct GLComponent {
                    .margin({ bottom: 8 })
 
                  Grid() {
+                
                    // 第一行
                    GridItem() {
                      Button('小雨')
                        .borderRadius(16)
                        .width('100%')
-                       .height(40)
+                       .height(this.allSceneButtonHeight)
                        .onClick(() => this.onFullSceneRainLight())
                    }
 
@@ -327,7 +360,7 @@ export struct GLComponent {
                      Button('中雨')
                        .borderRadius(16)
                        .width('100%')
-                       .height(40)
+                       .height(this.allSceneButtonHeight)
                        .onClick(() => this.onFullSceneRainModerate())
                    }
 
@@ -336,7 +369,7 @@ export struct GLComponent {
                      Button('大雨')
                        .borderRadius(16)
                        .width('100%')
-                       .height(40)
+                       .height(this.allSceneButtonHeight)
                        .onClick(() => this.onFullSceneRainHeavy())
                    }
 
@@ -344,7 +377,7 @@ export struct GLComponent {
                      Button('暴雨')
                        .borderRadius(16)
                        .width('100%')
-                       .height(40)
+                       .height(this.allSceneButtonHeight)
                        .onClick(() => this.onFullSceneRainStorm())
                    }
 
@@ -353,7 +386,7 @@ export struct GLComponent {
                      Button('云朵')
                        .borderRadius(16)
                        .width('100%')
-                       .height(40)
+                       .height(this.allSceneButtonHeight)
                        .onClick(() => this.onFullSceneRainCloud())
                    }
 
@@ -361,14 +394,14 @@ export struct GLComponent {
                      Button('闪电')
                        .borderRadius(16)
                        .width('100%')
-                       .height(40)
+                       .height(this.allSceneButtonHeight)
                        .onClick(() => this.onFullSceneRainLightning())
                    }
                  }
                  .columnsTemplate('1fr 1fr')
                  .rowsTemplate('auto auto auto')
-                 .columnsGap(12)
-                 .rowsGap(12)
+                 .columnsGap(6)
+                 .rowsGap(6)
                  .width('100%')
                }
                .width('50%')
@@ -387,7 +420,7 @@ export struct GLComponent {
                      Button('小雪')
                        .borderRadius(16)
                        .width('100%')
-                       .height(40)
+                       .height(this.allSceneButtonHeight)
                        .onClick(() => this.onFullSceneSnowLight())
                    }
 
@@ -395,7 +428,7 @@ export struct GLComponent {
                      Button('中雪')
                        .borderRadius(16)
                        .width('100%')
-                       .height(40)
+                       .height(this.allSceneButtonHeight)
                        .onClick(() => this.onFullSceneSnowModerate())
                    }
 
@@ -404,7 +437,7 @@ export struct GLComponent {
                      Button('大雪')
                        .borderRadius(16)
                        .width('100%')
-                       .height(40)
+                       .height(this.allSceneButtonHeight)
                        .onClick(() => this.onFullSceneSnowHeavy())
                    }
 
@@ -412,7 +445,7 @@ export struct GLComponent {
                      Button('暴雪')
                        .borderRadius(16)
                        .width('100%')
-                       .height(40)
+                       .height(this.allSceneButtonHeight)
                        .onClick(() => this.onFullSceneSnowStorm())
                    }
 
@@ -421,7 +454,7 @@ export struct GLComponent {
                      Button('前景雪')
                        .borderRadius(16)
                        .width('100%')
-                       .height(40)
+                       .height(this.allSceneButtonHeight)
                        .onClick(() => this.onFullSceneSnowForeground())
                    }
 
@@ -429,21 +462,21 @@ export struct GLComponent {
                      Button('背景雪')
                        .borderRadius(16)
                        .width('100%')
-                       .height(40)
+                       .height(this.allSceneButtonHeight)
                        .onClick(() => this.onFullSceneSnowBackground())
                    }
                  }
                  .columnsTemplate('1fr 1fr')
                  .rowsTemplate('auto auto auto')
-                 .columnsGap(12)
-                 .rowsGap(12)
+                 .columnsGap(6)
+                 .rowsGap(3)
                  .width('100%')
                }
                .width('50%')
                .padding({ left: 8 })
              }
              .width('90%')
-             .height('30%')
+             .height('25%') // 从 55% 位置开始，占据 20% 高度
              .margin({ top: 10 })
 
              // 灰度调节slider
@@ -451,20 +484,88 @@ export struct GLComponent {
                Text('雨雪灰度颜色调节')
                  .fontSize(14)
                  .fontColor('#666666')
-                 .margin({ top: 20, bottom: 8 })
+                 .margin({ top: 10, bottom: 5})
 
                Slider({
-                 value: 100, // 默认值为100
+                 value: this.rainGrayValue, // 默认值为100
                  min: 0,
                  max: 100,
                  step: 1,
                  style: SliderStyle.OutSet
                })
                  .width('80%')
+                 .height('20%')
                  .onChange((value: number) => {
                    this.onFullSceneColorSetting(value)
-                 })
+                 }).margin({ bottom: 4 })
+             }.height('5%')
+
+             Column() {
+               Text('背景颜色调节RGB')
+                 .fontSize(14)
+                 .fontColor('#666666')
+                 .margin({ top: 5, bottom: 5 })
+              Grid(){
+                 GridItem() {
+                   Slider({
+                     value: 88, // 默认值为100
+                     min: 0,
+                     max: 255,
+                     step: 1,
+                     style: SliderStyle.OutSet
+                   })
+                     .width('30%')
+                     .height('20%')
+                     .onChange((value: number) => {
+                       this.backgroundColorR = value/255
+                       this.onBackgroundColorSetting()
+                     })
+                 }
+
+                 GridItem() {
+                  Slider({
+                    value: 88, // 默认值为100
+                    min: 0,
+                    max: 255,
+                    step: 1,
+                    style: SliderStyle.OutSet
+                  })
+                    .width('30%')
+                    .height('20%')
+                    .onChange((value: number) => {
+                      this.backgroundColorG = value/255
+                      this.onBackgroundColorSetting()
+                    })
+                }
+                GridItem() {
+                  Slider({
+                    value: 88, // 默认值为100
+                    min: 0,
+                    max: 255,
+                    step: 1,
+                    style: SliderStyle.OutSet
+                  })
+                    .width('30%')
+                    .height('20%')
+                    .onChange((value: number) => {
+                      this.backgroundColorB = value/255
+                      this.onBackgroundColorSetting()
+                    })
+                }
+              }
+
              }
+             .height('5%')
+
+             Column() {
+               Button('自动调整雨雪灰度颜色')
+                 .borderRadius(16)
+                 .width('100%')
+                 .height(this.allSceneButtonHeight)
+                 .onClick(() => this.onRainColorSelfAdjust())
+             }
+             .height('5%')
+             .width('80%')
            }
            .alignItems(HorizontalAlign.Center)
            .translate({ y : -30 })

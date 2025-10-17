@@ -54,7 +54,8 @@
   },
   "RainBackground": {
     "frames_path": "textures/NightSceneWithLightMask.astc",
-    "frames_type": "astc"
+    "frames_type": "astc",
+    "day_frames_path": "textures/background.astc" //临时添加，这张图alpha标记实体背景，用这张图算图片的亮度
   },
   "Background": {
     "frames_path": "textures/snowScene/snowCover_ASTC12x12_Linear",

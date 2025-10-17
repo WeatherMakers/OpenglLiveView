@@ -21,7 +21,8 @@ namespace hiveVG
         void draw() override;
 
         void setWindowSize(glm::vec2 vWindowSize) { m_WindowSize = vWindowSize; }
-        
+    
+      
         // 雨景相关函数
         void setRainChannel(ERenderChannel vChannel);
         void toggleCloud();
@@ -34,7 +35,11 @@ namespace hiveVG
     
         // 背景自适应相关函数，在其中设置哪些需要变换颜色，其余的直接使用默认值1.0
         void setColor(float vValue);
-
+        void setBackgroundColor(float vR, float vG, float vB) { m_BackgroundColor[0] = vR; m_BackgroundColor[1] = vG; m_BackgroundColor[2] = vB; }
+        void getBackgroundColor(float& oR, float& oG, float& oB) { oR = m_BackgroundColor[0]; oG = m_BackgroundColor[1]; oB = m_BackgroundColor[2]; }
+        void updateBackgroundLumin();
+        float adjustRainColor();
+        float getBackgroundLumin() { return m_BackgroundLumin; }
     private:
         template<typename T>
         void __deleteSafely(T*& vPointer);
@@ -45,6 +50,7 @@ namespace hiveVG
         void __initBigRainPlayer();
         void __initCloudPlayer();
         void __initLightningPlayer();
+        void __initBackgroundImageProperties(const std::string& vImagePath);
         
         // 雪景初始化函数
         void __initBackgroundPlayer();
@@ -53,7 +59,14 @@ namespace hiveVG
 
         std::string                m_ConfigFile    = "configs/FullSceneConfig.json";
         CJsonReader*               m_pConfigReader = nullptr;
-
+    
+        // 背景颜色
+        float                      m_BackgroundColor[3] = {0.345f, 0.345f, 0.345f};
+        float                      m_BackgroundImageLumin; // 背景图片亮度(透明部分按0计算)
+        float                      m_BackgroundLuminMax;
+        float                      m_BackgroundImageOpaquePercentage; // 完全不透明像素占总像素数的百分比
+        float                      m_BackgroundLumin; // 背景亮度(透明部分按背景色计算)
+    
         // 雨景相关
         ERenderChannel             m_RainRenderChannel = ERenderChannel::R;
         double                     m_RainLastFrameTime = 0.0f;
@@ -103,6 +116,7 @@ namespace hiveVG
         // 互斥渲染状态
         bool                       m_RainActive = true;   // 雨景是否激活
         bool                       m_SnowActive = false;   // 雪景是否激活
+        bool                       m_SelfAdjustmentActive = true; //背景自适应调整是否激活
     };
 
     template<typename T>
