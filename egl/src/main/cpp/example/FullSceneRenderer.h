@@ -30,6 +30,9 @@ namespace hiveVG
         void setSnowChannel(ERenderChannel vChannel);
         void toggleSnowBackground();
         void toggleSnowForeground();
+    
+        void setFPS(int fps);
+        int getFPS();
 
     private:
         template<typename T>
@@ -93,6 +96,15 @@ namespace hiveVG
         // 互斥渲染状态
         bool                       m_RainActive = true;   // 雨景是否激活
         bool                       m_SnowActive = false;   // 雪景是否激活
+    
+        // 雪景 FPS
+        int                        m_snowFpsLight = 13;
+        int                        m_snowFpsModerate = 18;
+        int                        m_snowFpsHeavy = 23;
+        int                        m_snowFpsStorm = 28;
+    
+        // 雨景 FPS
+        int                        m_rainFPS = 80;
     };
 
     template<typename T>

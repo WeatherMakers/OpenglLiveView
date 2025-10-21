@@ -24,3 +24,5 @@ export const triggerFullSceneSnowHeavy: () => void;
 export const triggerFullSceneSnowStorm: () => void;
 export const triggerFullSceneSnowBackground: () => void;
 export const triggerFullSceneSnowForeground: () => void;
+export const changeFPS: (params: number) => void;
+export const getFPS: () => number;

@@ -58,6 +58,44 @@ bool CFullSceneRenderer::init()
     return true;
 }
 
+void CFullSceneRenderer::setFPS(int fps)
+{
+    if (m_SnowActive)
+    {
+        switch (m_SnowRenderChannel)
+        {
+            case ERenderChannel::R: m_snowFpsLight = fps; break;
+            case ERenderChannel::G: m_snowFpsModerate = fps; break;
+            case ERenderChannel::B: m_snowFpsHeavy = fps; break;
+            case ERenderChannel::A: m_snowFpsStorm = fps; break;
+        }
+    }
+    if (m_RainActive)
+    {
+        m_rainFPS = fps;
+    }
+}
+
+int CFullSceneRenderer::getFPS()
+{
+    int fps;
+    if (m_SnowActive)
+    {
+        switch (m_SnowRenderChannel)
+        {
+            case ERenderChannel::R: fps = m_snowFpsLight; break;
+            case ERenderChannel::G: fps = m_snowFpsModerate; break;
+            case ERenderChannel::B: fps = m_snowFpsHeavy; break;
+            case ERenderChannel::A: fps = m_snowFpsStorm; break;
+        }
+    }
+    if (m_RainActive)
+    {
+        fps = m_rainFPS;
+    }
+    return fps;
+}
+
 void CFullSceneRenderer::draw()
 {
     m_RainCurrentTime = CTimeUtils::getCurrentTime();
@@ -82,28 +120,28 @@ void CFullSceneRenderer::draw()
     }
 
     // 根据雪景通道设置不同的fps：R=13, G=18, B=23, A=28
-    int SnowCurrentFps = 13; // 默认R通道
+    int SnowCurrentFps = m_snowFpsLight; // 默认R通道
     switch (m_SnowRenderChannel)
     {
-        case ERenderChannel::R: SnowCurrentFps = 13; break;
-        case ERenderChannel::G: SnowCurrentFps = 18; break;
-        case ERenderChannel::B: SnowCurrentFps = 23; break;
-        case ERenderChannel::A: SnowCurrentFps = 28; break;
+        case ERenderChannel::R: SnowCurrentFps = m_snowFpsLight; break;
+        case ERenderChannel::G: SnowCurrentFps = m_snowFpsModerate; break;
+        case ERenderChannel::B: SnowCurrentFps = m_snowFpsHeavy; break;
+        case ERenderChannel::A: SnowCurrentFps = m_snowFpsStorm; break;
     }
 
     // 雪景背景 - 受可见性控制，按通道同步（仅在雪景激活时）
     if (m_SnowActive && m_SnowBackgroundInitialized && m_SnowBackgroundVisible && m_pSnowBackgroundPlayer)
     {
-        m_pSnowBackgroundPlayer->updateMultiChannelFrame(SnowDeltaTime, m_SnowRenderChannel);
         m_pSnowBackgroundPlayer->setFrameRate(SnowCurrentFps);
+        m_pSnowBackgroundPlayer->updateMultiChannelFrame(SnowDeltaTime, m_SnowRenderChannel);
         m_pSnowBackgroundPlayer->drawMultiChannelFrame(m_pScreenQuad);
     }
 
     // 雪景前景 - 受可见性控制，按通道同步（仅在雪景激活时）
     if (m_SnowActive && m_SnowForegroundInitialized && m_SnowForegroundVisible && m_pSnowForegroundPlayer)
     {
-        m_pSnowForegroundPlayer->updateMultiChannelFrame(SnowDeltaTime, m_SnowRenderChannel);
         m_pSnowForegroundPlayer->setFrameRate(SnowCurrentFps);
+        m_pSnowForegroundPlayer->updateMultiChannelFrame(SnowDeltaTime, m_SnowRenderChannel);
         m_pSnowForegroundPlayer->drawMultiChannelFrame(m_pScreenQuad);
     }
 
@@ -111,6 +149,7 @@ void CFullSceneRenderer::draw()
     // 雨景主序列播放器 - 始终渲染（仅在雨景激活时）
     if (m_RainActive && m_RainSeqInitialized && m_pRainSeqPlayer)
     {
+        m_pRainSeqPlayer->setFrameRate(m_rainFPS);
         m_pRainSeqPlayer->updateMultiChannelFrame(RainDeltaTime, m_RainRenderChannel);
         m_pRainSeqPlayer->draw(m_pScreenQuad);
     }

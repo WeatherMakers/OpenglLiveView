@@ -40,6 +40,8 @@ namespace hiveVG
         static napi_value TriggerFullSceneSnowStorm(napi_env env, napi_callback_info info);
         static napi_value TriggerFullSceneSnowBackground(napi_env env, napi_callback_info info);
         static napi_value TriggerFullSceneSnowForeground(napi_env env, napi_callback_info info);
+        static napi_value ChangeFPS(napi_env env, napi_callback_info info);
+        static napi_value GetFPS(napi_env env, napi_callback_info info);
         void   renderScene();
     
     private:

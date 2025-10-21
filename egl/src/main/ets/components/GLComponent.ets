@@ -20,6 +20,9 @@ export struct GLComponent {
     type: XComponentType.SURFACE,
     libraryname: 'egl' // 加载模块的名称，必须与在native侧Napi模块注册时模块名字一致。
   }
+
+  @State fpsValue: number = 30;
+
   // 空函数：云朵、小雨、中雨、大雨、暴雨
   private onCloud(): void {
     try { egl.triggerCloud() } catch (e) { hilog.error(0x0000, 'GL', `triggerCloud 失败: ${JSON.stringify(e)}`) }
@@ -91,7 +94,6 @@ export struct GLComponent {
   private onFullSceneSnowForeground(): void {
     try { egl.triggerFullSceneSnowForeground() } catch (e) { hilog.error(0x0000, 'GL', `triggerFullSceneSnowForeground 失败: ${JSON.stringify(e)}`) }
   }
-
 
 
   build() {
@@ -305,14 +307,20 @@ export struct GLComponent {
                      .borderRadius(16)
                      .width('100%')
                      .height(40)
-                     .onClick(() => this.onFullSceneRainLight())
+                     .onClick(() => {
+                       this.onFullSceneRainLight()
+                       this.fpsValue = egl.getFPS()
+                     })
                  }
                  GridItem() {
                    Button('中雨')
                      .borderRadius(16)
                      .width('100%')
                      .height(40)
-                     .onClick(() => this.onFullSceneRainModerate())
+                     .onClick(() => {
+                       this.onFullSceneRainModerate()
+                       this.fpsValue = egl.getFPS()
+                     })
                  }
                  // 第二行
                  GridItem() {
@@ -320,14 +328,20 @@ export struct GLComponent {
                      .borderRadius(16)
                      .width('100%')
                      .height(40)
-                     .onClick(() => this.onFullSceneRainHeavy())
+                     .onClick(() => {
+                       this.onFullSceneRainHeavy()
+                       this.fpsValue = egl.getFPS()
+                     })
                  }
                  GridItem() {
                    Button('暴雨')
                      .borderRadius(16)
                      .width('100%')
                      .height(40)
-                     .onClick(() => this.onFullSceneRainStorm())
+                     .onClick(() => {
+                       this.onFullSceneRainStorm()
+                       this.fpsValue = egl.getFPS()
+                     })
                  }
                  // 第三行
                  GridItem() {
@@ -335,7 +349,10 @@ export struct GLComponent {
                      .borderRadius(16)
                      .width('100%')
                      .height(40)
-                     .onClick(() => this.onFullSceneRainCloud())
+                     .onClick(() => {
+                       this.onFullSceneRainCloud()
+                       this.fpsValue = egl.getFPS()
+                     })
                  }.columnStart(0).columnEnd(1)
                }
                .columnsTemplate('1fr 1fr')
@@ -361,14 +378,20 @@ export struct GLComponent {
                      .borderRadius(16)
                      .width('100%')
                      .height(40)
-                     .onClick(() => this.onFullSceneSnowLight())
+                     .onClick(() => {
+                       this.onFullSceneSnowLight()
+                       this.fpsValue = egl.getFPS()
+                     })
                  }
                  GridItem() {
                    Button('中雪')
                      .borderRadius(16)
                      .width('100%')
                      .height(40)
-                     .onClick(() => this.onFullSceneSnowModerate())
+                     .onClick(() => {
+                       this.onFullSceneSnowModerate()
+                       this.fpsValue = egl.getFPS()
+                     })
                  }
                  // 第二行
                  GridItem() {
@@ -376,14 +399,20 @@ export struct GLComponent {
                      .borderRadius(16)
                      .width('100%')
                      .height(40)
-                     .onClick(() => this.onFullSceneSnowHeavy())
+                     .onClick(() => {
+                       this.onFullSceneSnowHeavy()
+                       this.fpsValue = egl.getFPS()
+                     })
                  }
                  GridItem() {
                    Button('暴雪')
                      .borderRadius(16)
                      .width('100%')
                      .height(40)
-                     .onClick(() => this.onFullSceneSnowStorm())
+                     .onClick(() => {
+                       this.onFullSceneSnowStorm()
+                       this.fpsValue = egl.getFPS()
+                     })
                  }
                  // 第三行
                  GridItem() {
@@ -391,14 +420,20 @@ export struct GLComponent {
                      .borderRadius(16)
                      .width('100%')
                      .height(40)
-                     .onClick(() => this.onFullSceneSnowForeground())
+                     .onClick(() => {
+                       this.onFullSceneSnowForeground()
+                       this.fpsValue = egl.getFPS()
+                     })
                  }
                  GridItem() {
                    Button('背景雪')
                      .borderRadius(16)
                      .width('100%')
                      .height(40)
-                     .onClick(() => this.onFullSceneSnowBackground())
+                     .onClick(() => {
+                       this.onFullSceneSnowBackground()
+                       this.fpsValue = egl.getFPS()
+                     })
                  }
                }
                .columnsTemplate('1fr 1fr')
@@ -413,6 +448,31 @@ export struct GLComponent {
            .width('90%')
            .height('30%')
            .margin({ top: 15 })
+
+           // rain or snow's fps
+           Row() {
+             Text('fps:')
+               .fontSize(14)
+               .fontColor('#444')
+               .width(50)
+
+             TextInput({ text: this.fpsValue.toString() })
+               .type(InputType.Number)
+               .width('60%')
+               .height(36)
+               .border({ width: 1, color: '#CCCCCC' })
+               .borderRadius(8)
+               .onChange((value: string) => {
+                 const num = parseInt(value)
+                 if (!isNaN(num) && Number.isInteger(num)) {
+                   this.fpsValue = num
+                   egl.changeFPS(this.fpsValue)
+                 }
+               })
+           }
+           .margin({ top: 16 })
+           .alignItems(VerticalAlign.Center)
+
          } else {
            Blank()
              .width('90%')
