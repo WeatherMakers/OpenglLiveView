@@ -30,6 +30,9 @@ namespace hiveVG
         void setSnowChannel(ERenderChannel vChannel);
         void toggleSnowBackground();
         void toggleSnowForeground();
+    
+        // 背景自适应相关函数，在其中设置哪些需要变换颜色，其余的直接使用默认值1.0
+        void setColor(float vValue);
 
     private:
         template<typename T>

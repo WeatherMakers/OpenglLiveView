@@ -57,7 +57,27 @@ void CFullRainSceneRenderer::draw()
     m_pRainSeqPlayer->setCurrentChannel(static_cast<std::uint8_t>(m_RenderChannel));
     m_pRainSeqPlayer->updateMultiChannelFrame(DeltaTime, m_RenderChannel);
     m_pRainSeqPlayer->draw(m_pScreenQuad);
+    
+    auto renderRainBlock = [&](CSequenceFramePlayer* vPlayer,
+        bool vIsInitialized,
+        ERenderChannel vChannel1, int vFps1,
+        ERenderChannel vChannel2, int vFps2)
+    {
+        if (!vIsInitialized || !vPlayer) return;
+        if (m_RenderChannel != vChannel1 && m_RenderChannel != vChannel2) return;
+        vPlayer->setFrameRate(m_RenderChannel == vChannel1 ? vFps1 : vFps2);
+        vPlayer->updateMultiChannelFrame(DeltaTime, m_RenderChannel);
+        vPlayer->drawMultiChannelKTX(m_pScreenQuad);
+    };
+    
+    renderRainBlock(m_pSmallRaindropPlayer, m_SmallRainDropInitialized,
+        ERenderChannel::R, 13,
+        ERenderChannel::G, 18);
 
+    renderRainBlock(m_pBigRaindropPlayer, m_BigRainDropInitialized,
+        ERenderChannel::B, 10,
+        ERenderChannel::A, 20);
+    
     if (m_CloudInitialized && m_CloudVisible && m_pCloudPlayer)
     {
         m_pCloudPlayer->updateCloudLerpMultiChannelFrame(DeltaTime);
@@ -178,7 +198,7 @@ void CFullRainSceneRenderer::__initThickCloudPlayer()
     Json::Value LightningConfig = m_pConfigReader->getObject("LightningWithMask");
     std::string LightningFramePath = LightningConfig["frames_path"].asString();
     std::string LightningFrameType = LightningConfig["frames_type"].asString();
-     EPictureType::EPictureType LightningPicType = EPictureType::FromString(LightningFrameType);
+    EPictureType::EPictureType LightningPicType = EPictureType::FromString(LightningFrameType);
     int LightningFrameCount = LightningConfig["frames_count"].asInt();
     int LightningOneTextureFrames = LightningConfig["one_texture_frames"].asInt();
     float LightningPlayFPS = LightningConfig["fps"].asFloat();

@@ -205,6 +205,25 @@ void CFullSceneRenderer::toggleSnowForeground()
     LOGI(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "Snow Foreground visibility toggled to %d", m_SnowForegroundVisible);
 }
 
+void CFullSceneRenderer::setColor(float vValue)
+{
+    if(!m_pRainSeqPlayer) __initRainSeqPlayer();
+    if(!m_SnowForegroundInitialized) 
+    {
+        __initSnowForegroundPlayer();
+        m_SnowForegroundInitialized = true;
+    }
+    if(!m_SnowBackgroundInitialized) 
+    {
+        __initSnowBackgroundPlayer();
+        m_SnowBackgroundInitialized = true;
+    }
+    
+    m_pRainSeqPlayer->setColor(vValue);
+    m_pSnowForegroundPlayer->setColor(vValue);
+    m_pSnowBackgroundPlayer->setColor(vValue);
+}
+
 void CFullSceneRenderer::__initRainSeqPlayer()
 {
     if (m_pRainSeqPlayer) return;
@@ -266,7 +285,7 @@ void CFullSceneRenderer::__initThickCloudPlayer()
     Json::Value LightningConfig = m_pConfigReader->getObject("LightningWithMask");
     std::string LightningFramePath = LightningConfig["frames_path"].asString();
     std::string LightningFrameType = LightningConfig["frames_type"].asString();
-     EPictureType::EPictureType LightningPicType = EPictureType::FromString(LightningFrameType);
+    EPictureType::EPictureType LightningPicType = EPictureType::FromString(LightningFrameType);
     int LightningFrameCount = LightningConfig["frames_count"].asInt();
     int LightningOneTextureFrames = LightningConfig["one_texture_frames"].asInt();
     float LightningPlayFPS = LightningConfig["fps"].asFloat();

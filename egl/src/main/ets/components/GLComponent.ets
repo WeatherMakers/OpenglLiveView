@@ -92,7 +92,10 @@ export struct GLComponent {
     try { egl.triggerFullSceneSnowForeground() } catch (e) { hilog.error(0x0000, 'GL', `triggerFullSceneSnowForeground 失败: ${JSON.stringify(e)}`) }
   }
 
-
+  // 背景自适应相关函数
+  private onFullSceneColorSetting(vValue : number) : void {
+    try { egl.triggerColorSetting(vValue) } catch(e) { hilog.error(0x0000, 'GL', `triggerFullSceneColorSetting 失败: ${JSON.stringify(e)}`) }
+  }
 
   build() {
     Row() {
@@ -191,7 +194,6 @@ export struct GLComponent {
          
          // 根据场景类型显示不同的按钮组
          if (this.currentSceneType === 'rain') {
-
            Grid() {
              GridItem() {
                Button('云朵')
@@ -289,129 +291,170 @@ export struct GLComponent {
            .height('30%')
            .margin({ top: 10 })
          } else if (this.currentSceneType === 'all') {
-           Row() {
-             // 左边：雨景相关（2列3行）
+           Column() {
+             Row() {
+               // 左边：雨景相关（2列3行）
+               Column() {
+                 Text('雨景')
+                   .fontSize(14)
+                   .fontColor('#666666')
+                   .margin({ bottom: 8 })
+
+                 Grid() {
+                   // 第一行
+                   GridItem() {
+                     Button('小雨')
+                       .borderRadius(16)
+                       .width('100%')
+                       .height(40)
+                       .onClick(() => this.onFullSceneRainLight())
+                   }
+
+                   GridItem() {
+                     Button('中雨')
+                       .borderRadius(16)
+                       .width('100%')
+                       .height(40)
+                       .onClick(() => this.onFullSceneRainModerate())
+                   }
+
+                   // 第二行
+                   GridItem() {
+                     Button('大雨')
+                       .borderRadius(16)
+                       .width('100%')
+                       .height(40)
+                       .onClick(() => this.onFullSceneRainHeavy())
+                   }
+
+                   GridItem() {
+                     Button('暴雨')
+                       .borderRadius(16)
+                       .width('100%')
+                       .height(40)
+                       .onClick(() => this.onFullSceneRainStorm())
+                   }
+
+                   // 第三行
+                   GridItem() {
+                     Button('云朵')
+                       .borderRadius(16)
+                       .width('100%')
+                       .height(40)
+                       .onClick(() => this.onFullSceneRainCloud())
+                   }
+
+                   GridItem() {
+                     Button('闪电')
+                       .borderRadius(16)
+                       .width('100%')
+                       .height(40)
+                       .onClick(() => this.onFullSceneRainLightning())
+                   }
+                 }
+                 .columnsTemplate('1fr 1fr')
+                 .rowsTemplate('auto auto auto')
+                 .columnsGap(12)
+                 .rowsGap(12)
+                 .width('100%')
+               }
+               .width('50%')
+               .padding({ right: 8 })
+
+               // 右边：雪景相关（2列3行）
+               Column() {
+                 Text('雪景')
+                   .fontSize(14)
+                   .fontColor('#666666')
+                   .margin({ bottom: 8 })
+
+                 Grid() {
+                   // 第一行
+                   GridItem() {
+                     Button('小雪')
+                       .borderRadius(16)
+                       .width('100%')
+                       .height(40)
+                       .onClick(() => this.onFullSceneSnowLight())
+                   }
+
+                   GridItem() {
+                     Button('中雪')
+                       .borderRadius(16)
+                       .width('100%')
+                       .height(40)
+                       .onClick(() => this.onFullSceneSnowModerate())
+                   }
+
+                   // 第二行
+                   GridItem() {
+                     Button('大雪')
+                       .borderRadius(16)
+                       .width('100%')
+                       .height(40)
+                       .onClick(() => this.onFullSceneSnowHeavy())
+                   }
+
+                   GridItem() {
+                     Button('暴雪')
+                       .borderRadius(16)
+                       .width('100%')
+                       .height(40)
+                       .onClick(() => this.onFullSceneSnowStorm())
+                   }
+
+                   // 第三行
+                   GridItem() {
+                     Button('前景雪')
+                       .borderRadius(16)
+                       .width('100%')
+                       .height(40)
+                       .onClick(() => this.onFullSceneSnowForeground())
+                   }
+
+                   GridItem() {
+                     Button('背景雪')
+                       .borderRadius(16)
+                       .width('100%')
+                       .height(40)
+                       .onClick(() => this.onFullSceneSnowBackground())
+                   }
+                 }
+                 .columnsTemplate('1fr 1fr')
+                 .rowsTemplate('auto auto auto')
+                 .columnsGap(12)
+                 .rowsGap(12)
+                 .width('100%')
+               }
+               .width('50%')
+               .padding({ left: 8 })
+             }
+             .width('90%')
+             .height('30%')
+             .margin({ top: 10 })
+
+             // 灰度调节slider
              Column() {
-               Text('雨景')
+               Text('雨雪灰度颜色调节')
                  .fontSize(14)
                  .fontColor('#666666')
-                 .margin({ bottom: 8 })
-               
-               Grid() {
-                 // 第一行
-                 GridItem() {
-                   Button('小雨')
-                     .borderRadius(16)
-                     .width('100%')
-                     .height(40)
-                     .onClick(() => this.onFullSceneRainLight())
-                 }
-                 GridItem() {
-                   Button('中雨')
-                     .borderRadius(16)
-                     .width('100%')
-                     .height(40)
-                     .onClick(() => this.onFullSceneRainModerate())
-                 }
-                 // 第二行
-                 GridItem() {
-                   Button('大雨')
-                     .borderRadius(16)
-                     .width('100%')
-                     .height(40)
-                     .onClick(() => this.onFullSceneRainHeavy())
-                 }
-                 GridItem() {
-                   Button('暴雨')
-                     .borderRadius(16)
-                     .width('100%')
-                     .height(40)
-                     .onClick(() => this.onFullSceneRainStorm())
-                 }
-                 // 第三行
-                 GridItem() {
-                   Button('云朵')
-                     .borderRadius(16)
-                     .width('100%')
-                     .height(40)
-                     .onClick(() => this.onFullSceneRainCloud())
-                 }.columnStart(0).columnEnd(1)
-               }
-               .columnsTemplate('1fr 1fr')
-               .rowsTemplate('auto auto auto')
-               .columnsGap(12)
-               .rowsGap(12)
-               .width('100%')
+                 .margin({ top: 20, bottom: 8 })
+
+               Slider({
+                 value: 100, // 默认值为100
+                 min: 0,
+                 max: 100,
+                 step: 1,
+                 style: SliderStyle.OutSet
+               })
+                 .width('80%')
+                 .onChange((value: number) => {
+                   this.onFullSceneColorSetting(value)
+                 })
              }
-             .width('50%')
-             .padding({ right: 8 })
-             
-             // 右边：雪景相关（2列3行）
-             Column() {
-               Text('雪景')
-                 .fontSize(14)
-                 .fontColor('#666666')
-                 .margin({ bottom: 8 })
-               
-               Grid() {
-                 // 第一行
-                 GridItem() {
-                   Button('小雪')
-                     .borderRadius(16)
-                     .width('100%')
-                     .height(40)
-                     .onClick(() => this.onFullSceneSnowLight())
-                 }
-                 GridItem() {
-                   Button('中雪')
-                     .borderRadius(16)
-                     .width('100%')
-                     .height(40)
-                     .onClick(() => this.onFullSceneSnowModerate())
-                 }
-                 // 第二行
-                 GridItem() {
-                   Button('大雪')
-                     .borderRadius(16)
-                     .width('100%')
-                     .height(40)
-                     .onClick(() => this.onFullSceneSnowHeavy())
-                 }
-                 GridItem() {
-                   Button('暴雪')
-                     .borderRadius(16)
-                     .width('100%')
-                     .height(40)
-                     .onClick(() => this.onFullSceneSnowStorm())
-                 }
-                 // 第三行
-                 GridItem() {
-                   Button('前景雪')
-                     .borderRadius(16)
-                     .width('100%')
-                     .height(40)
-                     .onClick(() => this.onFullSceneSnowForeground())
-                 }
-                 GridItem() {
-                   Button('背景雪')
-                     .borderRadius(16)
-                     .width('100%')
-                     .height(40)
-                     .onClick(() => this.onFullSceneSnowBackground())
-                 }
-               }
-               .columnsTemplate('1fr 1fr')
-               .rowsTemplate('auto auto auto')
-               .columnsGap(12)
-               .rowsGap(12)
-               .width('100%')
-             }
-             .width('50%')
-             .padding({ left: 8 })
            }
-           .width('90%')
-           .height('30%')
-           .margin({ top: 10 })
+           .alignItems(HorizontalAlign.Center)
+           .translate({ y : -30 })
          } else {
            Blank()
              .width('90%')

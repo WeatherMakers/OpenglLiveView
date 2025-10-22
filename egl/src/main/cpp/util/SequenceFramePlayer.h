@@ -28,7 +28,12 @@ namespace hiveVG
         void updateSeqFrame(double vDeltaTime);
         void drawSeqFrame(CScreenQuad *vQuad);
 
-        void updateMultiChannelFrame(double vDeltaTime);
+        bool initTextureAndShaderProgram(const std::string &vVertexShaderPath, const std::string &vFragShaderShaderPath);
+
+        void updateFrameAndUV(double vDeltaTime);
+        void updateSeqKTXFrame(double vDeltaTime);
+
+        void updateQuantizationFrame(double vDeltaTime);
         void updateMultiChannelFrame(double vDeltaTime, ERenderChannel vRenderChannel);
         void drawMultiChannelFrame(CScreenQuad *vQuad);
 

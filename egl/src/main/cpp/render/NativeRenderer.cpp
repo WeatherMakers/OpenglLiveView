@@ -11,11 +11,17 @@
 #include "example/FullSceneRenderer.h"
 
 using namespace hiveVG;
+using hiveVG::detail::__setChannelGeneric;
 
 CNativeRenderer *CNativeRenderer::getInstance()
 {
-    static CNativeRenderer instance;
-    return &instance;
+    static CNativeRenderer Instance;
+    return &Instance;
+}
+
+CBaseRenderer* CNativeRenderer::getCurrentExample()
+{
+    return getInstance()->m_pExample;
 }
 
 CNativeRenderer::CNativeRenderer()
@@ -40,43 +46,38 @@ napi_value CNativeRenderer::TriggerCloud(napi_env env, napi_callback_info info)
 napi_value CNativeRenderer::TriggerLightRain(napi_env env, napi_callback_info info)
 {
     LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerLightRain called.");
-    auto Renderer = getInstance();
-    if (Renderer->m_pExample && dynamic_cast<CFullRainSceneRenderer*>(Renderer->m_pExample))
-    {
-        static_cast<CFullRainSceneRenderer*>(Renderer->m_pExample)->setChannel(ERenderChannel::R);
-    }
+    __setChannelGeneric<CFullRainSceneRenderer>(&CFullRainSceneRenderer::setChannel, ERenderChannel::R);
     return nullptr;
 }
 
 napi_value CNativeRenderer::TriggerModerateRain(napi_env env, napi_callback_info info)
 {
     LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerModerateRain called.");
-    auto Renderer = getInstance();
-    if (Renderer->m_pExample && dynamic_cast<CFullRainSceneRenderer*>(Renderer->m_pExample))
-    {
-        static_cast<CFullRainSceneRenderer*>(Renderer->m_pExample)->setChannel(ERenderChannel::G);
-    }
+    __setChannelGeneric<CFullRainSceneRenderer>(&CFullRainSceneRenderer::setChannel, ERenderChannel::G);
     return nullptr;
 }
 
 napi_value CNativeRenderer::TriggerHeavyRain(napi_env env, napi_callback_info info)
 {
     LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerHeavyRain called.");
-    auto Renderer = getInstance();
-    if (Renderer->m_pExample && dynamic_cast<CFullRainSceneRenderer*>(Renderer->m_pExample))
-    {
-        static_cast<CFullRainSceneRenderer*>(Renderer->m_pExample)->setChannel(ERenderChannel::B);
-    }
+    __setChannelGeneric<CFullRainSceneRenderer>(&CFullRainSceneRenderer::setChannel, ERenderChannel::B);
     return nullptr;
 }
 
 napi_value CNativeRenderer::TriggerStormRain(napi_env env, napi_callback_info info)
 {
     LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerStormRain called.");
+    __setChannelGeneric<CFullRainSceneRenderer>(&CFullRainSceneRenderer::setChannel, ERenderChannel::A);
+    return nullptr;
+}
+
+napi_value CNativeRenderer::TriggerLightning(napi_env env, napi_callback_info info)
+{
+    LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerLightning called.");
     auto Renderer = getInstance();
     if (Renderer->m_pExample && dynamic_cast<CFullRainSceneRenderer*>(Renderer->m_pExample))
     {
-        static_cast<CFullRainSceneRenderer*>(Renderer->m_pExample)->setChannel(ERenderChannel::A);
+        static_cast<CFullRainSceneRenderer*>(Renderer->m_pExample)->toggleLightning();
     }
     return nullptr;
 }
@@ -107,44 +108,28 @@ napi_value CNativeRenderer::TriggerSnowForeground(napi_env env, napi_callback_in
 napi_value CNativeRenderer::TriggerLightSnow(napi_env env, napi_callback_info info)
 {
     LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerLightSnow called - setting R channel (13fps).");
-    auto Renderer = getInstance();
-    if (Renderer->m_pExample && dynamic_cast<CFullSnowSceneRenderer*>(Renderer->m_pExample))
-    {
-        static_cast<CFullSnowSceneRenderer*>(Renderer->m_pExample)->setChannel(ERenderChannel::R);
-    }
+    __setChannelGeneric<CFullSnowSceneRenderer>(&CFullSnowSceneRenderer::setChannel, ERenderChannel::R);
     return nullptr;
 }
 
 napi_value CNativeRenderer::TriggerModerateSnow(napi_env env, napi_callback_info info)
 {
     LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerModerateSnow called - setting G channel (18fps).");
-    auto Renderer = getInstance();
-    if (Renderer->m_pExample && dynamic_cast<CFullSnowSceneRenderer*>(Renderer->m_pExample))
-    {
-        static_cast<CFullSnowSceneRenderer*>(Renderer->m_pExample)->setChannel(ERenderChannel::G);
-    }
+    __setChannelGeneric<CFullSnowSceneRenderer>(&CFullSnowSceneRenderer::setChannel, ERenderChannel::G);
     return nullptr;
 }
 
 napi_value CNativeRenderer::TriggerHeavySnow(napi_env env, napi_callback_info info)
 {
     LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerHeavySnow called - setting B channel (23fps).");
-    auto Renderer = getInstance();
-    if (Renderer->m_pExample && dynamic_cast<CFullSnowSceneRenderer*>(Renderer->m_pExample))
-    {
-        static_cast<CFullSnowSceneRenderer*>(Renderer->m_pExample)->setChannel(ERenderChannel::B);
-    }
+    __setChannelGeneric<CFullSnowSceneRenderer>(&CFullSnowSceneRenderer::setChannel, ERenderChannel::B);
     return nullptr;
 }
 
 napi_value CNativeRenderer::TriggerStormSnow(napi_env env, napi_callback_info info)
 {
     LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerStormSnow called - setting A channel (28fps).");
-    auto Renderer = getInstance();
-    if (Renderer->m_pExample && dynamic_cast<CFullSnowSceneRenderer*>(Renderer->m_pExample))
-    {
-        static_cast<CFullSnowSceneRenderer*>(Renderer->m_pExample)->setChannel(ERenderChannel::A);
-    }
+    __setChannelGeneric<CFullSnowSceneRenderer>(&CFullSnowSceneRenderer::setChannel, ERenderChannel::A);
     return nullptr;
 }
 
@@ -152,44 +137,28 @@ napi_value CNativeRenderer::TriggerStormSnow(napi_env env, napi_callback_info in
 napi_value CNativeRenderer::TriggerFullSceneRainLight(napi_env env, napi_callback_info info)
 {
     LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerFullSceneRainLight called - setting R channel (13fps).");
-    auto Renderer = getInstance();
-    if (Renderer->m_pExample && dynamic_cast<CFullSceneRenderer*>(Renderer->m_pExample))
-    {
-        static_cast<CFullSceneRenderer*>(Renderer->m_pExample)->setRainChannel(ERenderChannel::R);
-    }
+    __setChannelGeneric<CFullSceneRenderer>(&CFullSceneRenderer::setRainChannel, ERenderChannel::R);
     return nullptr;
 }
 
 napi_value CNativeRenderer::TriggerFullSceneRainModerate(napi_env env, napi_callback_info info)
 {
     LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerFullSceneRainModerate called - setting G channel (18fps).");
-    auto Renderer = getInstance();
-    if (Renderer->m_pExample && dynamic_cast<CFullSceneRenderer*>(Renderer->m_pExample))
-    {
-        static_cast<CFullSceneRenderer*>(Renderer->m_pExample)->setRainChannel(ERenderChannel::G);
-    }
+    __setChannelGeneric<CFullSceneRenderer>(&CFullSceneRenderer::setRainChannel, ERenderChannel::G);
     return nullptr;
 }
 
 napi_value CNativeRenderer::TriggerFullSceneRainHeavy(napi_env env, napi_callback_info info)
 {
     LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerFullSceneRainHeavy called - setting B channel (10fps).");
-    auto Renderer = getInstance();
-    if (Renderer->m_pExample && dynamic_cast<CFullSceneRenderer*>(Renderer->m_pExample))
-    {
-        static_cast<CFullSceneRenderer*>(Renderer->m_pExample)->setRainChannel(ERenderChannel::B);
-    }
+    __setChannelGeneric<CFullSceneRenderer>(&CFullSceneRenderer::setRainChannel, ERenderChannel::B);
     return nullptr;
 }
 
 napi_value CNativeRenderer::TriggerFullSceneRainStorm(napi_env env, napi_callback_info info)
 {
     LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerFullSceneRainStorm called - setting A channel (20fps).");
-    auto Renderer = getInstance();
-    if (Renderer->m_pExample && dynamic_cast<CFullSceneRenderer*>(Renderer->m_pExample))
-    {
-        static_cast<CFullSceneRenderer*>(Renderer->m_pExample)->setRainChannel(ERenderChannel::A);
-    }
+    __setChannelGeneric<CFullSceneRenderer>(&CFullSceneRenderer::setRainChannel, ERenderChannel::A);
     return nullptr;
 }
 
@@ -207,44 +176,28 @@ napi_value CNativeRenderer::TriggerFullSceneRainCloud(napi_env env, napi_callbac
 napi_value CNativeRenderer::TriggerFullSceneSnowLight(napi_env env, napi_callback_info info)
 {
     LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerFullSceneSnowLight called - setting R channel (13fps).");
-    auto Renderer = getInstance();
-    if (Renderer->m_pExample && dynamic_cast<CFullSceneRenderer*>(Renderer->m_pExample))
-    {
-        static_cast<CFullSceneRenderer*>(Renderer->m_pExample)->setSnowChannel(ERenderChannel::R);
-    }
+    __setChannelGeneric<CFullSceneRenderer>(&CFullSceneRenderer::setSnowChannel, ERenderChannel::R);
     return nullptr;
 }
 
 napi_value CNativeRenderer::TriggerFullSceneSnowModerate(napi_env env, napi_callback_info info)
 {
     LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerFullSceneSnowModerate called - setting G channel (18fps).");
-    auto Renderer = getInstance();
-    if (Renderer->m_pExample && dynamic_cast<CFullSceneRenderer*>(Renderer->m_pExample))
-    {
-        static_cast<CFullSceneRenderer*>(Renderer->m_pExample)->setSnowChannel(ERenderChannel::G);
-    }
+    __setChannelGeneric<CFullSceneRenderer>(&CFullSceneRenderer::setSnowChannel, ERenderChannel::G);
     return nullptr;
 }
 
 napi_value CNativeRenderer::TriggerFullSceneSnowHeavy(napi_env env, napi_callback_info info)
 {
     LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerFullSceneSnowHeavy called - setting B channel (23fps).");
-    auto Renderer = getInstance();
-    if (Renderer->m_pExample && dynamic_cast<CFullSceneRenderer*>(Renderer->m_pExample))
-    {
-        static_cast<CFullSceneRenderer*>(Renderer->m_pExample)->setSnowChannel(ERenderChannel::B);
-    }
+    __setChannelGeneric<CFullSceneRenderer>(&CFullSceneRenderer::setSnowChannel, ERenderChannel::B);
     return nullptr;
 }
 
 napi_value CNativeRenderer::TriggerFullSceneSnowStorm(napi_env env, napi_callback_info info)
 {
     LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerFullSceneSnowStorm called - setting A channel (28fps).");
-    auto Renderer = getInstance();
-    if (Renderer->m_pExample && dynamic_cast<CFullSceneRenderer*>(Renderer->m_pExample))
-    {
-        static_cast<CFullSceneRenderer*>(Renderer->m_pExample)->setSnowChannel(ERenderChannel::A);
-    }
+    __setChannelGeneric<CFullSceneRenderer>(&CFullSceneRenderer::setSnowChannel, ERenderChannel::A);
     return nullptr;
 }
 
@@ -269,6 +222,24 @@ napi_value CNativeRenderer::TriggerFullSceneSnowForeground(napi_env env, napi_ca
     }
     return nullptr;
 }
+
+napi_value CNativeRenderer::TriggerColorSetting(napi_env env, napi_callback_info info){
+    size_t argc = 1;
+    napi_value argv[1];
+    napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
+    double colorValue = 0;
+    napi_get_value_double(env, argv[0], &colorValue);
+    colorValue /= 100.0;
+    
+    LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerColorSetting called.");
+    auto Renderer = getInstance();
+    if (Renderer->m_pExample && dynamic_cast<CFullSceneRenderer*>(Renderer->m_pExample))
+    {
+        static_cast<CFullSceneRenderer*>(Renderer->m_pExample)->setColor(float(colorValue));
+    }
+    return nullptr;
+}
+
 napi_value CNativeRenderer::SetRenderType(napi_env env, napi_callback_info info)
 {
     size_t argc = 1;
@@ -371,6 +342,7 @@ napi_value CNativeRenderer::Init(napi_env env, napi_value exports)
         {"triggerModerateRain", nullptr, TriggerModerateRain, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerHeavyRain", nullptr, TriggerHeavyRain, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerStormRain", nullptr, TriggerStormRain, nullptr, nullptr, nullptr, napi_default, nullptr},
+        {"triggerLightning", nullptr, TriggerLightning, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerSnowBackground", nullptr, TriggerSnowBackground, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerSnowForeground", nullptr, TriggerSnowForeground, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerLightSnow", nullptr, TriggerLightSnow, nullptr, nullptr, nullptr, napi_default, nullptr},
@@ -389,7 +361,10 @@ napi_value CNativeRenderer::Init(napi_env env, napi_value exports)
         {"triggerFullSceneSnowHeavy", nullptr, TriggerFullSceneSnowHeavy, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerFullSceneSnowStorm", nullptr, TriggerFullSceneSnowStorm, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerFullSceneSnowBackground", nullptr, TriggerFullSceneSnowBackground, nullptr, nullptr, nullptr, napi_default, nullptr},
-        {"triggerFullSceneSnowForeground", nullptr, TriggerFullSceneSnowForeground, nullptr, nullptr, nullptr, napi_default, nullptr}
+        {"triggerFullSceneSnowForeground", nullptr, TriggerFullSceneSnowForeground, nullptr, nullptr, nullptr, napi_default, nullptr},
+    
+        // 背景自适应相关 NAPI 函数
+        {"triggerColorSetting", nullptr, TriggerColorSetting, nullptr, nullptr, nullptr, napi_default, nullptr}
     };
     napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc);
     napi_value exportInstance = nullptr;
