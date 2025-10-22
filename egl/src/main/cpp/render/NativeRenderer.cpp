@@ -71,16 +71,6 @@ napi_value CNativeRenderer::TriggerStormRain(napi_env env, napi_callback_info in
     return nullptr;
 }
 
-napi_value CNativeRenderer::TriggerLightning(napi_env env, napi_callback_info info)
-{
-    LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerLightning called.");
-    auto Renderer = getInstance();
-    if (Renderer->m_pExample && dynamic_cast<CFullRainSceneRenderer*>(Renderer->m_pExample))
-    {
-        static_cast<CFullRainSceneRenderer*>(Renderer->m_pExample)->toggleLightning();
-    }
-    return nullptr;
-}
 
 // 雪景相关 NAPI 函数
 napi_value CNativeRenderer::TriggerSnowBackground(napi_env env, napi_callback_info info)
@@ -240,6 +230,69 @@ napi_value CNativeRenderer::TriggerColorSetting(napi_env env, napi_callback_info
     return nullptr;
 }
 
+napi_value CNativeRenderer::TriggerCloudThicknessSetting(napi_env env, napi_callback_info info){
+    size_t argc = 1;
+    napi_value argv[1];
+    napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
+    double colorValue = 0;
+    napi_get_value_double(env, argv[0], &colorValue);
+    colorValue /= 100.0;
+    
+    LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerCloudThicknessSetting called.");
+    auto Renderer = getInstance();
+    if (Renderer->m_pExample && dynamic_cast<CFullSceneRenderer*>(Renderer->m_pExample))
+    {
+        static_cast<CFullSceneRenderer*>(Renderer->m_pExample)->setCloudThickness(float(colorValue));
+    }
+    return nullptr;
+}
+
+napi_value CNativeRenderer::TriggerBackgroundSetting(napi_env env, napi_callback_info info){
+    size_t argc = 3;
+    napi_value argv[3];
+    napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
+    double  colorR = 0, colorG = 0, colorB = 0;
+    napi_get_value_double(env, argv[0], &colorR);
+    napi_get_value_double(env, argv[1], &colorG);
+    napi_get_value_double(env, argv[2], &colorB);
+    
+    LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerBackgroundSetting called.");
+    auto Renderer = getInstance();
+    if (Renderer->m_pExample && dynamic_cast<CFullSceneRenderer*>(Renderer->m_pExample))
+    {
+        static_cast<CFullSceneRenderer*>(Renderer->m_pExample)->setBackgroundColor(colorR, colorG, colorB);
+    }
+    return nullptr;
+}
+
+
+napi_value CNativeRenderer::TriggerColorSelfAdjustment(napi_env env, napi_callback_info info){
+    LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "TriggerColorSelfAdjustment called.");
+    auto Renderer = getInstance();
+    napi_value ReturnValue = nullptr;
+    if (Renderer->m_pExample && dynamic_cast<CFullSceneRenderer*>(Renderer->m_pExample))
+    {
+        auto FullSceneRenderer = static_cast<CFullSceneRenderer*>(Renderer->m_pExample);
+        FullSceneRenderer->updateBackgroundLumin();
+        float Value = FullSceneRenderer->adjustRainColor();
+        napi_create_double(env, Value, &ReturnValue);
+    }
+    return ReturnValue;
+}
+
+napi_value CNativeRenderer::OnStartupColorSelfAdjustment(napi_env env, napi_callback_info info){
+    LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "OnStartupColorSelfAdjustment called.");
+    auto Renderer = getInstance();
+    if(Renderer->m_pExample == nullptr){
+        Renderer->m_pExample = new CFullSceneRenderer();
+        Renderer->m_pExample->init();
+    }
+    auto Result = TriggerColorSelfAdjustment(env, info);
+    delete Renderer->m_pExample;
+    Renderer->m_pExample = nullptr;
+    return Result;
+}
+
 napi_value CNativeRenderer::SetRenderType(napi_env env, napi_callback_info info)
 {
     size_t argc = 1;
@@ -342,7 +395,6 @@ napi_value CNativeRenderer::Init(napi_env env, napi_value exports)
         {"triggerModerateRain", nullptr, TriggerModerateRain, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerHeavyRain", nullptr, TriggerHeavyRain, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerStormRain", nullptr, TriggerStormRain, nullptr, nullptr, nullptr, napi_default, nullptr},
-        {"triggerLightning", nullptr, TriggerLightning, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerSnowBackground", nullptr, TriggerSnowBackground, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerSnowForeground", nullptr, TriggerSnowForeground, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerLightSnow", nullptr, TriggerLightSnow, nullptr, nullptr, nullptr, napi_default, nullptr},
@@ -364,7 +416,11 @@ napi_value CNativeRenderer::Init(napi_env env, napi_value exports)
         {"triggerFullSceneSnowForeground", nullptr, TriggerFullSceneSnowForeground, nullptr, nullptr, nullptr, napi_default, nullptr},
     
         // 背景自适应相关 NAPI 函数
-        {"triggerColorSetting", nullptr, TriggerColorSetting, nullptr, nullptr, nullptr, napi_default, nullptr}
+        {"triggerColorSetting", nullptr, TriggerColorSetting, nullptr, nullptr, nullptr, napi_default, nullptr},
+        {"triggerCloudThicknessSetting", nullptr, TriggerCloudThicknessSetting, nullptr, nullptr, nullptr, napi_default, nullptr},
+        {"triggerBackgroundSetting", nullptr, TriggerBackgroundSetting, nullptr, nullptr, nullptr, napi_default, nullptr},
+        {"triggerColorSelfAdjustment", nullptr, TriggerColorSelfAdjustment, nullptr, nullptr, nullptr, napi_default, nullptr},
+        {"onStartupColorSelfAdjustment", nullptr, OnStartupColorSelfAdjustment, nullptr, nullptr, nullptr, napi_default, nullptr},
     };
     napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc);
     napi_value exportInstance = nullptr;

@@ -13,15 +13,13 @@ CSnowSceneRenderer::~CSnowSceneRenderer()
 {
     if (m_pConfigReader) { delete m_pConfigReader; m_pConfigReader = nullptr; }
     if (m_pSnowBackgroundPlayer) { delete m_pSnowBackgroundPlayer; m_pSnowBackgroundPlayer = nullptr; }
-    if (m_pBackgroundPlayer)     { delete m_pBackgroundPlayer;     m_pBackgroundPlayer     = nullptr; }
     if (m_pSnowForegroundPlayer) { delete m_pSnowForegroundPlayer; m_pSnowForegroundPlayer = nullptr; }
 }
 
 bool CSnowSceneRenderer::init()
 {
     if (!m_pConfigReader) m_pConfigReader = new CJsonReader(m_ConfigFile);
-
-    __initBackgroundPlayer();
+    
     __initSnowBackgroundPlayer();
     __initSnowForegroundPlayer();
 
@@ -53,13 +51,7 @@ void CSnowSceneRenderer::draw()
         m_pSnowBackgroundPlayer->updateMultiChannelFrame(DeltaTime);
         m_pSnowBackgroundPlayer->drawMultiChannelFrame(m_pScreenQuad);
     }
-
-    if (m_pBackgroundPlayer)
-    {
-        m_pBackgroundPlayer->updateSeqFrame(DeltaTime);
-        m_pBackgroundPlayer->drawSeqFrame(m_pScreenQuad);
-    }
-
+    
     if (m_pSnowForegroundPlayer)
     {
         m_pSnowForegroundPlayer->updateMultiChannelFrame(DeltaTime);
@@ -67,24 +59,6 @@ void CSnowSceneRenderer::draw()
     }
 }
 
-void CSnowSceneRenderer::__initBackgroundPlayer()
-{
-    Json::Value Config = m_pConfigReader->getObject("Background");
-    std::string FramesPath = Config["frames_path"].asString();
-    std::string FramesType = Config["frames_type"].asString();
-    int FramesCount = Config["frames_count"].asInt();
-    float Fps = Config["fps"].asFloat();
-    std::string VertexShader = Config["vertex_shader"].asString();
-    std::string FragShader = Config["fragment_shader"].asString();
-    EPictureType::EPictureType PicType = EPictureType::FromString(FramesType);
-    int SeqRows = 1, SeqCols = 1;
-    m_pBackgroundPlayer = new CSequenceFramePlayer(FramesPath, SeqRows, SeqCols, FramesCount, PicType);
-    if (!m_pBackgroundPlayer->initTextureAndShaderProgram(VertexShader, FragShader))
-    {
-        LOGE(TAG_KEYWORD::SNOW_SCENE_RENDERER_TAG, "Failed to init Background player");
-    }
-    m_pBackgroundPlayer->setFrameRate(Fps);
-}
 
 void CSnowSceneRenderer::__initSnowBackgroundPlayer()
 {

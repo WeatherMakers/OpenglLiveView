@@ -19,13 +19,6 @@ CCloudSceneRenderer::~CCloudSceneRenderer()
 
 bool CCloudSceneRenderer::init()
 {
-    m_pBackGroundPlayer = new CSingleTexturePlayer(m_BackgroundTexPath,m_PictureType);
-    if(!m_pBackGroundPlayer->initTextureAndShaderProgram())
-    {
-        LOGE(TAG_KEYWORD::CLOUD_SCENE_RENDERER_TAG, "Failed to initialize single texture and shader program");
-        return false;
-    }
-    
     m_pTexturePlayer = new CSequenceFramePlayer(m_TextureRootPath, m_TextureCount, m_OneTextureFrames, m_FrameSeconds, m_PictureType);
     if (!m_pTexturePlayer->initTextureAndShaderProgram(SeqTexPlayVertASTC, SeqTexPlayFragRainCloudASTC))
     {
@@ -52,6 +45,5 @@ void CCloudSceneRenderer::draw()
     
     m_pTexturePlayer->updateSeqFrame(0.016f);
     m_pTexturePlayer->drawSeqFrame(m_pScreenQuad);
-    m_pBackGroundPlayer->updateFrame();
     m_pScreenQuad->bindAndDraw();
 }

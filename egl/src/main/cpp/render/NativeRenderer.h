@@ -47,7 +47,10 @@ namespace hiveVG
     
         // 背景自适应相关NAPI函数
         static napi_value TriggerColorSetting(napi_env env, napi_callback_info info);
-    
+        static napi_value TriggerCloudThicknessSetting(napi_env env, napi_callback_info info);
+        static napi_value TriggerBackgroundSetting(napi_env env, napi_callback_info info);
+        static napi_value TriggerColorSelfAdjustment(napi_env env, napi_callback_info info);
+        static napi_value OnStartupColorSelfAdjustment(napi_env env, napi_callback_info info);
     private:
         CNativeRenderer();
         ~CNativeRenderer();

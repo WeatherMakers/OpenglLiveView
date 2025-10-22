@@ -19,11 +19,9 @@ namespace hiveVG
         
     private:
         void __initSnowBackgroundPlayer();
-        void __initBackgroundPlayer();
         void __initSnowForegroundPlayer();
 
         CSequenceFramePlayer* m_pSnowBackgroundPlayer = nullptr;
-        CSequenceFramePlayer* m_pBackgroundPlayer     = nullptr;
         CSequenceFramePlayer* m_pSnowForegroundPlayer = nullptr;
         CScreenQuad*          m_pScreenQuad           = nullptr;
     

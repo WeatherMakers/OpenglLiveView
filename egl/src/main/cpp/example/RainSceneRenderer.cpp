@@ -20,12 +20,6 @@ CRainSceneRenderer::~CRainSceneRenderer()
 
 bool CRainSceneRenderer::init()
 {
-    m_pBackGroundPlayer = new CSingleTexturePlayer(m_BackgroundTexPath,m_PictureType);
-    if(!m_pBackGroundPlayer->initTextureAndShaderProgram())
-    {
-        LOGE(TAG_KEYWORD::RAIN_SCENE_RENDERER_TAG, "Failed to initialize single texture and shader program");
-        return false;
-    }
     
     m_pTexturePlayer = new CSequenceFramePlayer(m_TextureRootPath, m_TextureCount, m_OneTextureFrames, m_FrameSeconds, m_PictureType);
     if (!m_pTexturePlayer->initTextureAndShaderProgram(SeqTexPlayVertASTC, SeqTexPlayFragRainCloudASTC))
@@ -57,6 +51,5 @@ void CRainSceneRenderer::draw()
     m_LastFrameTime = m_CurrentTime;
     m_pTexturePlayer->updateMultiChannelFrame(DeltaTime, ERenderChannel::R);
     m_pTexturePlayer->drawMultiChannelFrame(m_pScreenQuad);
-    m_pBackGroundPlayer->updateFrame();
     m_pScreenQuad->bindAndDraw();
 }

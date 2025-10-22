@@ -14,6 +14,7 @@ uniform float FlashAlpha;
 uniform bool  LightningInFront;
 uniform bool  isFinish;
 uniform int   ChannelIndex;
+uniform float CloudThickness;
 
 uniform sampler2D CurrentTexture;
 uniform sampler2D NextTexture;
@@ -58,8 +59,9 @@ void main()
     float CurrentSpaceFilterColor = filteredChannelSpace3x3(CurrentTexture, CurrentUV, CurrentChannel);
     float NextSpaceFilterColor    = filteredChannelSpace3x3(NextTexture,    NextUV,    NextChannel);
     float MixColor = mix(CurrentSpaceFilterColor, NextSpaceFilterColor, Factor);
-
-    vec4 CloudColor = vec4(1.0, 1.0, 1.0, MixColor);
+    float Transmittance = exp(-CloudThickness);
+    vec3 CloudAlbedo = vec3(1.0f) * Transmittance;
+    vec4 CloudColor = vec4( CloudAlbedo , MixColor);
 
     vec3 CloudColorWithoutLight = remap(CloudColor.rgb, 0.0, 1.0, 0.0, 0.65);
     vec4 LightningColor = texture(LightningSequenceTexture, TexCoordLightning);

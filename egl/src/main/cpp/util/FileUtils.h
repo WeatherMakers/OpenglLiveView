@@ -15,7 +15,7 @@ namespace hiveVG
         static void*  openFile(const char* vPath, bool vIsLoadFromResource = true);
         static size_t getFileBytes(void* vFile, bool vIsLoadFromResource = true);
         static void   closeFile(void* vFile, bool vIsLoadFromResource = true);
-
+        static bool   readFileToBuffer(const std::string &vTexturePath, std::unique_ptr<unsigned char[]> &oBuffer, size_t &oSize);
         template <typename T>
         static int readFile(void* vFile, T* vBuffer, size_t vElementCount, bool vIsLoadFromResource = true);
     };
