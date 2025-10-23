@@ -400,7 +400,7 @@ void CNativeRenderer::renderScene()
     int renderWidth = Width;
     int renderHeight = Height / 2;
     int offsetX = 0;
-    int offsetY = (Height - renderHeight) / 4 * 4;
+    int offsetY = (Height - renderHeight) / 4 * 3;
     
     glViewport(offsetX, offsetY, renderWidth, renderHeight);
     if (m_pExample)

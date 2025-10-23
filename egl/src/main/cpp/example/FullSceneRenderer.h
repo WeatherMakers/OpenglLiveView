@@ -53,6 +53,7 @@ namespace hiveVG
         void __initRainSeqPlayer();
         void __initCloudPlayer();
         void __initThickCloudPlayer();
+        void __initBackgroundImageProperties(const std::string& vImagePath);
         
         // 雪景初始化函数
         void __initBackgroundPlayer();

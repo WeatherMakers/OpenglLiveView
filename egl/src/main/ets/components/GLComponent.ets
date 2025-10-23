@@ -206,7 +206,8 @@ export struct GLComponent {
           ])
           .height(48)
           .width('90%')
-          .margin({top: 10, bottom: 10})
+          .margin({top: 0, bottom: 10})
+
          XComponent(this.xComponentAttrs)
            .onLoad((xComponentContext) => {
              console.info('XComponent on Load start');
@@ -216,7 +217,7 @@ export struct GLComponent {
              this.rainGrayValue = this.rainGrayValue * 100
            })
            .width('100%')
-           .height('55%')
+           .height('40%')
          
          // 根据场景类型显示不同的按钮组
          if (this.currentSceneType === 'rain') {
@@ -263,7 +264,7 @@ export struct GLComponent {
            .rowsGap(12)
            .width('90%')
            .height('30%')
-           .margin({ top: 10 })
+           .margin({ top: 5})
          } else if (this.currentSceneType === 'snow') {
            Grid() {
              GridItem() {
@@ -315,7 +316,7 @@ export struct GLComponent {
            .rowsGap(12)
            .width('90%')
            .height('30%')
-           .margin({ top: 10 })
+           .margin({ top: 5 })
          } else if (this.currentSceneType === 'all') {
            Row() {
              // 左边：雨景相关（2列3行）
@@ -472,7 +473,7 @@ export struct GLComponent {
            }
            .width('90%')
            .height('30%')
-           .margin({ top: 15 })
+           .margin({ top: 5 })
 
            // rain or snow's fps
            Row() {
@@ -495,28 +496,32 @@ export struct GLComponent {
                  }
                })
            }
-           .margin({ top: 16 })
+           .margin({ top: 25 })
            .alignItems(VerticalAlign.Center)
 
-           Column() {
-             Text('雨雪灰度颜色调节')
+           Row() {
+             Text('雨雪灰度颜色')
                .fontSize(14)
                .fontColor('#666666')
-               .margin({ top: 30, bottom: 0 })
+               .margin({ top: 0, bottom: 0 })
 
              Slider({
-               value: this.rainGrayValue, // 默认值为100
+               value: this.rainGrayValue,
                min: 0,
                max: 100,
                step: 1,
                style: SliderStyle.OutSet
              })
-               .width('80%')
+               .width('70%')
                .onChange((value: number) => {
                  this.onFullSceneColorSetting(value)
-               }).height('20%')
+               })
+           }
+           .margin({ top: 3 })
+           .alignItems(VerticalAlign.Center)
 
-             Text('云朵厚度调节')
+           Row(){
+             Text('    云朵厚度')
                .fontSize(14)
                .fontColor('#666666')
                .margin({ top: 0, bottom: 0 })
@@ -528,11 +533,13 @@ export struct GLComponent {
                step: 1,
                style: SliderStyle.OutSet
              })
-               .width('80%')
+               .width('70%')
                .onChange((value: number) => {
                  this.onFullSceneCloudThicknessSetting(value)
                })
-           }.height('20%')
+           }
+           .margin({ top: 3 })
+           .alignItems(VerticalAlign.Center)
 
          } else {
            Blank()
