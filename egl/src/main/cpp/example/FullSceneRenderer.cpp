@@ -10,6 +10,7 @@
 #include "SequenceFramePlayer.h"
 #include "RainWithBackgroundSeqPlayer.h"
 #include "ThickCloudSequencePlayer.h"
+#include "SingleTexturePlayer.h"
 #include "log.h"
 
 using namespace hiveVG;
@@ -79,8 +80,8 @@ void CFullSceneRenderer::draw()
     // 雪景背景播放器 - 始终渲染（仅在雪景激活时）
     if (m_SnowActive && m_pBackgroundPlayer)
     {
-        m_pBackgroundPlayer->updateSeqFrame(SnowDeltaTime);
-        m_pBackgroundPlayer->drawSeqFrame(m_pScreenQuad);
+        m_pBackgroundPlayer->updateFrame();
+        m_pScreenQuad->bindAndDraw();
     }
 
     // 根据雪景通道设置不同的fps：R=13, G=18, B=23, A=28
@@ -358,21 +359,13 @@ void CFullSceneRenderer::__initThickCloudPlayer()
 void CFullSceneRenderer::__initBackgroundPlayer()
 {
     if (m_pBackgroundPlayer) return;
-    Json::Value Config = m_pConfigReader->getObject("Background");
-    std::string FramesPath = Config["frames_path"].asString();
-    std::string FramesType = Config["frames_type"].asString();
-    int FramesCount = Config["frames_count"].asInt();
-    float Fps = Config["fps"].asFloat();
-    std::string VertexShader = Config["vertex_shader"].asString();
-    std::string FragShader = Config["fragment_shader"].asString();
-    EPictureType::EPictureType PicType = EPictureType::FromString(FramesType);
-    int SeqRows = 1, SeqCols = 1;
-    m_pBackgroundPlayer = new CSequenceFramePlayer(FramesPath, SeqRows, SeqCols, FramesCount, PicType);
-    if (!m_pBackgroundPlayer->initTextureAndShaderProgram(VertexShader, FragShader))
+    std::string TexturePath    = "textures/background.astc";
+    EPictureType::EPictureType TextureType    = EPictureType::ASTC;
+    m_pBackgroundPlayer = new CSingleTexturePlayer(TexturePath, TextureType);
+    if (!m_pBackgroundPlayer->initTextureAndShaderProgram())
     {
         LOGE(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "Failed to init Background player");
     }
-    m_pBackgroundPlayer->setFrameRate(Fps);
     m_BackgroundInitialized = true;
     LOGI(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "Background Player initialized.");
 }
