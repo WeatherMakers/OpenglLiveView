@@ -9,6 +9,7 @@ uniform int CurrentChannel;
 uniform vec2 TexelSize;
 uniform sampler2D CurrentTexture;
 uniform sampler2D NextTexture;
+uniform float CloudThickness;
 
 out vec4 FragColor;
 
@@ -44,8 +45,9 @@ void main()
     float CurrentSpaceFilterColor = filteredChannelSpace3x3(CurrentTexture, CurrentUV, CurrentChannel);
     float NextSpaceFilterColor = filteredChannelSpace3x3(NextTexture, NextUV, NextChannel);
     float MixColor = mix(CurrentSpaceFilterColor, NextSpaceFilterColor, Factor);
-
-    FragColor = vec4(1.0, 1.0, 1.0, MixColor);
+    float Transmittance = exp(-0.8f*CloudThickness);
+    vec3 CloudAlbedo = vec3(1.0f) * Transmittance;
+    FragColor = vec4(CloudAlbedo, MixColor);
 
     if ((TexCoordCloud.x < 0.0 || TexCoordCloud.x > 1.0 ||
          TexCoordCloud.y < 0.0 || TexCoordCloud.y > 1.0)){

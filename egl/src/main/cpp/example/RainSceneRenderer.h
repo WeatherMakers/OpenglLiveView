@@ -27,7 +27,6 @@ namespace hiveVG
         float                 m_FrameSeconds      = 60;
         EPictureType::EPictureType m_PictureType  = EPictureType::ASTC;
         CSequenceFramePlayer* m_pTexturePlayer    = nullptr;
-        CSingleTexturePlayer* m_pBackGroundPlayer = nullptr;
         CScreenQuad*          m_pScreenQuad       = nullptr;
     };
 }

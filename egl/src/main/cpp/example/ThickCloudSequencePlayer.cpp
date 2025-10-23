@@ -139,6 +139,8 @@ void CThickCloudSequencePlayer::draw(CScreenQuad *vQuad)
     m_pSequenceShaderProgram->setUniform("cloudUVOffset", glm::vec2(0.0,0.75));
     m_pSequenceShaderProgram->setUniform("cloudUVScale", glm::vec2(1,0.4));
     m_pSequenceShaderProgram->setUniform("isFinish", m_IsFinished);
+    // 云朵厚度Slider
+    m_pSequenceShaderProgram->setUniform("CloudThickness", m_CloudThickness);
 
     m_pSequenceShaderProgram->setUniform("CurrentTexture", 0);
     m_pSequenceShaderProgram->setUniform("NextTexture", 1);

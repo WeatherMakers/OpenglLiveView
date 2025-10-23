@@ -161,7 +161,6 @@ void CFullSnowSceneRenderer::__initSnowBackgroundPlayer()
     m_pSnowBackgroundPlayer = new CSequenceFramePlayer(FramesPath, FramesCount, OneTextureFrames, Fps, PicType);
     m_pSnowBackgroundPlayer->initTextureAndShaderProgram(VertexShader, FragShader);
     m_pSnowBackgroundPlayer->setWindowSize(m_WindowSize);
-    m_pSnowBackgroundPlayer->setRatioUniform();
     m_SnowBackgroundInitialized = true;
     LOGI(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "Snow Background Player initialized.");
 }
@@ -181,7 +180,6 @@ void CFullSnowSceneRenderer::__initSnowForegroundPlayer()
     m_pSnowForegroundPlayer = new CSequenceFramePlayer(FramesPath, FramesCount, OneTextureFrames, Fps, PicType);
     m_pSnowForegroundPlayer->initTextureAndShaderProgram(VertexShader, FragShader);
     m_pSnowForegroundPlayer->setWindowSize(m_WindowSize);
-    m_pSnowForegroundPlayer->setRatioUniform();
     m_SnowForegroundInitialized = true;
     LOGI(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "Snow Foreground Player initialized.");
 }

@@ -17,8 +17,11 @@ include_directories(${NATIVERENDER_ROOT_PATH}
                     ${NATIVERENDER_ROOT_PATH}/thirdparty
                     ${NATIVERENDER_ROOT_PATH}/thirdparty/glm
                     ${NATIVERENDER_ROOT_PATH}/thirdparty/stb
+                    ${NATIVERENDER_ROOT_PATH}/thirdparty/astc-codec/include
                     ${NATIVERENDER_ROOT_PATH}/util
                     )
+
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/astc-codec)
 
 # ===========  第三方库 JSONCPP（源码方式）  ===========
 set(JSONCPP_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/jsoncpp)
@@ -59,4 +62,5 @@ target_link_libraries(egl PUBLIC
     libc++.a
     jsoncpp
     ${OpenCV_LIBS}
+    astc-codec
     )

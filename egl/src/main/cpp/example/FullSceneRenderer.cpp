@@ -1,5 +1,7 @@
 #include "FullSceneRenderer.h"
+#include "AstcUtils.h"
 #include "Common.h"
+#include "ImageUtils.h"
 #include "Texture2D.h"
 #include "ShaderProgram.h"
 #include "ScreenQuad.h"
@@ -8,6 +10,7 @@
 #include "SequenceFramePlayer.h"
 #include "RainWithBackgroundSeqPlayer.h"
 #include "ThickCloudSequencePlayer.h"
+#include "SingleTexturePlayer.h"
 #include "log.h"
 
 using namespace hiveVG;
@@ -67,7 +70,7 @@ void CFullSceneRenderer::draw()
     m_RainLastFrameTime = m_RainCurrentTime;
     m_SnowLastFrameTime = m_SnowCurrentTime;
 
-    glClearColor(0.345f, 0.345f, 0.345f, 1.0f);
+    glClearColor(m_BackgroundColor[0], m_BackgroundColor[1], m_BackgroundColor[2], 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -77,8 +80,8 @@ void CFullSceneRenderer::draw()
     // 雪景背景播放器 - 始终渲染（仅在雪景激活时）
     if (m_SnowActive && m_pBackgroundPlayer)
     {
-        m_pBackgroundPlayer->updateSeqFrame(SnowDeltaTime);
-        m_pBackgroundPlayer->drawSeqFrame(m_pScreenQuad);
+        m_pBackgroundPlayer->updateFrame();
+        m_pScreenQuad->bindAndDraw();
     }
 
     // 根据雪景通道设置不同的fps：R=13, G=18, B=23, A=28
@@ -205,6 +208,72 @@ void CFullSceneRenderer::toggleSnowForeground()
     LOGI(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "Snow Foreground visibility toggled to %d", m_SnowForegroundVisible);
 }
 
+void CFullSceneRenderer::setColor(float vValue)
+{
+    if(!m_pRainSeqPlayer) __initRainSeqPlayer();
+    if(!m_SnowForegroundInitialized) 
+    {
+        __initSnowForegroundPlayer();
+        m_SnowForegroundInitialized = true;
+    }
+    if(!m_SnowBackgroundInitialized) 
+    {
+        __initSnowBackgroundPlayer();
+        m_SnowBackgroundInitialized = true;
+    }
+    
+    m_pRainSeqPlayer->setColor(vValue);
+    m_pSnowForegroundPlayer->setColor(vValue);
+    m_pSnowBackgroundPlayer->setColor(vValue);
+}
+
+
+
+void CFullSceneRenderer::updateBackgroundLumin(){
+    float BackgroundColorLumin = CImageUtils::CalculateRGBLumin(m_BackgroundColor[0],m_BackgroundColor[1],m_BackgroundColor[2]);
+    m_BackgroundLumin = m_BackgroundImageLumin + BackgroundColorLumin * (1.0f - m_BackgroundImageOpaquePercentage);
+}
+
+static inline float Remap(float vValue, float vMin, float vMax,float vMinOut, float vMaxOut){
+    return (vValue - vMin) / (vMax - vMin) * (vMaxOut - vMinOut) + vMinOut;
+}
+
+
+
+float CFullSceneRenderer::adjustRainColor(){
+    float RainColorValue = Remap(m_BackgroundLumin, m_BackgroundImageLumin, m_BackgroundLuminMax, -1.0, 1.0);
+    RainColorValue =  -RainColorValue;
+    RainColorValue = 1.f / (1 + exp(-6*RainColorValue));
+    if(RainColorValue < 0.35){
+        RainColorValue = 0.35;
+    }else if(RainColorValue > 0.95){
+        RainColorValue = 0.95;
+    }
+    setColor(RainColorValue);
+    return RainColorValue;
+}
+
+void CFullSceneRenderer::__initBackgroundImageProperties(const std::string& vImagePath){
+    int Width, Height;
+    std::vector<unsigned char> AstcData;
+    // 假设类型为ASTC
+    if(CAstcUtils::ReadASTC(vImagePath,AstcData,Width,Height)){
+        int OpaquePixelCount;
+        std::vector<unsigned char> RGBAData;
+        CAstcUtils::DecodeToRGBA32(AstcData, Width, Height, RGBAData);
+        m_BackgroundImageLumin = CImageUtils::CalculateImageAverageLumin(RGBAData,{0,0,0},OpaquePixelCount);
+        m_BackgroundImageOpaquePercentage = static_cast<float>(OpaquePixelCount) / (Width * Height);
+        m_BackgroundLuminMax = m_BackgroundImageLumin + 1.f - m_BackgroundImageOpaquePercentage;
+    }
+}
+
+void CFullSceneRenderer::setCloudThickness(float vValue){
+    if(!m_ThickCloudInitialized) __initThickCloudPlayer();
+    if(!m_CloudInitialized) __initCloudPlayer();
+    m_pThickCloudPlayer->setCloudThickness(vValue);
+    m_pCloudPlayer->setCloudThickness(vValue);
+}
+
 void CFullSceneRenderer::__initRainSeqPlayer()
 {
     if (m_pRainSeqPlayer) return;
@@ -221,6 +290,10 @@ void CFullSceneRenderer::__initRainSeqPlayer()
     std::string BackImgPath = BackGroundConfig["frames_path"].asString();
     std::string BackFrameType = BackGroundConfig["frames_type"].asString();
     EPictureType::EPictureType BackPicType = EPictureType::FromString(BackFrameType);
+    
+    std::string DayBackImgPath = BackGroundConfig["day_frames_path"].asString();
+     __initBackgroundImageProperties(DayBackImgPath);
+    
     m_pRainSeqPlayer = new CRainWithBackgroundSeqPlayer(RainPath, RainTextureCount, RainOneTextureFrames, RainFramePerSecond, RainPictureType);
     m_pRainSeqPlayer->initTextureAndShaderProgram(RainVertexShader, RainFragShader);
     m_pRainSeqPlayer->initBackground(BackImgPath, BackPicType);
@@ -266,7 +339,7 @@ void CFullSceneRenderer::__initThickCloudPlayer()
     Json::Value LightningConfig = m_pConfigReader->getObject("LightningWithMask");
     std::string LightningFramePath = LightningConfig["frames_path"].asString();
     std::string LightningFrameType = LightningConfig["frames_type"].asString();
-     EPictureType::EPictureType LightningPicType = EPictureType::FromString(LightningFrameType);
+    EPictureType::EPictureType LightningPicType = EPictureType::FromString(LightningFrameType);
     int LightningFrameCount = LightningConfig["frames_count"].asInt();
     int LightningOneTextureFrames = LightningConfig["one_texture_frames"].asInt();
     float LightningPlayFPS = LightningConfig["fps"].asFloat();
@@ -286,21 +359,13 @@ void CFullSceneRenderer::__initThickCloudPlayer()
 void CFullSceneRenderer::__initBackgroundPlayer()
 {
     if (m_pBackgroundPlayer) return;
-    Json::Value Config = m_pConfigReader->getObject("Background");
-    std::string FramesPath = Config["frames_path"].asString();
-    std::string FramesType = Config["frames_type"].asString();
-    int FramesCount = Config["frames_count"].asInt();
-    float Fps = Config["fps"].asFloat();
-    std::string VertexShader = Config["vertex_shader"].asString();
-    std::string FragShader = Config["fragment_shader"].asString();
-    EPictureType::EPictureType PicType = EPictureType::FromString(FramesType);
-    int SeqRows = 1, SeqCols = 1;
-    m_pBackgroundPlayer = new CSequenceFramePlayer(FramesPath, SeqRows, SeqCols, FramesCount, PicType);
-    if (!m_pBackgroundPlayer->initTextureAndShaderProgram(VertexShader, FragShader))
+    std::string TexturePath    = "textures/background.astc";
+    EPictureType::EPictureType TextureType    = EPictureType::ASTC;
+    m_pBackgroundPlayer = new CSingleTexturePlayer(TexturePath, TextureType);
+    if (!m_pBackgroundPlayer->initTextureAndShaderProgram())
     {
         LOGE(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "Failed to init Background player");
     }
-    m_pBackgroundPlayer->setFrameRate(Fps);
     m_BackgroundInitialized = true;
     LOGI(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "Background Player initialized.");
 }

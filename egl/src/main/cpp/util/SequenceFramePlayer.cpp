@@ -117,6 +117,7 @@ void CSequenceFramePlayer::drawSeqFrame(CScreenQuad *vQuad)
     assert(m_pSequenceShaderProgram != nullptr);
     m_pSequenceShaderProgram->useProgram();
     m_pSequenceShaderProgram->setUniform("indexTexture", 1);
+    m_pSequenceShaderProgram->setUniform("SliderColor", m_uniformColorValue);
     glActiveTexture(GL_TEXTURE1);
     m_SeqTextures[m_CurrentTexture]->bindTexture();
     vQuad->bindAndDraw();
@@ -145,6 +146,7 @@ void CSequenceFramePlayer::drawMultiChannelFrame(CScreenQuad *vQuad)
     m_pSequenceShaderProgram->useProgram();
     m_pSequenceShaderProgram->setUniform("indexTexture", 0);
     m_pSequenceShaderProgram->setUniform("channelIndex", m_CurrentChannel);
+    m_pSequenceShaderProgram->setUniform("SliderColor", m_uniformColorValue);
     glActiveTexture(GL_TEXTURE0);
     m_SeqTextures[m_CurrentTexture]->bindTexture();
     vQuad->bindAndDraw();
@@ -199,6 +201,9 @@ void CSequenceFramePlayer::drawCloudLerpMultiChannelFrame(CScreenQuad *vQuad)
     m_pSequenceShaderProgram->setUniform("Displacement", 0.01f);
     m_pSequenceShaderProgram->setUniform("CurrentChannel", m_CurrentChannel);
     m_pSequenceShaderProgram->setUniform("TexelSize", glm::vec2( 1.0f / m_SeqSingleTexWidth, 1.0f / m_SeqSingleTexHeight));
+    m_pSequenceShaderProgram->setUniform("SliderColor", m_uniformColorValue);
+    // 云朵厚度Slider
+    m_pSequenceShaderProgram->setUniform("CloudThickness", m_CloudThickness);
     glActiveTexture(GL_TEXTURE0);
     m_SeqTextures[m_CurrentTexture]->bindTexture();
     glActiveTexture(GL_TEXTURE1);

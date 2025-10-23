@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Common.h"
 #include "napi/native_api.h"
 #include <ace/xcomponent/native_interface_xcomponent.h>
 #include "OpenGLCommon.h"
@@ -12,6 +13,9 @@ namespace hiveVG
     {
     public:
         static CNativeRenderer* getInstance();
+        void   renderScene();
+        static CBaseRenderer* getCurrentExample();
+    
         static napi_value Init(napi_env env, napi_value exports);
         static napi_value SetRenderType(napi_env env, napi_callback_info info);
     
@@ -40,8 +44,13 @@ namespace hiveVG
         static napi_value TriggerFullSceneSnowStorm(napi_env env, napi_callback_info info);
         static napi_value TriggerFullSceneSnowBackground(napi_env env, napi_callback_info info);
         static napi_value TriggerFullSceneSnowForeground(napi_env env, napi_callback_info info);
-        void   renderScene();
     
+        // 背景自适应相关NAPI函数
+        static napi_value TriggerColorSetting(napi_env env, napi_callback_info info);
+        static napi_value TriggerCloudThicknessSetting(napi_env env, napi_callback_info info);
+        static napi_value TriggerBackgroundSetting(napi_env env, napi_callback_info info);
+        static napi_value TriggerColorSelfAdjustment(napi_env env, napi_callback_info info);
+        static napi_value OnStartupColorSelfAdjustment(napi_env env, napi_callback_info info);
     private:
         CNativeRenderer();
         ~CNativeRenderer();
@@ -81,6 +90,20 @@ namespace hiveVG
         {
             delete vPointer;
             vPointer = nullptr;
+        }
+    }
+
+    // 内部工具：模板放在头文件，置于 detail 命名空间避免污染公共API
+    namespace detail
+    {
+        template <typename RendererT, typename MemberFn>
+        inline void __setChannelGeneric(MemberFn fn, hiveVG::ERenderChannel vChannel)
+        {
+            auto Example = hiveVG::CNativeRenderer::getCurrentExample();
+            if (Example && dynamic_cast<RendererT*>(Example))
+            {
+                (static_cast<RendererT*>(Example)->*fn)(vChannel);
+            }
         }
     }
 }

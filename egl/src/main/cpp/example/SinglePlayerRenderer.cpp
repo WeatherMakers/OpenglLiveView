@@ -36,7 +36,7 @@ bool CSinglePlayerRenderer::init()
 
 void CSinglePlayerRenderer::draw()
 {
-    glClearColor(0.345f, 0.445f, 0.345f, 1.0f);
+    glClearColor(0.345f, 0.345f, 0.345f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

@@ -11,6 +11,7 @@ namespace hiveVG
     class CSequenceFramePlayer;
     class CThickCloudSequencePlayer;
     class CRainWithBackgroundSeqPlayer;
+    class CSingleTexturePlayer;
 
     class CFullSceneRenderer : public CBaseRenderer
     {
@@ -30,6 +31,16 @@ namespace hiveVG
         void setSnowChannel(ERenderChannel vChannel);
         void toggleSnowBackground();
         void toggleSnowForeground();
+    
+        // 背景自适应相关函数，在其中设置哪些需要变换颜色，其余的直接使用默认值1.0
+        void setColor(float vValue);
+        void setBackgroundColor(float vR, float vG, float vB) { m_BackgroundColor[0] = vR; m_BackgroundColor[1] = vG; m_BackgroundColor[2] = vB; }
+        void getBackgroundColor(float& oR, float& oG, float& oB) { oR = m_BackgroundColor[0]; oG = m_BackgroundColor[1]; oB = m_BackgroundColor[2]; }
+        void updateBackgroundLumin();
+        float adjustRainColor();
+        float getBackgroundLumin() { return m_BackgroundLumin; }
+        // 设置云的厚度
+        void setCloudThickness(float vValue);
 
     private:
         template<typename T>
@@ -39,6 +50,7 @@ namespace hiveVG
         void __initRainSeqPlayer();
         void __initCloudPlayer();
         void __initThickCloudPlayer();
+        void __initBackgroundImageProperties(const std::string& vImagePath);
         
         // 雪景初始化函数
         void __initBackgroundPlayer();
@@ -47,7 +59,14 @@ namespace hiveVG
 
         std::string                m_ConfigFile    = "configs/FullSceneConfig.json";
         CJsonReader*               m_pConfigReader = nullptr;
-
+    
+        // 背景颜色
+        float                      m_BackgroundColor[3] = {0.345f, 0.345f, 0.345f};
+        float                      m_BackgroundImageLumin; // 背景图片亮度(透明部分按0计算)
+        float                      m_BackgroundLuminMax;
+        float                      m_BackgroundImageOpaquePercentage; // 完全不透明像素占总像素数的百分比
+        float                      m_BackgroundLumin; // 背景亮度(透明部分按背景色计算)
+    
         // 雨景相关
         ERenderChannel             m_RainRenderChannel = ERenderChannel::R;
         double                     m_RainLastFrameTime = 0.0f;
@@ -67,7 +86,7 @@ namespace hiveVG
         CThickCloudSequencePlayer*  m_pThickCloudPlayer = nullptr;
 
         // 雪景播放器
-        CSequenceFramePlayer*      m_pBackgroundPlayer = nullptr;
+        CSingleTexturePlayer*      m_pBackgroundPlayer = nullptr;
         CSequenceFramePlayer*      m_pSnowBackgroundPlayer = nullptr;
         CSequenceFramePlayer*      m_pSnowForegroundPlayer = nullptr;
 

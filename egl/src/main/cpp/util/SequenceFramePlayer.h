@@ -35,6 +35,9 @@ namespace hiveVG
         void updateCloudLerpMultiChannelFrame(double vDeltaTime);
         void drawCloudLerpMultiChannelFrame(CScreenQuad *vQuad);
         void setRatioUniform();
+        void setColor(float vValue) { m_uniformColorValue = vValue; }
+        void setCloudThickness(float vValue) { m_CloudThickness = vValue; }
+    
 
     protected:
         int    m_SequenceRows       = 1;
@@ -53,6 +56,8 @@ namespace hiveVG
         int    m_NextFrame        = 0;
         float  m_InterpolationFactor = 0.0f;
         double m_AccumFrameTime      = 0.0f;
+        float  m_uniformColorValue = 1.0f;
+        float  m_CloudThickness = 1.0f;
         std::string m_TextureRootPath;
         int         m_CurrentTexture  = 0;
         int         m_NextTexture     = 0;

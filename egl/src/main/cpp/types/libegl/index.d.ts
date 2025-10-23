@@ -24,3 +24,10 @@ export const triggerFullSceneSnowHeavy: () => void;
 export const triggerFullSceneSnowStorm: () => void;
 export const triggerFullSceneSnowBackground: () => void;
 export const triggerFullSceneSnowForeground: () => void;
+
+// 背景自适应相关函数
+export const triggerColorSetting : (value: number) => void;
+export const triggerCloudThicknessSetting: (value: number) => void;
+export const triggerBackgroundSetting : (colorR: number,colorG: number,colorB: number) => void;
+export const triggerColorSelfAdjustment : () => number;
+export const onStartupColorSelfAdjustment : () => number;

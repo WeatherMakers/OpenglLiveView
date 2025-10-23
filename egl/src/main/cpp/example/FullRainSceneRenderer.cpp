@@ -178,7 +178,7 @@ void CFullRainSceneRenderer::__initThickCloudPlayer()
     Json::Value LightningConfig = m_pConfigReader->getObject("LightningWithMask");
     std::string LightningFramePath = LightningConfig["frames_path"].asString();
     std::string LightningFrameType = LightningConfig["frames_type"].asString();
-     EPictureType::EPictureType LightningPicType = EPictureType::FromString(LightningFrameType);
+    EPictureType::EPictureType LightningPicType = EPictureType::FromString(LightningFrameType);
     int LightningFrameCount = LightningConfig["frames_count"].asInt();
     int LightningOneTextureFrames = LightningConfig["one_texture_frames"].asInt();
     float LightningPlayFPS = LightningConfig["fps"].asFloat();
