@@ -357,6 +357,37 @@ napi_value CNativeRenderer::SetRenderType(napi_env env, napi_callback_info info)
     return nullptr;
 }
 
+napi_value CNativeRenderer::ChangeFPS(napi_env env, napi_callback_info info)
+{
+    LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "ChangeFPS called.");
+    auto Renderer = getInstance();
+    if (Renderer->m_pExample && dynamic_cast<CFullSceneRenderer*>(Renderer->m_pExample))
+    {
+        size_t argc = 1;
+        napi_value argv[1];
+        napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
+        int32_t fps = 0;
+        napi_get_value_int32(env, argv[0], &fps);
+
+        static_cast<CFullSceneRenderer*>(Renderer->m_pExample)->setFPS(fps);
+    }
+    return nullptr;
+}
+
+napi_value CNativeRenderer::GetFPS(napi_env env, napi_callback_info info)
+{
+    LOGI(TAG_KEYWORD::NATIVE_RENDERER_TAG, "GetFPS called.");
+    auto Renderer = getInstance();
+    int fps = 0;
+    if (Renderer->m_pExample && dynamic_cast<CFullSceneRenderer*>(Renderer->m_pExample))
+    {
+        fps = static_cast<CFullSceneRenderer*>(Renderer->m_pExample)->getFPS();
+    }
+    napi_value result;
+    napi_create_int32(env, fps, &result);
+    return result;
+}
+
 void CNativeRenderer::renderScene()
 {
     if (m_EglDisplay == EGL_NO_DISPLAY || m_EglSurface == EGL_NO_SURFACE)
@@ -421,6 +452,11 @@ napi_value CNativeRenderer::Init(napi_env env, napi_value exports)
         {"triggerBackgroundSetting", nullptr, TriggerBackgroundSetting, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"triggerColorSelfAdjustment", nullptr, TriggerColorSelfAdjustment, nullptr, nullptr, nullptr, napi_default, nullptr},
         {"onStartupColorSelfAdjustment", nullptr, OnStartupColorSelfAdjustment, nullptr, nullptr, nullptr, napi_default, nullptr},
+        {"triggerFullSceneSnowForeground", nullptr, TriggerFullSceneSnowForeground, nullptr, nullptr, nullptr, napi_default, nullptr},
+        
+        // FPS调节
+        {"changeFPS", nullptr, ChangeFPS, nullptr, nullptr, nullptr, napi_default, nullptr},
+        {"getFPS", nullptr, GetFPS, nullptr, nullptr, nullptr, napi_default, nullptr},
     };
     napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc);
     napi_value exportInstance = nullptr;
