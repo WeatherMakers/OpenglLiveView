@@ -12,8 +12,8 @@ const float rainAlphaThreshold = 0.01;    // 判断当前像素是否为雨所�
 const float rainIntensity = 0.5;
 
 void main() {
-    vec4 BackgroundColor = texture(backgroundTexture, vec2(TexCoord.x,1.0f - TexCoord.y));
-    float LightMask = 0.f;
+    vec4 BackgroundColor = texture(backgroundTexture, TexCoord);
+    float LightMask = BackgroundColor.a;
 
     vec4 RainColor = texture(rainSequenceTexture, TexCoord);
     float FinalRainAlpha = RainColor.r + RainColor.g * float(channelIndex >= 1) + RainColor.b * float(channelIndex >= 2) + RainColor.a * float(channelIndex >= 3);
@@ -21,7 +21,7 @@ void main() {
     vec4 SrcColor = vec4(vec3(1.0), FinalRainAlpha * rainIntensity + LightMask);
 
     vec4 DstColor = BackgroundColor;
-    //DstColor.a = 1.0f;
+    DstColor.a = 1.0f;
 
     // 结合线性减淡方法的混合方式
     float BlendAlpha = SrcColor.a + DstColor.a - SrcColor.a * DstColor.a;
