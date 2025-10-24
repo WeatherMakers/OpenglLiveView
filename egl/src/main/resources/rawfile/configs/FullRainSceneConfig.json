@@ -1,6 +1,6 @@
 {
     "Background":{
-        "frames_path": "textures/background.astc",
+        "frames_path": "textures/NightSceneWithLightMask.astc",
         "frames_type": "astc"
     },
     "Rain": {
@@ -46,23 +46,5 @@
         "fps": 7.3,
         "vertex_shader" : "shaders/thickCloud.vert",
         "fragment_shader" : "shaders/thickCloud.frag"
-    },
-    "SmallRaindrop": {
-        "frames_path": "textures/rainScene/small_rainDrop_mergedpng_ASTC12x12_Linear",
-        "frames_type" : "astc",
-        "frames_count": 24,
-        "one_texture_frames": 4,
-        "fps": 30,
-        "vertex_shader" : "shaders/multiChannelRainSeq.vert",
-        "fragment_shader" : "shaders/multiChannelRainSeq8bitRaindrop.frag"
-    },
-    "BigRaindrop": {
-        "frames_path": "textures/rainScene/bigRainDroppre_mergedpng_ASTC12x12_Linear",
-        "frames_type" : "astc",
-        "frames_count": 31,
-        "one_texture_frames": 4,
-        "fps": 10,
-        "vertex_shader" : "shaders/multiChannelRainSeq.vert",
-        "fragment_shader" : "shaders/multiChannelRainSeq8bitRaindrop.frag"
     }
 }

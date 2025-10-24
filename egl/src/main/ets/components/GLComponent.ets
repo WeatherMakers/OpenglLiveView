@@ -16,7 +16,7 @@ export struct GLComponent {
   xComponentContext: object | undefined = undefined;
   allSceneButtonHeight :number = 30;
   @State rainGrayValue : number = 100;
-
+  @State cloudThickness : number = 15;
 
   @State currentSceneType: string = 'none' // 当前场景类型：'rain'、'snow'、'all' 或 'none'
   xComponentAttrs: XComponentAttrs = {
@@ -528,7 +528,7 @@ export struct GLComponent {
                .margin({ top: 0, bottom: 0 })
 
              Slider({
-               value: 15, // 默认值为100
+               value: this.cloudThickness, // 默认值为15
                min: 0,
                max: 100,
                step: 1,
