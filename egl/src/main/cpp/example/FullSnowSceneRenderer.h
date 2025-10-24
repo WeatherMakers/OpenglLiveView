@@ -11,6 +11,7 @@ namespace hiveVG
     class CSequenceFramePlayer;
     class CThickCloudSequencePlayer;
     class CRainWithBackgroundSeqPlayer;
+    class CSingleTexturePlayer;
 
     class CFullSnowSceneRenderer : public CBaseRenderer
     {
@@ -45,7 +46,7 @@ namespace hiveVG
     
         CSequenceFramePlayer*      m_pSnowBackgroundPlayer = nullptr;
         CSequenceFramePlayer*      m_pSnowForegroundPlayer = nullptr;
-        CSequenceFramePlayer*      m_pBackgroundPlayer     = nullptr;
+        CSingleTexturePlayer*      m_pBackgroundPlayer = nullptr;
     
         bool                       m_SnowBackgroundInitialized = false;
         bool                       m_SnowForegroundInitialized = false;

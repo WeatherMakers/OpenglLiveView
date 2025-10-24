@@ -12,5 +12,6 @@ void main()
 {
     vec4 indexColor = texture(indexTexture, TexCoord);
     float index = indexColor[channelIndex];
-    FragColor = vec4(SliderColor, SliderColor, SliderColor, index);
+    float color = exp(SliderColor - 1.f);
+    FragColor = vec4(vec3(1.0f), index*color);
 }

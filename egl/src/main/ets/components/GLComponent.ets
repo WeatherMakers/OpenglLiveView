@@ -213,6 +213,7 @@ export struct GLComponent {
              console.info('XComponent on Load start');
              this.xComponentContext = xComponentContext
              egl.setResourceManager(this.resMgr)
+             this.rainGrayValue = 90
              this.rainGrayValue = egl.onStartupColorSelfAdjustment()
              this.rainGrayValue = this.rainGrayValue * 100
            })
@@ -527,7 +528,7 @@ export struct GLComponent {
                .margin({ top: 0, bottom: 0 })
 
              Slider({
-               value: 100, // 默认值为100
+               value: 15, // 默认值为100
                min: 0,
                max: 100,
                step: 1,
