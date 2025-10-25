@@ -199,6 +199,8 @@ void CSequenceFramePlayer::drawCloudLerpMultiChannelFrame(CScreenQuad *vQuad)
     m_pSequenceShaderProgram->setUniform("NextTexture", 1);
     m_pSequenceShaderProgram->setUniform("Factor", m_InterpolationFactor);
     m_pSequenceShaderProgram->setUniform("Displacement", 0.01f);
+    m_pSequenceShaderProgram->setUniform("cloudUVOffset", glm::vec2(0.0,0.75));
+    m_pSequenceShaderProgram->setUniform("cloudUVScale", glm::vec2(1,0.4));
     m_pSequenceShaderProgram->setUniform("CurrentChannel", m_CurrentChannel);
     m_pSequenceShaderProgram->setUniform("TexelSize", glm::vec2( 1.0f / m_SeqSingleTexWidth, 1.0f / m_SeqSingleTexHeight));
     m_pSequenceShaderProgram->setUniform("SliderColor", m_uniformColorValue);
