@@ -21,7 +21,6 @@ CFullSnowSceneRenderer::~CFullSnowSceneRenderer()
 {
     __deleteSafely(m_pSnowBackgroundPlayer);
     __deleteSafely(m_pSnowForegroundPlayer);
-    __deleteSafely(m_pBackgroundPlayer);
     __deleteSafely(m_pConfigReader);
 }
 
@@ -29,8 +28,6 @@ bool CFullSnowSceneRenderer::init()
 {
     if (m_pConfigReader == nullptr)
         m_pConfigReader = new CJsonReader(m_ConfigFile);
-    
-    __initBackgroundPlayer();
 
     m_pScreenQuad = &CScreenQuad::getInstance();
     if (!m_pScreenQuad->init())
@@ -57,13 +54,13 @@ void CFullSnowSceneRenderer::draw()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_DEPTH_TEST);
 
-    int CurrentFps = 13;
+    int CurrentFps = m_snowFpsLight;
     switch (m_RenderChannel)
     {
-        case ERenderChannel::R: CurrentFps = 13; break;
-        case ERenderChannel::G: CurrentFps = 18; break;
-        case ERenderChannel::B: CurrentFps = 23; break;
-        case ERenderChannel::A: CurrentFps = 28; break;
+        case ERenderChannel::R: CurrentFps = m_snowFpsLight; break;
+        case ERenderChannel::G: CurrentFps = m_snowFpsModerate; break;
+        case ERenderChannel::B: CurrentFps = m_snowFpsHeavy; break;
+        case ERenderChannel::A: CurrentFps = m_snowFpsStorm; break;
     }
 
     if (m_SnowBackgroundInitialized && m_SnowBackgroundVisible && m_pSnowBackgroundPlayer)
@@ -71,12 +68,6 @@ void CFullSnowSceneRenderer::draw()
         m_pSnowBackgroundPlayer->setFrameRate(CurrentFps);
         m_pSnowBackgroundPlayer->updateMultiChannelFrame(DeltaTime, m_RenderChannel);
         m_pSnowBackgroundPlayer->drawMultiChannelFrame(m_pScreenQuad);
-    }
-
-    if (m_pBackgroundPlayer)
-    {
-        m_pBackgroundPlayer->updateFrame();
-        m_pScreenQuad->bindAndDraw();
     }
 
     if (m_SnowForegroundInitialized && m_SnowForegroundVisible && m_pSnowForegroundPlayer)
@@ -123,19 +114,6 @@ void CFullSnowSceneRenderer::toggleSnowForeground()
         m_SnowForegroundVisible = !m_SnowForegroundVisible;
     }
     LOGI(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "Snow Foreground visibility toggled to %d", m_SnowForegroundVisible);
-}
-
-void CFullSnowSceneRenderer::__initBackgroundPlayer()
-{
-    if (m_pBackgroundPlayer) return;
-    std::string TexturePath    = "textures/background.astc";
-    EPictureType::EPictureType TextureType    = EPictureType::ASTC;
-    m_pBackgroundPlayer = new CSingleTexturePlayer(TexturePath, TextureType);
-    if (!m_pBackgroundPlayer->initTextureAndShaderProgram())
-    {
-        LOGE(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "Failed to init Background player");
-    }
-    LOGI(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "Background Player initialized.");
 }
 
 void CFullSnowSceneRenderer::__initSnowBackgroundPlayer()

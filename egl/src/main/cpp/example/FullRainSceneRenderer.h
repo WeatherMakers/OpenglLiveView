@@ -45,12 +45,17 @@ namespace hiveVG
 
         CThickCloudSequencePlayer* m_pThickCloudPlayer    = nullptr;
         CSequenceFramePlayer*      m_pCloudPlayer         = nullptr;
-        CRainWithBackgroundSeqPlayer* m_pRainSeqPlayer    = nullptr;
+        CSequenceFramePlayer*      m_pRainSeqPlayer       = nullptr;
     
         bool                       m_ThickCloudInitialized    = false;
         bool                       m_CloudInitialized         = false;
         bool                       m_CloudVisible             = false;
         bool                       m_ThickCloudVisible        = false;
+    
+        int                        m_rainFpsLight    = 45;
+        int                        m_rainFpsModerate = 60;
+        int                        m_rainFpsHeavy    = 75;
+        int                        m_rainFpsStorm    = 90;
     };
 
     template<typename T>

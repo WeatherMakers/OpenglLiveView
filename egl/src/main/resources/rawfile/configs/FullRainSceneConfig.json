@@ -1,8 +1,4 @@
 {
-    "Background":{
-        "frames_path": "textures/NightSceneWithLightMask.astc",
-        "frames_type": "astc"
-    },
     "Rain": {
         "frames_path": "textures/rainScene/rain_ASTC12x12_Linear",
         "frames_type" : "astc",
@@ -10,7 +6,7 @@
         "one_texture_frames": 4,
         "fps": 80,
         "vertex_shader" : "shaders/multiChannelRainSeq.vert",
-        "fragment_shader" : "shaders/multiChannelRainSeq8bitRainWithBackground.frag"
+        "fragment_shader" : "shaders/multiChannelSnowSeq8bit.frag"
     },
     "Cloud": {
         "frames_path": "textures/rainScene/cloud_ASTC12x12_Linear",

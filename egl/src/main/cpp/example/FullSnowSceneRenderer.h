@@ -46,12 +46,16 @@ namespace hiveVG
     
         CSequenceFramePlayer*      m_pSnowBackgroundPlayer = nullptr;
         CSequenceFramePlayer*      m_pSnowForegroundPlayer = nullptr;
-        CSingleTexturePlayer*      m_pBackgroundPlayer = nullptr;
     
         bool                       m_SnowBackgroundInitialized = false;
         bool                       m_SnowForegroundInitialized = false;
         bool                       m_SnowBackgroundVisible     = false;
         bool                       m_SnowForegroundVisible     = false;
+    
+        int                        m_snowFpsLight    = 45;
+        int                        m_snowFpsModerate = 60;
+        int                        m_snowFpsHeavy    = 75;
+        int                        m_snowFpsStorm    = 90;
     };
 
     template<typename T>

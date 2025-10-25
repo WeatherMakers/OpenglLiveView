@@ -117,13 +117,16 @@ namespace hiveVG
         bool                       m_SnowActive = false;   // 雪景是否激活
     
         // 雪景 FPS
-        int                        m_snowFpsLight = 20;
-        int                        m_snowFpsModerate = 30;
-        int                        m_snowFpsHeavy = 40;
-        int                        m_snowFpsStorm = 50;
+        int                        m_snowFpsLight    = 45;
+        int                        m_snowFpsModerate = 60;
+        int                        m_snowFpsHeavy    = 75;
+        int                        m_snowFpsStorm    = 90;
     
         // 雨景 FPS
-        int                        m_rainFPS = 80;
+        int                        m_rainFpsLight    = 45;
+        int                        m_rainFpsModerate = 60;
+        int                        m_rainFpsHeavy    = 75;
+        int                        m_rainFpsStorm    = 90;
     };
 
     template<typename T>

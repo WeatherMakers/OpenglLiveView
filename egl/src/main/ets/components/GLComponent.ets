@@ -25,9 +25,9 @@ export struct GLComponent {
     libraryname: 'egl' // 加载模块的名称，必须与在native侧Napi模块注册时模块名字一致。
   }
 
-  @State fpsValue: number = 30;
+  @State fpsValue: number = 45;
 
-  // 空函数：云朵、小雨、中雨、大雨、暴雨
+  // 雨景相关函数
   private onCloud(): void {
     try { egl.triggerCloud() } catch (e) { hilog.error(0x0000, 'GL', `triggerCloud 失败: ${JSON.stringify(e)}`) }
   }
@@ -138,49 +138,16 @@ export struct GLComponent {
                }
              },
              {
-               value: '雨景',
+               value: '雨景全场景',
                action: () => {
                  try {
-                   egl.setRenderType(Params.RAIN_RENDER_TYPE)
-                   this.currentSceneType = 'none'
+                   egl.setRenderType(Params.FULL_RAIN_SCENE_RENDER_TYPE)
+                   this.currentSceneType = 'rain'
                  } catch (e) {
-                   hilog.error(0x0000, 'GL', `雨景，显示失败: ${JSON.stringify(e)}`)
+                   hilog.error(0x0000, 'GL', `雨景全场景，显示失败: ${JSON.stringify(e)}`)
                  }
                }
              },
-             {
-               value: '云景',
-               action: () => {
-                 try {
-                   egl.setRenderType(Params.CLOUD_RENDER_TYPE)
-                   this.currentSceneType = 'none'
-                 } catch (e) {
-                   hilog.error(0x0000, 'GL', `云景，显示失败: ${JSON.stringify(e)}`)
-                 }
-               }
-             },
-             {
-               value: '雪景',
-               action: () => {
-                 try {
-                   egl.setRenderType(Params.SNOW_RENDER_TYPE)
-                   this.currentSceneType = 'none'
-                 } catch (e) {
-                   hilog.error(0x0000, 'GL', `雪景，显示失败: ${JSON.stringify(e)}`)
-                 }
-               }
-             },
-            {
-              value: '雨景全场景',
-              action: () => {
-                try {
-                  egl.setRenderType(Params.FULL_SCENE_RENDER_TYPE)
-                  this.currentSceneType = 'rain'
-                } catch (e) {
-                  hilog.error(0x0000, 'GL', `雨景全场景，显示失败: ${JSON.stringify(e)}`)
-                }
-              }
-            },
              {
                value: '雪景全场景',
                action: () => {
@@ -477,28 +444,28 @@ export struct GLComponent {
            .margin({ top: 5 })
 
            // rain or snow's fps
-           Row() {
-             Text('fps:')
-               .fontSize(14)
-               .fontColor('#444')
-               .width(50)
-
-             TextInput({ text: this.fpsValue.toString() })
-               .type(InputType.Number)
-               .width('60%')
-               .height(36)
-               .border({ width: 1, color: '#CCCCCC' })
-               .borderRadius(8)
-               .onChange((value: string) => {
-                 const num = parseInt(value)
-                 if (!isNaN(num) && Number.isInteger(num)) {
-                   this.fpsValue = num
-                   egl.changeFPS(this.fpsValue)
-                 }
-               })
-           }
-           .margin({ top: 25 })
-           .alignItems(VerticalAlign.Center)
+           //Row() {
+           //  Text('fps:')
+           //    .fontSize(14)
+           //    .fontColor('#444')
+           //    .width(50)
+//
+           //  TextInput({ text: this.fpsValue.toString() })
+           //    .type(InputType.Number)
+           //    .width('60%')
+           //    .height(36)
+           //    .border({ width: 1, color: '#CCCCCC' })
+           //    .borderRadius(8)
+           //    .onChange((value: string) => {
+           //      const num = parseInt(value)
+           //      if (!isNaN(num) && Number.isInteger(num)) {
+           //        this.fpsValue = num
+           //        egl.changeFPS(this.fpsValue)
+           //      }
+           //    })
+           //}
+           //.margin({ top: 25 })
+           //.alignItems(VerticalAlign.Center)
 
            Row() {
              Text('雨雪灰度颜色')
@@ -522,7 +489,7 @@ export struct GLComponent {
            .alignItems(VerticalAlign.Center)
 
            Row(){
-             Text('    云朵厚度')
+             Text('    云朵灰度颜色')
                .fontSize(14)
                .fontColor('#666666')
                .margin({ top: 0, bottom: 0 })

@@ -75,13 +75,19 @@ void CFullSceneRenderer::setFPS(int fps)
     }
     if (m_RainActive)
     {
-        m_rainFPS = fps;
+        switch (m_RainRenderChannel)
+        {
+            case ERenderChannel::R: m_rainFpsLight = fps; break;
+            case ERenderChannel::G: m_rainFpsModerate = fps; break;
+            case ERenderChannel::B: m_rainFpsHeavy = fps; break;
+            case ERenderChannel::A: m_rainFpsStorm = fps; break;
+        }
     }
 }
 
 int CFullSceneRenderer::getFPS()
 {
-    int fps;
+    int fps = 0;
     if (m_SnowActive)
     {
         switch (m_SnowRenderChannel)
@@ -94,7 +100,13 @@ int CFullSceneRenderer::getFPS()
     }
     if (m_RainActive)
     {
-        fps = m_rainFPS;
+        switch (m_RainRenderChannel)
+        {
+            case ERenderChannel::R: fps = m_rainFpsLight; break;
+            case ERenderChannel::G: fps = m_rainFpsModerate; break;
+            case ERenderChannel::B: fps = m_rainFpsHeavy; break;
+            case ERenderChannel::A: fps = m_rainFpsStorm; break;
+        }
     }
     return fps;
 }
@@ -122,7 +134,7 @@ void CFullSceneRenderer::draw()
         m_pScreenQuad->bindAndDraw();
     }
 
-    // 根据雪景通道设置不同的fps：R=13, G=18, B=23, A=28
+    // 根据雪景通道设置不同的fps
     int SnowCurrentFps = m_snowFpsLight; // 默认R通道
     switch (m_SnowRenderChannel)
     {
@@ -150,9 +162,18 @@ void CFullSceneRenderer::draw()
 
     // === 雨景渲染 ===
     // 雨景主序列播放器 - 始终渲染（仅在雨景激活时）
+    // 根据雪景通道设置不同的fps
+    int RainCurrentFps = m_rainFpsLight; // 默认R通道
+    switch (m_RainRenderChannel)
+    {
+        case ERenderChannel::R: SnowCurrentFps = m_rainFpsLight; break;
+        case ERenderChannel::G: SnowCurrentFps = m_rainFpsModerate; break;
+        case ERenderChannel::B: SnowCurrentFps = m_rainFpsHeavy; break;
+        case ERenderChannel::A: SnowCurrentFps = m_rainFpsStorm; break;
+    }
     if (m_RainActive && m_RainSeqInitialized && m_pRainSeqPlayer)
     {
-        m_pRainSeqPlayer->setFrameRate(m_rainFPS);
+        m_pRainSeqPlayer->setFrameRate(RainCurrentFps);
         m_pRainSeqPlayer->updateMultiChannelFrame(RainDeltaTime, m_RainRenderChannel);
         m_pRainSeqPlayer->draw(m_pScreenQuad);
     }

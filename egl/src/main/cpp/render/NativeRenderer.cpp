@@ -3,9 +3,6 @@
 #include "log.h"
 #include "example/BaseRenderer.h"
 #include "example/SinglePlayerRenderer.h"
-#include "example/RainSceneRenderer.h"
-#include "example/SnowSceneRenderer.h"
-#include "example/CloudSceneRenderer.h"
 #include "example/FullRainSceneRenderer.h"
 #include "example/FullSnowSceneRenderer.h"
 #include "example/FullSceneRenderer.h"
@@ -314,30 +311,21 @@ napi_value CNativeRenderer::SetRenderType(napi_env env, napi_callback_info info)
         CBaseRenderer *pExample = nullptr;
         switch (Type)
         {
-        case SINGLE_RENDER_TYPE:
-            pExample = new CSinglePlayerRenderer();
-            break;
-        case RAIN_RENDER_TYPE:
-            pExample = new CRainSceneRenderer();
-            break;
-        case CLOUD_RENDER_TYPE:
-            pExample = new CCloudSceneRenderer();
-            break;
-        case SNOW_RENDER_TYPE:
-            pExample = new CSnowSceneRenderer();
-            break;
-        case FULL_SCENE_RENDER_TYPE:
-            pExample = new CFullRainSceneRenderer();
-            break;
-        case FULL_SNOW_SCENE_RENDER_TYPE:
-            pExample = new CFullSnowSceneRenderer();
-            break;
-        case FULL_ALL_SCENE_RENDER_TYPE:
-            pExample = new CFullSceneRenderer();
-            break;
-        default:
-            pExample = new CSinglePlayerRenderer();
-            break;
+            case SINGLE_RENDER_TYPE:
+                pExample = new CSinglePlayerRenderer();
+                break;
+            case FULL_RAIN_SCENE_RENDER_TYPE:
+                pExample = new CFullRainSceneRenderer();
+                break;
+            case FULL_SNOW_SCENE_RENDER_TYPE:
+                pExample = new CFullSnowSceneRenderer();
+                break;
+            case FULL_ALL_SCENE_RENDER_TYPE:
+                pExample = new CFullSceneRenderer();
+                break;
+            default:
+                pExample = new CSinglePlayerRenderer();
+                break;
         }
         if (pExample && pExample->init())
         {
@@ -546,21 +534,21 @@ void CNativeRenderer::HandleOnSurfaceCreated(void *vWindow)
         {
             switch (m_CurrentType)
             {
-            case SINGLE_RENDER_TYPE:
-                m_pExample = new CSinglePlayerRenderer();
-                break;
-            case RAIN_RENDER_TYPE:
-                m_pExample = new CRainSceneRenderer();
-                break;
-            case SNOW_RENDER_TYPE:
-                m_pExample = new CSnowSceneRenderer();
-                break;
-            case CLOUD_RENDER_TYPE:
-                m_pExample = new CCloudSceneRenderer();
-                break;
-            default:
-                m_pExample = new CSinglePlayerRenderer();
-                break;
+                case SINGLE_RENDER_TYPE:
+                    m_pExample = new CSinglePlayerRenderer();
+                    break;
+                case FULL_RAIN_SCENE_RENDER_TYPE:
+                    m_pExample = new CFullRainSceneRenderer();
+                    break;
+                case FULL_SNOW_SCENE_RENDER_TYPE:
+                    m_pExample = new CFullSnowSceneRenderer();
+                    break;
+                case FULL_ALL_SCENE_RENDER_TYPE:
+                    m_pExample = new CFullSceneRenderer();
+                    break;
+                default:
+                    m_pExample = new CSinglePlayerRenderer();
+                    break;
             }
             if (m_pExample && m_pExample->init())
             {
