@@ -56,7 +56,7 @@ bool CFullSceneRenderer::init()
     m_SnowRenderChannel = ERenderChannel::R;
     m_RainLastFrameTime = CTimeUtils::getCurrentTime();
     m_SnowLastFrameTime = CTimeUtils::getCurrentTime();
-    
+    setCloudThickness(15/100.f);
     LOGI(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "FullSceneRenderer initialized successfully (lazy loading mode)");
     return true;
 }

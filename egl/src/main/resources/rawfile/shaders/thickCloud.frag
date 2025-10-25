@@ -60,16 +60,17 @@ void main()
     float NextSpaceFilterColor    = filteredChannelSpace3x3(NextTexture,    NextUV,    NextChannel);
     float MixColor = mix(CurrentSpaceFilterColor, NextSpaceFilterColor, Factor);
     float Transmittance = exp(-CloudThickness);
-    vec3 CloudAlbedo = vec3(1.0f) * Transmittance;
+    float TransmittanceFront = exp(-CloudThickness*0.3f);
+    vec3 CloudAlbedo = vec3(1.0f);
     vec4 CloudColor = vec4( CloudAlbedo , MixColor);
 
-    vec3 CloudColorWithoutLight = remap(CloudColor.rgb, 0.0, 1.0, 0.0, 0.65);
+    vec3 CloudColorWithoutLight = remap(CloudColor.rgb, 0.0, 1.0, 0.0, 0.65 );
     vec4 LightningColor = texture(LightningSequenceTexture, TexCoordLightning);
     float LightningMask = LightningColor[ChannelIndex];
 
     // 云后效果
     CloudColor.rgb = CloudColorWithoutLight;
-    vec4 ColorWhenBehind = CloudColor;
+    vec4 ColorWhenBehind = CloudColor * Transmittance;
 
     // 闪电提亮
     float EnableFlash = step(0.0001, FlashProgress); // FlashProgress > 0 => 1.0，否则 0.0
@@ -77,7 +78,7 @@ void main()
     float Down = 1.0 - smoothstep(0.5, 1.0, FlashProgress);
     float FlashIntensity = UP * Down;
 
-    vec4 ColorWhenInFront = vec4(CloudColor.rgb, MixColor + LightningMask);
+    vec4 ColorWhenInFront = vec4(CloudColor.rgb, MixColor + LightningMask) * TransmittanceFront;
     FragColor = mix(ColorWhenBehind, ColorWhenInFront, float(LightningInFront) * EnableFlash);
 
     //当闪电播放在云前的时候 变成全屏
