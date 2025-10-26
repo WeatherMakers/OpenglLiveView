@@ -215,6 +215,6 @@ void CSequenceFramePlayer::setRatioUniform()
 {
     assert(m_pSequenceShaderProgram != nullptr);
     m_pSequenceShaderProgram->useProgram();
-    m_pSequenceShaderProgram->setUniform("cloudUVOffset", glm::vec2(0.0,1.2));
-    m_pSequenceShaderProgram->setUniform("cloudUVScale", glm::vec2(1,0.3));
+    m_pSequenceShaderProgram->setUniform("cloudUVOffset", glm::vec2(0.0,0.9));
+    m_pSequenceShaderProgram->setUniform("cloudUVScale", glm::vec2(1,0.4));
 }
