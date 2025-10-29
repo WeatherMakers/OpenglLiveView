@@ -130,8 +130,8 @@ void CFullSceneRenderer::draw()
     // 雪景背景播放器 - 始终渲染（仅在雪景激活时）
     if (m_SnowActive && m_pBackgroundPlayer)
     {
-        m_pBackgroundPlayer->updateFrame();
-        m_pScreenQuad->bindAndDraw();
+       // m_pBackgroundPlayer->updateFrame();
+       // m_pScreenQuad->bindAndDraw();
     }
 
     // 根据雪景通道设置不同的fps
@@ -173,6 +173,7 @@ void CFullSceneRenderer::draw()
     }
     if (m_RainActive && m_RainSeqInitialized && m_pRainSeqPlayer)
     {
+        m_pRainSeqPlayer->setBackgroundColor(m_BackgroundColor[0], m_BackgroundColor[1], m_BackgroundColor[2]);
         m_pRainSeqPlayer->setFrameRate(RainCurrentFps);
         m_pRainSeqPlayer->updateMultiChannelFrame(RainDeltaTime, m_RainRenderChannel);
         m_pRainSeqPlayer->draw(m_pScreenQuad);

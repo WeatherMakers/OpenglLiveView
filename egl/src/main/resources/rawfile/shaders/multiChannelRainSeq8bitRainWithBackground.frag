@@ -7,20 +7,21 @@ uniform sampler2D rainSequenceTexture;
 uniform sampler2D backgroundTexture;
 uniform int channelIndex;
 uniform float SliderColor;
+uniform vec3 backgroundColor;
 
 const float rainAlphaThreshold = 0.01;    // 判断当前像素是否为雨所在的区域
 const float rainIntensity = 0.5;
 
 void main() {
     vec4 BackgroundColor = texture(backgroundTexture, TexCoord);
-    float LightMask = BackgroundColor.a;
+    float LightMask = 0.f;
 
     vec4 RainColor = texture(rainSequenceTexture, TexCoord);
     float FinalRainAlpha = RainColor.r + RainColor.g * float(channelIndex >= 1) + RainColor.b * float(channelIndex >= 2) + RainColor.a * float(channelIndex >= 3);
 
     vec4 SrcColor = vec4(vec3(1.0), FinalRainAlpha * rainIntensity + LightMask);
 
-    vec4 DstColor = BackgroundColor;
+    vec4 DstColor = vec4(backgroundColor,0.f);
     DstColor.a = 1.0f;
 
     // 结合线性减淡方法的混合方式

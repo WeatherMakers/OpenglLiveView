@@ -1,20 +1,5 @@
 {
   "app": {
-    "signingConfigs": [
-      {
-        "name": "default",
-        "type": "HarmonyOS",
-        "material": {
-          "certpath": "C:\\Users\\tttun\\.ohos\\config\\default_OpenglLiveView_CJdXAnuIDq8t1uNctbaOayL_QhOKlrhOMSDVRstdq_c=.cer",
-          "keyAlias": "debugKey",
-          "keyPassword": "0000001B37F57453BC416A7E591833233B627487B37F4C8CDF4940321795510B36FCA735F0107C98CC0C03",
-          "profile": "C:\\Users\\tttun\\.ohos\\config\\default_OpenglLiveView_CJdXAnuIDq8t1uNctbaOayL_QhOKlrhOMSDVRstdq_c=.p7b",
-          "signAlg": "SHA256withECDSA",
-          "storeFile": "C:\\Users\\tttun\\.ohos\\config\\default_OpenglLiveView_CJdXAnuIDq8t1uNctbaOayL_QhOKlrhOMSDVRstdq_c=.p12",
-          "storePassword": "0000001B8DCD17063C105B2DBC0CD18EBC8CAEBE4469AA9702F9C97E75ED625C0DF3485816E9925D7CB45C"
-        }
-      }
-    ],
     "products": [
       {
         "name": "default",
