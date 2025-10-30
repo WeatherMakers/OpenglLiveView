@@ -39,6 +39,9 @@ bool CFullRainSceneRenderer::init()
     m_RenderChannel = ERenderChannel::R;
     m_LastFrameTime = CTimeUtils::getCurrentTime();
     LOGI(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "FullSceneRenderer initialized (main rain ready)");
+    
+    toggleCloud();
+    
     return true;
 }
 

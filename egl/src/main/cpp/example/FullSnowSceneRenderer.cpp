@@ -39,6 +39,10 @@ bool CFullSnowSceneRenderer::init()
     m_RenderChannel = ERenderChannel::R;
     m_LastFrameTime = CTimeUtils::getCurrentTime();
     LOGI(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "FullSnowSceneRenderer initialized successfully (lazy loading mode)");
+    
+    toggleSnowBackground();
+    toggleSnowForeground();
+    
     return true;
 }
 

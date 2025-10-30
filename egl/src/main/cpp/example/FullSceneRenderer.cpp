@@ -58,6 +58,11 @@ bool CFullSceneRenderer::init()
     m_SnowLastFrameTime = CTimeUtils::getCurrentTime();
     setCloudThickness(15/100.f);
     LOGI(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "FullSceneRenderer initialized successfully (lazy loading mode)");
+    
+    toggleCloud();
+    toggleSnowBackground();
+    toggleSnowForeground();
+    
     return true;
 }
 
@@ -173,9 +178,12 @@ void CFullSceneRenderer::draw()
     }
     if (m_RainActive && m_RainSeqInitialized && m_pRainSeqPlayer)
     {
+        //m_pRainSeqPlayer->setFrameRate(RainCurrentFps);
+        //m_pRainSeqPlayer->updateMultiChannelFrame(RainDeltaTime, m_RainRenderChannel);
+        //m_pRainSeqPlayer->draw(m_pScreenQuad);
         m_pRainSeqPlayer->setFrameRate(RainCurrentFps);
         m_pRainSeqPlayer->updateMultiChannelFrame(RainDeltaTime, m_RainRenderChannel);
-        m_pRainSeqPlayer->draw(m_pScreenQuad);
+        m_pRainSeqPlayer->drawMultiChannelFrame(m_pScreenQuad);
     }
     
 
@@ -351,12 +359,17 @@ void CFullSceneRenderer::__initRainSeqPlayer()
     std::string BackFrameType = BackGroundConfig["frames_type"].asString();
     EPictureType::EPictureType BackPicType = EPictureType::FromString(BackFrameType);
     
-    std::string DayBackImgPath = BackGroundConfig["day_frames_path"].asString();
-     __initBackgroundImageProperties(DayBackImgPath);
+//    std::string DayBackImgPath = BackGroundConfig["day_frames_path"].asString();
+//     __initBackgroundImageProperties(DayBackImgPath);
     
-    m_pRainSeqPlayer = new CRainWithBackgroundSeqPlayer(RainPath, RainTextureCount, RainOneTextureFrames, RainFramePerSecond, RainPictureType);
+//    m_pRainSeqPlayer = new CRainWithBackgroundSeqPlayer(RainPath, RainTextureCount, RainOneTextureFrames, RainFramePerSecond, RainPictureType);
+//    m_pRainSeqPlayer->initTextureAndShaderProgram(RainVertexShader, RainFragShader);
+//    m_pRainSeqPlayer->initBackground(BackImgPath, BackPicType);
+    
+    m_pRainSeqPlayer = new CSequenceFramePlayer(RainPath, RainTextureCount, RainOneTextureFrames, RainFramePerSecond, RainPictureType);
     m_pRainSeqPlayer->initTextureAndShaderProgram(RainVertexShader, RainFragShader);
-    m_pRainSeqPlayer->initBackground(BackImgPath, BackPicType);
+    m_pRainSeqPlayer->setWindowSize(m_WindowSize);
+    
     m_RainSeqInitialized = true;
     LOGI(TAG_KEYWORD::FULL_SCENE_RENDERER_TAG, "Rain Player initialized.");
 }

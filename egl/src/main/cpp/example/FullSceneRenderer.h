@@ -73,39 +73,39 @@ namespace hiveVG
         // 雨景相关
         ERenderChannel             m_RainRenderChannel = ERenderChannel::R;
         double                     m_RainLastFrameTime = 0.0f;
-        double                     m_RainCurrentTime = 0.0f;
+        double                     m_RainCurrentTime   = 0.0f;
         
         // 雪景相关
         ERenderChannel             m_SnowRenderChannel = ERenderChannel::R;
         double                     m_SnowLastFrameTime = 0.0f;
-        double                     m_SnowCurrentTime = 0.0f;
+        double                     m_SnowCurrentTime   = 0.0f;
         
         CScreenQuad*               m_pScreenQuad = nullptr;
         glm::vec2                  m_WindowSize = glm::vec2(0,0);
 
         // 雨景播放器
-        CRainWithBackgroundSeqPlayer* m_pRainSeqPlayer = nullptr;
-        CSequenceFramePlayer*      m_pCloudPlayer = nullptr;
-        CThickCloudSequencePlayer*  m_pThickCloudPlayer = nullptr;
+        CSequenceFramePlayer*      m_pRainSeqPlayer    = nullptr;
+        CSequenceFramePlayer*      m_pCloudPlayer      = nullptr;
+        CThickCloudSequencePlayer* m_pThickCloudPlayer = nullptr;
 
         // 雪景播放器
-        CSingleTexturePlayer*      m_pBackgroundPlayer = nullptr;
+        CSingleTexturePlayer*      m_pBackgroundPlayer     = nullptr;
         CSequenceFramePlayer*      m_pSnowBackgroundPlayer = nullptr;
         CSequenceFramePlayer*      m_pSnowForegroundPlayer = nullptr;
 
         // 雨景初始化状态
-        bool                       m_RainSeqInitialized = false;
+        bool                       m_RainSeqInitialized        = false;
         bool                       m_RainBackgroundInitialized = false;
-        bool                       m_CloudInitialized = false;
-        bool                       m_ThickCloudInitialized = false;
+        bool                       m_CloudInitialized          = false;
+        bool                       m_ThickCloudInitialized     = false;
 
         // 雪景初始化状态
-        bool                       m_BackgroundInitialized = false;
+        bool                       m_BackgroundInitialized     = false;
         bool                       m_SnowBackgroundInitialized = false;
         bool                       m_SnowForegroundInitialized = false;
 
         // 雨景可见性状态
-        bool                       m_CloudVisible = false;
+        bool                       m_CloudVisible      = false;
         bool                       m_ThickCloudVisible = false;
 
         // 雪景可见性状态
