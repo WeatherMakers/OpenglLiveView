@@ -173,7 +173,6 @@ void CFullSceneRenderer::draw()
     }
     if (m_RainActive && m_RainSeqInitialized && m_pRainSeqPlayer)
     {
-        m_pRainSeqPlayer->setBackgroundColor(m_BackgroundColor[0], m_BackgroundColor[1], m_BackgroundColor[2]);
         m_pRainSeqPlayer->setFrameRate(RainCurrentFps);
         m_pRainSeqPlayer->updateMultiChannelFrame(RainDeltaTime, m_RainRenderChannel);
         m_pRainSeqPlayer->draw(m_pScreenQuad);

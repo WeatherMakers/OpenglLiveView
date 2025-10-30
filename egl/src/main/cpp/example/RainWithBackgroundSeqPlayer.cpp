@@ -39,7 +39,7 @@ void CRainWithBackgroundSeqPlayer::draw(CScreenQuad *vQuad)
     m_pSequenceShaderProgram->setUniform("rainSequenceTexture", 0);
     m_pSequenceShaderProgram->setUniform("backgroundTexture", 1);
     m_pSequenceShaderProgram->setUniform("SliderColor", m_uniformColorValue);
-    m_pSequenceShaderProgram->setUniform("backgroundColor", glm::vec3(m_BackgroundColor[0], m_BackgroundColor[1], m_BackgroundColor[2]));
+
     glActiveTexture(GL_TEXTURE0);
     m_SeqTextures[m_CurrentTexture]->bindTexture();
     glActiveTexture(GL_TEXTURE1);
